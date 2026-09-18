@@ -6,13 +6,15 @@
   <title>SOUTH SPECIALTY COFFEE Menu</title>
   <style>
     :root {
+      /* Outer background */
       --outer-bg: #121418;        
-      --frame-bg: #FAF8F5;        
-      --card-bg: #F2EFE9;         
-      --text-main: #1C1C1E;       
-      --text-muted: #6E6E73;      
-      --accent: #8A7B6C;          
-      --border-color: #E2DDD5;    
+      
+      /* Inner frame matching logo background & logo text color */
+      --frame-bg: #D8D2C9;        /* Limestone tone matching logo outer ring */
+      --card-bg: #E3DDD4;         /* Slightly lighter coffee tone for cards */
+      --text-main: #1C1C1E;       /* Deep espresso black matching logo text */
+      --text-muted: #524E4A;      /* Dark beige-gray for secondary text/Arabic */
+      --border-color: #C2BBB0;    /* Border line tone */
     }
 
     * {
@@ -29,76 +31,77 @@
       padding: 24px 12px;
     }
 
+    /* Central menu container */
     .menu-container {
-      max-width: 580px;
+      max-width: 520px;
       margin: 0 auto;
       background-color: var(--frame-bg);
       border-radius: 20px;
-      padding: 32px 20px;
+      padding: 28px 18px;
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
       border: 1px solid #2A2E35;
     }
 
-    /* Circular Metallic Emblem Header */
+    /* Header with small circular logo */
     header {
       display: flex;
       justify-content: center;
-      padding-bottom: 28px;
+      padding-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
+    /* Small metallic logo emblem */
     .logo-badge-outer {
-      width: 170px;
-      height: 170px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      background: #D8D2C9; /* Outer limestone ring */
+      background: #D8D2C9; 
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.12);
     }
 
     .logo-badge-inner {
-      width: 130px;
-      height: 130px;
+      width: 78px;
+      height: 78px;
       border-radius: 50%;
-      /* Brushed silver metal gradient */
       background: linear-gradient(135deg, #E8E4DF 0%, #C3BCB3 50%, #D5CFC8 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
       border: 1px solid #B5AEA5;
       text-align: center;
-      padding: 10px;
+      padding: 6px;
     }
 
     .logo-title {
-      font-size: 22px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 4px;
-      color: #1C1C1E;
+      letter-spacing: 2.5px;
+      color: var(--text-main);
       text-transform: uppercase;
       line-height: 1;
-      margin-bottom: 6px;
+      margin-bottom: 3px;
     }
 
     .logo-subtitle {
-      font-size: 8px;
-      color: #3A3A3C;
+      font-size: 5px;
+      color: var(--text-main);
       font-weight: 600;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
     /* Section Styles */
     .section {
       background-color: var(--card-bg);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
       border: 1px solid var(--border-color);
     }
 
@@ -106,17 +109,17 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 700;
-      color: var(--accent);
+      color: var(--text-main);
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-      margin-bottom: 16px;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
       letter-spacing: 1px;
     }
 
     .section-title .ar {
-      font-size: 15px;
+      font-size: 13px;
       direction: rtl;
     }
 
@@ -124,7 +127,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
+      padding: 8px 0;
       border-bottom: 1px dashed var(--border-color);
     }
 
@@ -139,20 +142,20 @@
     }
 
     .item-en {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--text-main);
     }
 
     .item-ar {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       direction: rtl;
       text-align: right;
     }
 
     .price {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--text-main);
       white-space: nowrap;
@@ -161,9 +164,9 @@
 
     footer {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: 24px;
+      margin-top: 20px;
       letter-spacing: 0.5px;
     }
   </style>
@@ -180,4 +183,178 @@
       </div>
     </header>
 
-    <!-- Sections 1 through 4 remain below as before -->
+    <!-- Espresso Classics -->
+    <div class="section">
+      <div class="section-title">
+        <span>ESPRESSO CLASSICS</span>
+        <span class="ar">كلاسيكيات الإسبريسو</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Espresso</span>
+          <span class="item-ar">إسبريسو</span>
+        </div>
+        <span class="price">1.250 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Americano (Hot / Iced)</span>
+          <span class="item-ar">أمريكانو (حار / بارد)</span>
+        </div>
+        <span class="price">1.500 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Cortado</span>
+          <span class="item-ar">كورتادو</span>
+        </div>
+        <span class="price">1.500 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Flat White</span>
+          <span class="item-ar">فلات وايت</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Cappuccino</span>
+          <span class="item-ar">كابتشينو</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Latte (Hot / Iced)</span>
+          <span class="item-ar">لاتيه (حار / بارد)</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+    </div>
+
+    <!-- Signature & Mochas -->
+    <div class="section">
+      <div class="section-title">
+        <span>SIGNATURE & MOCHAS</span>
+        <span class="ar">المشروبات الخاصة والموكا</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Spanish Latte (Hot / Iced)</span>
+          <span class="item-ar">سبانيش لاتيه (حار / بارد)</span>
+        </div>
+        <span class="price">2.000 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">White Mocha (Hot / Iced)</span>
+          <span class="item-ar">وايت موكا (حار / بارد)</span>
+        </div>
+        <span class="price">2.000 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Dark Mocha (Hot / Iced)</span>
+          <span class="item-ar">دارك موكا (حار / بارد)</span>
+        </div>
+        <span class="price">2.000 KD</span>
+      </div>
+    </div>
+
+    <!-- Manual Brew & Tea -->
+    <div class="section">
+      <div class="section-title">
+        <span>MANUAL BREW & TEA</span>
+        <span class="ar">التقطير والشاي</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">V60 Pour-Over (Hot / Iced)</span>
+          <span class="item-ar">قهوة مقطرة V60 (حار / بارد)</span>
+        </div>
+        <span class="price">2.000 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Iced Tea</span>
+          <span class="item-ar">شاي بارد (آيس تي)</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Black Tea</span>
+          <span class="item-ar">شاي أسود</span>
+        </div>
+        <span class="price">1.000 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Green Tea</span>
+          <span class="item-ar">شاي أخضر</span>
+        </div>
+        <span class="price">1.000 KD</span>
+      </div>
+    </div>
+
+    <!-- Non-Coffee & Refreshers -->
+    <div class="section">
+      <div class="section-title">
+        <span>NON-COFFEE & REFRESHERS</span>
+        <span class="ar">المشروبات الخالية من القهوة والمنعشة</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Matcha Latte (Hot / Iced)</span>
+          <span class="item-ar">ماتشا لاتيه (حار / بارد)</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Hot Chocolate</span>
+          <span class="item-ar">هوت شوكليت (شوكلاتة ساخنة)</span>
+        </div>
+        <span class="price">2.000 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Mojito (All Flavors)</span>
+          <span class="item-ar">موهيتو (جميع النكهات)</span>
+        </div>
+        <span class="price">1.750 KD</span>
+      </div>
+
+      <div class="item">
+        <div class="item-names">
+          <span class="item-en">Water</span>
+          <span class="item-ar">ماء</span>
+        </div>
+        <span class="price">0.500 KD</span>
+      </div>
+    </div>
+
+    <footer>
+      <p>All prices include VAT / جميع الأسعار شاملة الضريبة</p>
+    </footer>
+  </div>
+
+</body>
+</html>
