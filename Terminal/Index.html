@@ -272,15 +272,106 @@
       border-color: var(--accent-light);
     }
 
-    /* Receipt Printable View Fix */
+    /* Receipt Ticket Screen Styles */
+    .receipt-container {
+      background: #fff;
+      color: #000;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.3;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .receipt-header h2 {
+      font-size: 16px;
+      margin: 0 0 5px 0;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .receipt-header h3 {
+      font-size: 20px;
+      margin: 6px 0;
+      font-weight: 800;
+    }
+
+    .receipt-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .receipt-divider {
+      border-top: 2px solid #000;
+      margin: 6px 0;
+    }
+
+    .receipt-table-header {
+      display: flex;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 0;
+    }
+
+    .col-qty { width: 35px; }
+    .col-item { flex: 1; padding-right: 5px; }
+    .col-price { width: 65px; text-align: right; }
+
+    .receipt-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .item-notes {
+      font-size: 11px;
+      color: #444;
+      margin-left: 35px;
+      font-weight: normal;
+      margin-bottom: 3px;
+    }
+
+    .receipt-total-section {
+      margin-top: 10px;
+      text-align: right;
+    }
+
+    .receipt-total-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      font-size: 14px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    /* Print Specific Formatting */
     @media print {
+      @page {
+        margin: 0;
+        size: auto;
+      }
+
       body * {
         visibility: hidden !important;
       }
-      
+
       body, html {
         background: #ffffff !important;
         color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
       }
 
       #receiptModal, #receiptModal * {
@@ -299,13 +390,15 @@
         margin: 0 !important;
       }
 
-      #receiptModal p, 
-      #receiptModal h2, 
-      #receiptModal h3, 
-      #receiptModal span, 
-      #receiptModal div {
-        color: #000000 !important;
-        background: transparent !important;
+      .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        border: none !important;
+      }
+
+      .receipt-container {
+        padding: 8px 12px !important;
       }
 
       .modal-actions, .no-print {
@@ -385,22 +478,48 @@
 
   <!-- Receipt Modal -->
   <div class="modal" id="receiptModal">
-    <div class="modal-content" style="background: white; color: black; font-family: monospace;">
-      <div style="text-align: center; margin-bottom: 15px;">
-        <h2>SOUTH SPECIALTY COFFEE</h2>
-        <p id="receipt-date"></p>
-        <h3 id="receipt-order-id" style="margin-top: 5px;"></h3>
+    <div class="modal-content" style="background: white; padding: 0;">
+      <div class="receipt-container">
+        <div class="receipt-header">
+          <h2>SOUTH SPECIALTY COFFEE</h2>
+          <div class="receipt-divider"></div>
+          <h3 id="receipt-order-id">ORDER #1</h3>
+        </div>
+
+        <div class="receipt-meta">
+          <span id="receipt-date"></span>
+          <span>Staff Cashier</span>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-table-header">
+          <div class="col-qty">Qty</div>
+          <div class="col-item">Item</div>
+          <div class="col-price">Price</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div id="receipt-body"></div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-total-section">
+          <div class="receipt-total-row">
+            <span>Sub Total</span>
+            <span id="receipt-subtotal">0.000</span>
+          </div>
+          <div class="receipt-total-row" style="font-size: 16px;">
+            <span>TOTAL</span>
+            <span id="receipt-total">KWD 0.000</span>
+          </div>
+        </div>
       </div>
-      <hr style="border-top: 1px dashed black; margin: 10px 0;">
-      <div id="receipt-body"></div>
-      <hr style="border-top: 1px dashed black; margin: 10px 0;">
-      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
-        <span>TOTAL:</span>
-        <span id="receipt-total"></span>
-      </div>
-      <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="checkout-btn no-print" onclick="window.print()">Print Receipt</button>
-        <button class="checkout-btn no-print" style="background: #333;" onclick="closeReceipt()">Close</button>
+
+      <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
+        <button class="checkout-btn" onclick="window.print()">Print Receipt</button>
+        <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
   </div>
@@ -411,7 +530,7 @@
       { id: 101, name: "Hot Espresso", category: "hot", price: 1.250, customizable: true },
       { id: 102, name: "Hot Americano", category: "hot", price: 1.500, customizable: true },
       { id: 103, name: "Hot Cortado", category: "hot", price: 1.350, customizable: true },
-      { id: 104, name: "Hot Flat White", category: "hot", price: 1.750, customizable: true },
+      { id: 104, name: "Hot Flat White", category: "hot", price: 1.500, customizable: true },
       { id: 105, name: "Hot Cappuccino", category: "hot", price: 1.750, customizable: true },
       { id: 106, name: "Hot Latte", category: "hot", price: 1.750, customizable: true },
       { id: 107, name: "Hot Spanish Latte", category: "hot", price: 2.000, customizable: true },
@@ -421,7 +540,7 @@
       { id: 111, name: "Hot Caramel Coffee", category: "hot", price: 2.000, customizable: true },
       { id: 112, name: "Hot Matcha Latte", category: "hot", price: 2.000, customizable: true },
       { id: 113, name: "Hot V60", category: "hot", price: 2.000, customizable: true },
-      { id: 114, name: "Hot Chocolate", category: "hot", price: 2.000, customizable: true },
+      { id: 114, name: "Hot Chocolate", category: "hot", price: 1.750, customizable: true },
       { id: 115, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
       { id: 116, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
 
@@ -587,19 +706,25 @@
         const itemTotal = item.price * item.qty;
         total += itemTotal;
         receiptBody.innerHTML += `
-          <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
-            <div>
-              <div>${item.qty}x ${item.name}</div>
-              ${item.notes ? `<div style="font-size:11px; color:#555;">${item.notes}</div>` : ''}
+          <div>
+            <div class="receipt-row">
+              <div class="col-qty">${item.qty}</div>
+              <div class="col-item">${item.name}</div>
+              <div class="col-price">${itemTotal.toFixed(3)}</div>
             </div>
-            <div>${itemTotal.toFixed(3)} KD</div>
+            ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ''}
           </div>
         `;
       });
 
-      document.getElementById('receipt-date').innerText = new Date().toLocaleString();
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      document.getElementById('receipt-date').innerText = `${dateStr}  ${timeStr}`;
       document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
-      document.getElementById('receipt-total').innerText = total.toFixed(3) + ' KD';
+      document.getElementById('receipt-subtotal').innerText = total.toFixed(3);
+      document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
       
       document.getElementById('receiptModal').style.display = 'flex';
     }
