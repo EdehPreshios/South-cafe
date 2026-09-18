@@ -31,7 +31,6 @@
       overflow: hidden;
     }
 
-    /* Main Container Layout */
     .app-container {
       display: flex;
       width: 100%;
@@ -61,7 +60,6 @@
       color: var(--accent-light);
     }
 
-    /* Categories Navigation */
     .categories {
       display: flex;
       gap: 12px;
@@ -88,7 +86,6 @@
       border-color: var(--accent-light);
     }
 
-    /* Items Grid */
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -125,7 +122,6 @@
       font-size: 15px;
     }
 
-    /* Cart Sidebar */
     .cart-section {
       width: 380px;
       background: var(--card-bg);
@@ -217,7 +213,6 @@
       background: var(--accent-light);
     }
 
-    /* Modal Styling */
     .modal {
       display: none;
       position: fixed;
@@ -272,7 +267,6 @@
       border-color: var(--accent-light);
     }
 
-    /* Receipt Printable View Fix */
     @media print {
       body * {
         visibility: hidden !important;
@@ -317,14 +311,12 @@
 <body>
 
   <div class="app-container">
-    <!-- POS Main Section -->
     <div class="pos-section">
       <div class="header">
         <h1>SOUTH SPECIALTY COFFEE</h1>
-        <span style="color: var(--text-muted);" id="order-number-display">Order #101</span>
+        <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
       </div>
 
-      <!-- Categories -->
       <div class="categories">
         <button class="cat-btn active" onclick="filterCategory('hot')">Hot Coffees & Teas</button>
         <button class="cat-btn" onclick="filterCategory('cold')">Cold Coffees & Teas</button>
@@ -332,11 +324,9 @@
         <button class="cat-btn" onclick="filterCategory('sweets')">Sweets & Bakery</button>
       </div>
 
-      <!-- Grid Items -->
       <div class="menu-grid" id="menu-grid"></div>
     </div>
 
-    <!-- Sidebar Cart -->
     <div class="cart-section">
       <div class="cart-header">
         <h2>Current Order</h2>
@@ -353,7 +343,6 @@
     </div>
   </div>
 
-  <!-- Customization Modal -->
   <div class="modal" id="customizeModal">
     <div class="modal-content">
       <h3 id="modal-item-title" style="margin-bottom: 15px;">Customize Drink</h3>
@@ -383,7 +372,6 @@
     </div>
   </div>
 
-  <!-- Receipt Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; color: black; font-family: monospace;">
       <div style="text-align: center; margin-bottom: 15px;">
@@ -411,22 +399,28 @@
       { id: 101, name: "Hot Espresso", category: "hot", price: 1.250, customizable: true },
       { id: 102, name: "Hot Americano", category: "hot", price: 1.500, customizable: true },
       { id: 103, name: "Hot Latte / Flat White", category: "hot", price: 1.750, customizable: true },
-      { id: 104, name: "Salted Caramel Coffee (Hot)", category: "hot", price: 2.000, customizable: true },
-      { id: 105, name: "Caramel Coffee (Hot)", category: "hot", price: 2.000, customizable: true },
-      { id: 106, name: "Hot V60", category: "hot", price: 2.250, customizable: true },
-      { id: 107, name: "Hot Chocolate", category: "hot", price: 1.750, customizable: true },
-      { id: 108, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
-      { id: 109, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
+      { id: 104, name: "Hot Salted Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 105, name: "Hot Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 106, name: "Hot White Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 107, name: "Hot Dark Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 108, name: "Hot Matcha Latte", category: "hot", price: 2.000, customizable: true },
+      { id: 109, name: "Hot V60", category: "hot", price: 2.250, customizable: true },
+      { id: 110, name: "Hot Chocolate", category: "hot", price: 1.750, customizable: true },
+      { id: 111, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
+      { id: 112, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
 
       // Cold Coffees & Teas
       { id: 201, name: "Iced Americano", category: "cold", price: 1.500, customizable: true },
       { id: 202, name: "Iced Latte / Spanish", category: "cold", price: 1.750, customizable: true },
       { id: 203, name: "Iced Salted Caramel Coffee", category: "cold", price: 2.000, customizable: true },
       { id: 204, name: "Iced Caramel Coffee", category: "cold", price: 2.000, customizable: true },
-      { id: 205, name: "Iced V60", category: "cold", price: 2.250, customizable: true },
-      { id: 206, name: "Iced Chocolate", category: "cold", price: 1.750, customizable: true },
-      { id: 207, name: "Iced Black Tea", category: "cold", price: 1.000, customizable: false },
-      { id: 208, name: "Iced Green Tea", category: "cold", price: 1.000, customizable: false },
+      { id: 205, name: "Iced White Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 206, name: "Iced Dark Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 207, name: "Iced Matcha Latte", category: "cold", price: 2.000, customizable: true },
+      { id: 208, name: "Iced V60", category: "cold", price: 2.250, customizable: true },
+      { id: 209, name: "Iced Chocolate", category: "cold", price: 1.750, customizable: true },
+      { id: 210, name: "Iced Peach Tea", category: "cold", price: 1.750, customizable: false },
+      { id: 211, name: "Iced Raspberry Tea", category: "cold", price: 1.750, customizable: false },
 
       // Refreshers & Water
       { id: 301, name: "Strawberry Mojito", category: "refreshers", price: 2.000, customizable: false },
@@ -442,22 +436,25 @@
       // Sweets & Bakery
       { id: 401, name: "Peanut Butter", category: "sweets", price: 1.500, customizable: false },
       { id: 402, name: "Plain Croissant", category: "sweets", price: 1.500, customizable: false },
-      { id: 403, name: "Danish", category: "sweets", price: 1.750, customizable: false },
-      { id: 404, name: "Raspberry & Almond Croissant", category: "sweets", price: 1.750, customizable: false },
-      { id: 405, name: "Muffin", category: "sweets", price: 1.500, customizable: false },
-      { id: 406, name: "Round Éclair", category: "sweets", price: 1.750, customizable: false },
-      { id: 407, name: "Kinder Cookie", category: "sweets", price: 1.750, customizable: false },
-      { id: 408, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
+      { id: 403, name: "Danish Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 404, name: "Raspberry Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 405, name: "Almond Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 406, name: "Muffin", category: "sweets", price: 1.500, customizable: false },
+      { id: 407, name: "Round Éclair", category: "sweets", price: 1.750, customizable: false },
+      { id: 408, name: "Kinder Cookie", category: "sweets", price: 1.750, customizable: false },
+      { id: 409, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
     ];
 
     let cart = [];
     let currentItemToAdd = null;
     let selectedOptions = { milk: 'Full Cream', sugar: 'Standard Sweetness' };
-    let orderCounter = 101;
+    let orderCounter = 1;
 
     function filterCategory(cat) {
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      if(event && event.target) {
+        event.target.classList.add('active');
+      }
       
       const grid = document.getElementById('menu-grid');
       grid.innerHTML = '';
@@ -599,7 +596,6 @@
       clearCart();
     }
 
-    // Initialize View
     filterCategory('hot');
   </script>
 </body>
