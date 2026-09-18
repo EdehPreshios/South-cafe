@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOUTH SPECIALTY COFFEE — Menu</title>
+  <style>
+    :root {
+      --bg-color: #E5E0D8;
+      --card-bg: #EAE6DF;
+      --text-color: #1C1C1E;
+      --accent-color: #9E968C;
+      --line-color: #C8C3BC;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-container {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #EAE6DF 0%, #D8D2C9 100%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      border: 1px solid var(--line-color);
+    }
+
+    .logo-inner {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #DFD9CF, #C5BEB3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.6);
+    }
+
+    .logo-inner h1 {
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .logo-inner span {
+      font-size: 0.38rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    .category {
+      width: 100%;
+      margin-bottom: 28px;
+    }
+
+    .category-title {
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line-color);
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+    }
+
+    .item-name {
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .item-dots {
+      flex: 1;
+      border-bottom: 1px dotted var(--line-color);
+      margin: 0 10px;
+      opacity: 0.7;
+    }
+
+    .item-price {
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-left: 4px;
+      font-weight: 300;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Brand Logo -->
+    <div class="logo-container">
+      <div class="logo-inner">
+        <h1>SOUTH</h1>
+        <span>Specialty Coffee</span>
+      </div>
+    </div>
+
+    <!-- Espresso Classics -->
+    <div class="category">
+      <h2 class="category-title">Espresso Classics</h2>
+      <div class="menu-item">
+        <span class="item-name">Espresso</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.250 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Americano <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.500 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Cortado</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.500 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Flat White</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Cappuccino</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Latte <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+    </div>
+
+    <!-- Signature & Mochas -->
+    <div class="category">
+      <h2 class="category-title">Signature & Mochas</h2>
+      <div class="menu-item">
+        <span class="item-name">Spanish Latte <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">2.000 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">White Mocha <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">2.000 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Dark Mocha <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">2.000 KD</span>
+      </div>
+    </div>
+
+    <!-- Manual Brew & Tea -->
+    <div class="category">
+      <h2 class="category-title">Manual Brew & Tea</h2>
+      <div class="menu-item">
+        <span class="item-name">V60 Pour-Over <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">2.000 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Iced Tea</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Black Tea</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.000 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Green Tea</span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.000 KD</span>
+      </div>
+    </div>
+
+    <!-- Non-Coffee & Refreshers -->
+    <div class="category">
+      <h2 class="category-title">Non-Coffee & Refreshers</h2>
+      <div class="menu-item">
+        <span class="item-name">Matcha Latte <span class="tag">(Hot / Iced)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Hot Chocolate</span>
+        <div class="item-dots"></div>
+        <span class="item-price">2.000 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Mojito <span class="tag">(All Flavors)</span></span>
+        <div class="item-dots"></div>
+        <span class="item-price">1.750 KD</span>
+      </div>
+      <div class="menu-item">
+        <span class="item-name">Water</span>
+        <div class="item-dots"></div>
+        <span class="item-price">0.500 KD</span>
+      </div>
+    </div>
+
+    <div class="footer">SOUTH SPECIALTY COFFEE</div>
+  </div>
+
+</body>
+</html>
