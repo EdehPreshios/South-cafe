@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Milk & Bean Menu</title>
+  <title>SOUTH SPECIALTY COFFEE Menu</title>
   <style>
     :root {
-      --bg-color: #fcfbf9;
-      --card-bg: #ffffff;
-      --text-main: #2b2b2b;
-      --text-muted: #666666;
-      --accent: #8c6d53;
-      --border-color: #f0eae1;
+      /* Outer Space Dark Palette */
+      --bg-color: #0d0f12;          /* Deep space void background */
+      --card-bg: #161a1e;         /* Dark cosmic gray cards */
+      --text-main: #f0f3f6;       /* Crisp starlight white for main titles */
+      --text-muted: #8b949e;      /* Muted nebula gray for Arabic/subtitles */
+      --accent: #c8c3bc;          /* Brushed champagne metallic accent */
+      --border-color: #21262d;    /* Subdued subtle borders */
+      --price-color: #e5e0d8;     /* Warm metallic highlights for prices */
     }
 
     * {
@@ -32,33 +34,33 @@
 
     header {
       text-align: center;
-      padding: 24px 0 32px;
-      border-bottom: 2px solid var(--accent);
+      padding: 28px 0 32px;
+      border-bottom: 1px solid var(--border-color);
       margin-bottom: 28px;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       color: var(--text-main);
       text-transform: uppercase;
     }
 
     .subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--accent);
-      margin-top: 6px;
-      font-weight: 600;
-      letter-spacing: 1px;
+      margin-top: 8px;
+      font-weight: 500;
+      letter-spacing: 2px;
     }
 
     .section {
       background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 14px;
+      padding: 22px;
       margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       border: 1px solid var(--border-color);
     }
 
@@ -66,16 +68,17 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--accent);
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 8px;
-      margin-bottom: 16px;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
     }
 
     .section-title .ar {
-      font-size: 17px;
+      font-size: 16px;
       direction: rtl;
     }
 
@@ -83,8 +86,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px dashed #f5f0ea;
+      padding: 12px 0;
+      border-bottom: 1px dashed #21262d;
     }
 
     .item:last-child {
@@ -94,7 +97,7 @@
     .item-names {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
 
     .item-en {
@@ -113,25 +116,26 @@
     .price {
       font-size: 15px;
       font-weight: 700;
-      color: var(--accent);
+      color: var(--price-color);
       white-space: nowrap;
       margin-left: 12px;
     }
 
     footer {
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
-      margin-top: 32px;
+      margin-top: 36px;
       padding-top: 16px;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Milk & Bean</h1>
-    <div class="subtitle">SPECIALTY COFFEE & BEVERAGES</div>
+    <h1>SOUTH</h1>
+    <div class="subtitle">SPECIALTY COFFEE</div>
   </header>
 
   <!-- Section 1 -->
