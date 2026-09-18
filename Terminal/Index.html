@@ -3,486 +3,618 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOUTH SPECIALTY COFFEE Menu</title>
+  <title>SOUTH - Order Register Terminal</title>
   <style>
     :root {
-      /* Outer background */
-      --outer-bg: #121418;        
-      
-      /* Inner frame matching logo background & logo text color */
-      --frame-bg: #D8D2C9;        /* Limestone tone matching logo outer ring */
-      --card-bg: #E3DDD4;         /* Slightly lighter coffee tone for cards */
-      --text-main: #1C1C1E;       /* Deep espresso black matching logo text */
-      --text-muted: #524E4A;      /* Dark beige-gray for secondary text/Arabic */
-      --border-color: #C2BBB0;    /* Border line tone */
+      --bg-dark: #121418;
+      --card-bg: #1A1D24;
+      --accent: #8A7B6C;
+      --accent-light: #C5A880;
+      --text-main: #EEEEEE;
+      --text-muted: #999999;
+      --border-color: #2A2E39;
+      --success: #2E7D32;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: var(--outer-bg);
+      background-color: var(--bg-dark);
       color: var(--text-main);
-      line-height: 1.5;
-      padding: 24px 12px;
-    }
-
-    /* Central menu container */
-    .menu-container {
-      max-width: 520px;
-      margin: 0 auto;
-      background-color: var(--frame-bg);
-      border-radius: 20px;
-      padding: 28px 18px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-      border: 1px solid #2A2E35;
-    }
-
-    /* Header with small circular logo */
-    header {
       display: flex;
-      justify-content: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 20px;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    /* Small metallic logo emblem */
-    .logo-badge-outer {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: #D8D2C9; 
+    /* Main Container Layout */
+    .app-container {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.12);
+      width: 100%;
+      height: 100%;
     }
 
-    .logo-badge-inner {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #E8E4DF 0%, #C3BCB3 50%, #D5CFC8 100%);
+    .pos-section {
+      flex: 1;
       display: flex;
       flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-      border: 1px solid #B5AEA5;
-      text-align: center;
-      padding: 6px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .logo-title {
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      color: var(--text-main);
-      text-transform: uppercase;
-      line-height: 1;
-      margin-bottom: 3px;
+    .header h1 {
+      font-size: 24px;
+      letter-spacing: 2px;
+      color: var(--accent-light);
     }
 
-    .logo-subtitle {
-      font-size: 5px;
+    /* Categories Navigation */
+    .categories {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .cat-btn {
+      background: var(--card-bg);
       color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 24px;
+      border-radius: 8px;
       font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
     }
 
-    /* Section Styles */
-    .section {
-      background-color: var(--card-bg);
+    .cat-btn.active, .cat-btn:hover {
+      background: var(--accent);
+      color: #FFF;
+      border-color: var(--accent-light);
+    }
+
+    /* Items Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      min-height: 110px;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-light);
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .item-price {
+      color: var(--accent-light);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    /* Cart Sidebar */
+    .cart-section {
+      width: 380px;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .cart-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .cart-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .cart-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .cart-item-details {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .qty-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .cart-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checkout-btn:hover {
+      background: var(--accent-light);
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.75);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 25px;
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
+      width: 90%;
+      max-width: 450px;
       border: 1px solid var(--border-color);
     }
 
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 6px;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
+    .options-group {
+      margin-bottom: 15px;
     }
 
-    .section-title .ar {
+    .options-group label {
+      display: block;
       font-size: 13px;
-      direction: rtl;
-    }
-
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--border-color);
-    }
-
-    .item:last-child {
-      border-bottom: none;
-    }
-
-    .item-names {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .item-en {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-
-    .item-ar {
-      font-size: 12px;
       color: var(--text-muted);
-      direction: rtl;
-      text-align: right;
+      margin-bottom: 6px;
     }
 
-    .price {
-      font-size: 14px;
-      font-weight: 700;
+    .options-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .opt-btn {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
       color: var(--text-main);
-      white-space: nowrap;
-      margin-left: 12px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
     }
 
-    footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 20px;
-      letter-spacing: 0.5px;
+    .opt-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent-light);
+    }
+
+    /* Receipt Printable View Fix */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      
+      body, html {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      #receiptModal, #receiptModal * {
+        visibility: visible !important;
+      }
+
+      #receiptModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      #receiptModal p, 
+      #receiptModal h2, 
+      #receiptModal h3, 
+      #receiptModal span, 
+      #receiptModal div {
+        color: #000000 !important;
+        background: transparent !important;
+      }
+
+      .modal-actions, .no-print {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="menu-container">
-    <header>
-      <div class="logo-badge-outer">
-        <div class="logo-badge-inner">
-          <div class="logo-title">SOUTH</div>
-          <div class="logo-subtitle">SPECIALTY COFFEE</div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Espresso Classics -->
-    <div class="section">
-      <div class="section-title">
-        <span>ESPRESSO CLASSICS</span>
-        <span class="ar">كلاسيكيات الإسبريسو</span>
+  <div class="app-container">
+    <!-- POS Main Section -->
+    <div class="pos-section">
+      <div class="header">
+        <h1>SOUTH SPECIALTY COFFEE</h1>
+        <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
       </div>
 
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Espresso</span>
-          <span class="item-ar">إسبريسو</span>
-        </div>
-        <span class="price">1.250 KD</span>
+      <!-- Categories -->
+      <div class="categories">
+        <button class="cat-btn active" onclick="filterCategory('hot')">Hot Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('cold')">Cold Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('refreshers')">Refreshers & Water</button>
+        <button class="cat-btn" onclick="filterCategory('sweets')">Sweets & Bakery</button>
       </div>
 
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Americano (Hot / Iced)</span>
-          <span class="item-ar">أمريكانو (حار / بارد)</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Cortado</span>
-          <span class="item-ar">كورتادو</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Flat White</span>
-          <span class="item-ar">فلات وايت</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Cappuccino</span>
-          <span class="item-ar">كابتشينو</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Hot Latte</span>
-          <span class="item-ar">لاتيه حار</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Iced Latte</span>
-          <span class="item-ar">آيس لاتيه</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
+      <!-- Grid Items -->
+      <div class="menu-grid" id="menu-grid"></div>
     </div>
 
-    <!-- Signature, Caramels & Mochas -->
-    <div class="section">
-      <div class="section-title">
-        <span>SIGNATURE & MOCHAS</span>
-        <span class="ar">المشروبات الخاصة والموكا</span>
+    <!-- Sidebar Cart -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <h2>Current Order</h2>
+        <button class="qty-btn" onclick="clearCart()">✕</button>
       </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Hot Spanish Latte</span>
-          <span class="item-ar">سبانيش لاتيه حار</span>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-footer">
+        <div class="total-row">
+          <span>Total</span>
+          <span id="cart-total">0.000 KD</span>
         </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Iced Spanish Latte</span>
-          <span class="item-ar">آيس سبانيش لاتيه</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Salted Caramel Coffee (Hot / Iced)</span>
-          <span class="item-ar">قهوة سولتد كراميل (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Caramel Coffee (Hot / Iced)</span>
-          <span class="item-ar">قهوة كراميل (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">White Mocha (Hot / Iced)</span>
-          <span class="item-ar">وايت موكا (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Dark Mocha (Hot / Iced)</span>
-          <span class="item-ar">دارك موكا (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
+        <button class="checkout-btn" onclick="processCheckout()">Checkout & Print</button>
       </div>
     </div>
-
-    <!-- Manual Brew & Tea -->
-    <div class="section">
-      <div class="section-title">
-        <span>MANUAL BREW & TEA</span>
-        <span class="ar">التقطير والشاي</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">V60 Pour-Over (Hot / Iced)</span>
-          <span class="item-ar">قهوة مقطرة V60 (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Iced Peach Tea</span>
-          <span class="item-ar">آيس تي خوخ</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Iced Raspberry Tea</span>
-          <span class="item-ar">آيس تي توت عليق</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Black Tea</span>
-          <span class="item-ar">شاي أسود</span>
-        </div>
-        <span class="price">1.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Green Tea</span>
-          <span class="item-ar">شاي أخضر</span>
-        </div>
-        <span class="price">1.000 KD</span>
-      </div>
-    </div>
-
-    <!-- Non-Coffee & Refreshers -->
-    <div class="section">
-      <div class="section-title">
-        <span>NON-COFFEE & REFRESHERS</span>
-        <span class="ar">المشروبات الخالية من القهوة والمنعشة</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Matcha Latte (Hot / Iced)</span>
-          <span class="item-ar">ماتشا لاتيه (حار / بارد)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Hot Chocolate / Iced Chocolate</span>
-          <span class="item-ar">هوت شوكليت / آيس شوكليت</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Mojito (Strawberry, Blueberry, Blue, Passion Fruit, Raspberry, Peach, Watermelon)</span>
-          <span class="item-ar">موهيتو (فراولة، توت أزرق، بلو، باشن فروت، توت عليق، خوخ، بطيخ)</span>
-        </div>
-        <span class="price">2.000 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Still Water</span>
-          <span class="item-ar">مياه معدنية</span>
-        </div>
-        <span class="price">0.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Sparkling Water</span>
-          <span class="item-ar">مياه غازية</span>
-        </div>
-        <span class="price">0.750 KD</span>
-      </div>
-    </div>
-
-    <!-- Sweets & Bakery -->
-    <div class="section">
-      <div class="section-title">
-        <span>SWEETS & BAKERY</span>
-        <span class="ar">الحلويات والمخبوزات</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Peanut Butter</span>
-          <span class="item-ar">زبدة الفول السوداني</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Plain Croissant</span>
-          <span class="item-ar">كرواسون سادة</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Danish Croissant</span>
-          <span class="item-ar">دانيش كرواسون</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Raspberry Croissant</span>
-          <span class="item-ar">كرواسون توت عليق</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Almond Croissant</span>
-          <span class="item-ar">كرواسون لوز</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Muffin</span>
-          <span class="item-ar">مافن</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Round Éclair</span>
-          <span class="item-ar">إكلير دائري</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Kinder Cookie</span>
-          <span class="item-ar">كوكيز كيندر</span>
-        </div>
-        <span class="price">1.750 KD</span>
-      </div>
-
-      <div class="item">
-        <div class="item-names">
-          <span class="item-en">Brownie</span>
-          <span class="item-ar">براوني</span>
-        </div>
-        <span class="price">1.500 KD</span>
-      </div>
-    </div>
-
-    <footer>
-      <p>All prices include VAT / جميع الأسعار شاملة الضريبة</p>
-    </footer>
   </div>
 
+  <!-- Customization Modal -->
+  <div class="modal" id="customizeModal">
+    <div class="modal-content">
+      <h3 id="modal-item-title" style="margin-bottom: 15px;">Customize Drink</h3>
+      
+      <div class="options-group" id="milk-group">
+        <label>Milk Choice</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" onclick="selectOpt(this, 'milk', 'Full Cream')">Full Cream</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Oat Milk (+0.250 KD)')">Oat (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Almond Milk (+0.250 KD)')">Almond (+0.250 KD)</button>
+        </div>
+      </div>
+
+      <div class="options-group" id="sugar-group">
+        <label>Sweetness</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Standard Sweetness')">Standard</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Less Sweet')">Less Sweet</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Extra Sweet')">Extra Sweet</button>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal()">Cancel</button>
+        <button class="checkout-btn" onclick="confirmAddToCart()">Add to Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt Modal -->
+  <div class="modal" id="receiptModal">
+    <div class="modal-content" style="background: white; color: black; font-family: monospace;">
+      <div style="text-align: center; margin-bottom: 15px;">
+        <h2>SOUTH SPECIALTY COFFEE</h2>
+        <p id="receipt-date"></p>
+        <h3 id="receipt-order-id" style="margin-top: 5px;"></h3>
+      </div>
+      <hr style="border-top: 1px dashed black; margin: 10px 0;">
+      <div id="receipt-body"></div>
+      <hr style="border-top: 1px dashed black; margin: 10px 0;">
+      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
+        <span>TOTAL:</span>
+        <span id="receipt-total"></span>
+      </div>
+      <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="checkout-btn no-print" onclick="window.print()">Print Receipt</button>
+        <button class="checkout-btn no-print" style="background: #333;" onclick="closeReceipt()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuItems = [
+      // Hot Coffees & Teas
+      { id: 101, name: "Hot Espresso", category: "hot", price: 1.250, customizable: true },
+      { id: 102, name: "Hot Americano", category: "hot", price: 1.500, customizable: true },
+      { id: 103, name: "Hot Cortado", category: "hot", price: 1.350, customizable: true },
+      { id: 104, name: "Hot Flat White", category: "hot", price: 1.500, customizable: true },
+      { id: 105, name: "Hot Cappuccino", category: "hot", price: 1.750, customizable: true },
+      { id: 106, name: "Hot Latte", category: "hot", price: 1.750, customizable: true },
+      { id: 107, name: "Hot Spanish Latte", category: "hot", price: 2.000, customizable: true },
+      { id: 108, name: "Hot White Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 109, name: "Hot Dark Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 110, name: "Hot Salted Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 111, name: "Hot Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 112, name: "Hot Matcha Latte", category: "hot", price: 2.000, customizable: true },
+      { id: 113, name: "Hot V60", category: "hot", price: 2.000, customizable: true },
+      { id: 114, name: "Hot Chocolate", category: "hot", price: 1.750, customizable: true },
+      { id: 115, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
+      { id: 116, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
+
+      // Cold Coffees & Teas
+      { id: 201, name: "Iced Americano", category: "cold", price: 1.500, customizable: true },
+      { id: 202, name: "Iced Flat White", category: "cold", price: 1.500, customizable: true },
+      { id: 203, name: "Iced Cappuccino", category: "cold", price: 1.750, customizable: true },
+      { id: 204, name: "Iced Latte", category: "cold", price: 1.750, customizable: true },
+      { id: 205, name: "Iced Spanish Latte", category: "cold", price: 2.000, customizable: true },
+      { id: 206, name: "Iced White Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 207, name: "Iced Dark Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 208, name: "Iced Salted Caramel Coffee", category: "cold", price: 2.000, customizable: true },
+      { id: 209, name: "Iced Caramel Coffee", category: "cold", price: 2.000, customizable: true },
+      { id: 210, name: "Iced Matcha Latte", category: "cold", price: 2.000, customizable: true },
+      { id: 211, name: "Iced V60", category: "cold", price: 2.000, customizable: true },
+      { id: 212, name: "Iced Chocolate", category: "cold", price: 1.750, customizable: true },
+      { id: 213, name: "Iced Peach Tea", category: "cold", price: 1.750, customizable: false },
+      { id: 214, name: "Iced Raspberry Tea", category: "cold", price: 1.750, customizable: false },
+
+      // Refreshers & Water
+      { id: 301, name: "Strawberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 302, name: "Blueberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 303, name: "Blue Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 304, name: "Passion Fruit Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 305, name: "Raspberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 306, name: "Peach Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 307, name: "Watermelon Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 308, name: "Still Water", category: "refreshers", price: 0.500, customizable: false },
+      { id: 309, name: "Sparkling Water", category: "refreshers", price: 0.750, customizable: false },
+
+      // Sweets & Bakery
+      { id: 401, name: "Peanut Butter", category: "sweets", price: 1.500, customizable: false },
+      { id: 402, name: "Plain Croissant", category: "sweets", price: 1.500, customizable: false },
+      { id: 403, name: "Danish Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 404, name: "Raspberry Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 405, name: "Almond Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 406, name: "Muffin", category: "sweets", price: 1.500, customizable: false },
+      { id: 407, name: "Round Éclair", category: "sweets", price: 1.750, customizable: false },
+      { id: 408, name: "Kinder Cookie", category: "sweets", price: 1.750, customizable: false },
+      { id: 409, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
+    ];
+
+    let cart = [];
+    let currentItemToAdd = null;
+    let selectedOptions = { milk: 'Full Cream', sugar: 'Standard Sweetness' };
+    let orderCounter = 1;
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const grid = document.getElementById('menu-grid');
+      grid.innerHTML = '';
+      
+      const filtered = menuItems.filter(i => i.category === cat);
+      filtered.forEach(item => {
+        grid.innerHTML += `
+          <div class="item-card" onclick="handleItemClick(${item.id})">
+            <div class="item-title">${item.name}</div>
+            <div class="item-price">${item.price.toFixed(3)} KD</div>
+          </div>
+        `;
+      });
+    }
+
+    function handleItemClick(id) {
+      const item = menuItems.find(i => i.id === id);
+      if (item.customizable) {
+        currentItemToAdd = item;
+        document.getElementById('modal-item-title').innerText = item.name;
+        document.getElementById('customizeModal').style.display = 'flex';
+      } else {
+        addToCart(item, '', 0);
+      }
+    }
+
+    function selectOpt(btn, group, val) {
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedOptions[group] = val;
+    }
+
+    function closeModal() {
+      document.getElementById('customizeModal').style.display = 'none';
+    }
+
+    function confirmAddToCart() {
+      let extra = 0;
+      let notes = [];
+      if (selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Almond')) {
+        extra += 0.250;
+      }
+      notes.push(selectedOptions.milk);
+      if (selectedOptions.sugar !== 'Standard Sweetness') notes.push(selectedOptions.sugar);
+
+      addToCart(currentItemToAdd, notes.join(', '), extra);
+      closeModal();
+    }
+
+    function addToCart(item, notes, extraCost) {
+      const existing = cart.find(c => c.id === item.id && c.notes === notes);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price + extraCost,
+          notes: notes,
+          qty: 1
+        });
+      }
+      renderCart();
+    }
+
+    function updateQty(index, change) {
+      cart[index].qty += change;
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      renderCart();
+    }
+
+    function clearCart() {
+      cart = [];
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        container.innerHTML += `
+          <div class="cart-item">
+            <div class="cart-item-header">
+              <span>${item.name}</span>
+              <span>${itemTotal.toFixed(3)} KD</span>
+            </div>
+            ${item.notes ? `<div class="cart-item-details">${item.notes}</div>` : ''}
+            <div class="cart-item-actions">
+              <span>${item.price.toFixed(3)} KD</span>
+              <div>
+                <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                <span style="margin: 0 8px;">${item.qty}</span>
+                <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('cart-total').innerText = total.toFixed(3) + ' KD';
+    }
+
+    function processCheckout() {
+      if (cart.length === 0) return alert('Please add items to cart first!');
+      
+      const receiptBody = document.getElementById('receipt-body');
+      receiptBody.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        receiptBody.innerHTML += `
+          <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
+            <div>
+              <div>${item.qty}x ${item.name}</div>
+              ${item.notes ? `<div style="font-size:11px; color:#555;">${item.notes}</div>` : ''}
+            </div>
+            <div>${itemTotal.toFixed(3)} KD</div>
+          </div>
+        `;
+      });
+
+      document.getElementById('receipt-date').innerText = new Date().toLocaleString();
+      document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
+      document.getElementById('receipt-total').innerText = total.toFixed(3) + ' KD';
+      
+      document.getElementById('receiptModal').style.display = 'flex';
+    }
+
+    function closeReceipt() {
+      document.getElementById('receiptModal').style.display = 'none';
+      orderCounter++;
+      document.getElementById('order-number-display').innerText = 'Order #' + orderCounter;
+      clearCart();
+    }
+
+    // Initialize View
+    filterCategory('hot');
+  </script>
 </body>
 </html>
