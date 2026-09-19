@@ -276,73 +276,73 @@
     .receipt-container {
       background: #fff;
       color: #000;
-      padding: 15px;
+      padding: 8px;
       font-family: Arial, sans-serif;
-      font-size: 13px;
-      line-height: 1.3;
+      font-size: 12px;
+      line-height: 1.2;
       width: 100%;
       box-sizing: border-box;
     }
 
     .receipt-header {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .receipt-header h2 {
-      font-size: 16px;
-      margin: 0 0 5px 0;
+      font-size: 14px;
+      margin: 0 0 4px 0;
       font-weight: 800;
       letter-spacing: 0.5px;
     }
 
     .receipt-header h3 {
-      font-size: 20px;
-      margin: 6px 0;
+      font-size: 18px;
+      margin: 4px 0;
       font-weight: 800;
     }
 
     .receipt-meta {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 12px;
+      margin-bottom: 6px;
+      font-size: 11px;
       font-weight: 600;
     }
 
     .receipt-divider {
       border-top: 2px solid #000;
-      margin: 6px 0;
+      margin: 4px 0;
     }
 
     .receipt-table-header {
       display: flex;
       font-weight: 800;
-      font-size: 13px;
-      padding: 4px 0;
+      font-size: 12px;
+      padding: 2px 0;
     }
 
-    .col-qty { width: 35px; }
+    .col-qty { width: 30px; }
     .col-item { flex: 1; padding-right: 5px; }
-    .col-price { width: 65px; text-align: right; }
+    .col-price { width: 60px; text-align: right; }
 
     .receipt-row {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       font-weight: 600;
     }
 
     .item-notes {
-      font-size: 11px;
+      font-size: 10px;
       color: #444;
-      margin-left: 35px;
+      margin-left: 30px;
       font-weight: normal;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .receipt-total-section {
-      margin-top: 10px;
+      margin-top: 6px;
       text-align: right;
     }
 
@@ -350,28 +350,30 @@
       display: flex;
       justify-content: flex-end;
       gap: 15px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     /* Print Specific Formatting */
     @media print {
       @page {
-        margin: 0;
-        size: auto;
+        margin: 0 !important;
+        size: 80mm auto !important;
+      }
+
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        width: 80mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
       }
 
       body * {
         visibility: hidden !important;
-      }
-
-      body, html {
-        background: #ffffff !important;
-        color: #000000 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
       }
 
       #receiptModal, #receiptModal * {
@@ -379,10 +381,11 @@
       }
 
       #receiptModal {
-        position: absolute !important;
+        position: fixed !important;
         left: 0 !important;
         top: 0 !important;
-        width: 100% !important;
+        width: 80mm !important;
+        height: auto !important;
         background: #ffffff !important;
         color: #000000 !important;
         box-shadow: none !important;
@@ -394,11 +397,15 @@
         width: 100% !important;
         max-width: 100% !important;
         padding: 0 !important;
+        margin: 0 !important;
         border: none !important;
+        box-shadow: none !important;
       }
 
       .receipt-container {
-        padding: 8px 12px !important;
+        padding: 4px 6px !important;
+        margin: 0 !important;
+        width: 100% !important;
       }
 
       .modal-actions, .no-print {
@@ -510,7 +517,7 @@
             <span>Sub Total</span>
             <span id="receipt-subtotal">0.000</span>
           </div>
-          <div class="receipt-total-row" style="font-size: 16px;">
+          <div class="receipt-total-row" style="font-size: 15px;">
             <span>TOTAL</span>
             <span id="receipt-total">KWD 0.000</span>
           </div>
