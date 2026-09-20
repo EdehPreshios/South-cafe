@@ -553,6 +553,28 @@
     <div class="modal-content">
       <h3 id="modal-item-title" style="margin-bottom: 15px;">Customize Drink</h3>
       
+      <!-- Size Choice -->
+      <div class="options-group" id="size-group">
+        <label>Cup Size</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" onclick="selectOpt(this, 'size', '8 oz')">8 oz (Regular)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'size', '12 oz (+0.250 KD)')">12 oz (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'size', '16 oz (+0.500 KD)')">16 oz (+0.500 KD)</button>
+        </div>
+      </div>
+
+      <!-- Espresso Shots -->
+      <div class="options-group" id="shots-group">
+        <label>Espresso Shots</label>
+        <div class="options-grid">
+          <button class="opt-btn" onclick="selectOpt(this, 'shots', 'Single Shot')">Single Shot</button>
+          <button class="opt-btn selected" onclick="selectOpt(this, 'shots', 'Double Shot')">Double Shot (Standard)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'shots', 'Extra Shot (+0.250 KD)')">Extra Shot (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'shots', 'Decaf')">Decaf</button>
+        </div>
+      </div>
+
+      <!-- Milk Choice -->
       <div class="options-group" id="milk-group">
         <label>Milk Choice</label>
         <div class="options-grid">
@@ -565,13 +587,25 @@
         </div>
       </div>
 
+      <!-- Sweetness Level -->
       <div class="options-group" id="sugar-group">
         <label>Sweetness Level</label>
         <div class="options-grid">
-          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'No Sugar')">None</button>
-          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Less Sweet')">Less Sweet</button>
-          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Normal Sweetness')">Normal</button>
-          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'More Sweet')">More Sweet</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'No Sugar')">None (0%)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Less Sweet')">Less Sweet (50%)</button>
+          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Normal Sweetness')">Normal (100%)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Extra Sweet')">Extra Sweet (150%)</button>
+        </div>
+      </div>
+
+      <!-- Temperature / Ice Level -->
+      <div class="options-group" id="temp-group">
+        <label>Temperature / Ice Profile</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" onclick="selectOpt(this, 'temp', 'Standard Temp/Ice')">Standard</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'temp', 'Extra Hot / Extra Ice')">Extra Hot / Extra Ice</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'temp', 'Warm / Light Ice')">Warm / Light Ice</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'temp', 'No Ice')">No Ice</button>
         </div>
       </div>
 
@@ -723,7 +757,13 @@
 
     let cart = JSON.parse(localStorage.getItem('south_current_cart') || '[]');
     let currentItemToAdd = null;
-    let selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+    let selectedOptions = { 
+      size: '8 oz',
+      shots: 'Double Shot',
+      milk: 'Full Fat', 
+      sugar: 'Normal Sweetness',
+      temp: 'Standard Temp/Ice'
+    };
     let selectedPayment = localStorage.getItem('south_payment_method') || 'K-NET';
     let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
     let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
@@ -737,12 +777,28 @@
     }
 
     function resetModalOptions() {
-      selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+      selectedOptions = { 
+        size: '8 oz',
+        shots: 'Double Shot',
+        milk: 'Full Fat', 
+        sugar: 'Normal Sweetness',
+        temp: 'Standard Temp/Ice'
+      };
+
+      document.querySelectorAll('#size-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('8 oz'));
+      });
+      document.querySelectorAll('#shots-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Double Shot'));
+      });
       document.querySelectorAll('#milk-group .opt-btn').forEach(b => {
         b.classList.toggle('selected', b.innerText.startsWith('Full Fat'));
       });
       document.querySelectorAll('#sugar-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText === 'Normal');
+        b.classList.toggle('selected', b.innerText.startsWith('Normal'));
+      });
+      document.querySelectorAll('#temp-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Standard'));
       });
     }
 
@@ -796,11 +852,27 @@
     function confirmAddToCart() {
       let extra = 0;
       let notes = [];
+
+      // Size charges
+      if (selectedOptions.size.includes('12 oz')) extra += 0.250;
+      if (selectedOptions.size.includes('16 oz')) extra += 0.500;
+      if (selectedOptions.size !== '8 oz') notes.push(selectedOptions.size.split(' ')[0] + ' ' + selectedOptions.size.split(' ')[1]);
+
+      // Shot charges
+      if (selectedOptions.shots.includes('Extra Shot')) extra += 0.250;
+      if (selectedOptions.shots !== 'Double Shot') notes.push(selectedOptions.shots.replace(' (+0.250 KD)', ''));
+
+      // Milk charges
       if (selectedOptions.milk.includes('Almond') || selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Coconut')) {
         extra += 0.250;
       }
-      if (selectedOptions.milk !== 'Full Fat') notes.push(selectedOptions.milk);
+      if (selectedOptions.milk !== 'Full Fat') notes.push(selectedOptions.milk.replace(' (+0.250 KD)', ''));
+
+      // Sweetness level
       if (selectedOptions.sugar !== 'Normal Sweetness') notes.push(selectedOptions.sugar);
+
+      // Temperature / Ice profile
+      if (selectedOptions.temp !== 'Standard Temp/Ice') notes.push(selectedOptions.temp);
 
       addToCart(currentItemToAdd, notes.join(', '), extra);
       closeModal('customizeModal');
