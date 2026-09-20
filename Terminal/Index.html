@@ -13,6 +13,7 @@
       --text-main: #EEEEEE;
       --text-muted: #999999;
       --border-color: #2A2E39;
+      --danger: #D32F2F;
       --success: #2E7D32;
     }
 
@@ -31,7 +32,6 @@
       overflow: hidden;
     }
 
-    /* Main Container Layout */
     .app-container {
       display: flex;
       width: 100%;
@@ -59,6 +59,26 @@
       font-size: 24px;
       letter-spacing: 2px;
       color: var(--accent-light);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn-sm {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .action-btn-sm:hover {
+      border-color: var(--accent-light);
     }
 
     /* Categories Navigation */
@@ -192,6 +212,28 @@
       border-top: 1px solid var(--border-color);
     }
 
+    .payment-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .pay-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .pay-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent-light);
+    }
+
     .total-row {
       display: flex;
       justify-content: space-between;
@@ -217,7 +259,7 @@
       background: var(--accent-light);
     }
 
-    /* Modal Styling */
+    /* Modals */
     .modal {
       display: none;
       position: fixed;
@@ -225,7 +267,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.8);
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -236,19 +278,22 @@
       padding: 25px;
       border-radius: 12px;
       width: 90%;
-      max-width: 450px;
+      max-width: 540px;
       border: 1px solid var(--border-color);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .options-group {
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
 
     .options-group label {
       display: block;
       font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      font-weight: 600;
     }
 
     .options-grid {
@@ -261,7 +306,7 @@
       background: var(--bg-dark);
       border: 1px solid var(--border-color);
       color: var(--text-main);
-      padding: 8px 12px;
+      padding: 8px 14px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 13px;
@@ -272,7 +317,35 @@
       border-color: var(--accent-light);
     }
 
-    /* Receipt Ticket Screen Styles */
+    /* History & Report Item Tables */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .history-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-tag {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .status-completed { background: #1B5E20; color: #E8F5E9; }
+    .status-canceled { background: #B71C1C; color: #FFEBEE; }
+
+    /* Thermal Print Ticket Formatting */
     .receipt-container {
       background: #fff;
       color: #000;
@@ -311,8 +384,8 @@
     }
 
     .receipt-divider {
-      border-top: 2px solid #000;
-      margin: 4px 0;
+      border-top: 2px dashed #000;
+      margin: 6px 0;
     }
 
     .receipt-table-header {
@@ -335,9 +408,9 @@
 
     .item-notes {
       font-size: 10px;
-      color: #444;
+      color: #333;
       margin-left: 30px;
-      font-weight: normal;
+      font-weight: bold;
       margin-bottom: 2px;
     }
 
@@ -355,7 +428,7 @@
       margin-top: 2px;
     }
 
-    /* Print Specific Formatting */
+    /* Print Formatting Rules */
     @media print {
       @page {
         margin: 0 !important;
@@ -411,6 +484,11 @@
       .modal-actions, .no-print {
         display: none !important;
       }
+
+      .page-break {
+        page-break-after: always;
+        break-after: page;
+      }
     }
   </style>
 </head>
@@ -420,11 +498,17 @@
     <!-- POS Main Section -->
     <div class="pos-section">
       <div class="header">
-        <h1>SOUTH SPECIALTY COFFEE</h1>
-        <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
+        <div>
+          <h1>SOUTH SPECIALTY COFFEE</h1>
+          <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
+        </div>
+        <div class="nav-actions">
+          <button class="action-btn-sm" onclick="openOrderHistory()">Order History</button>
+          <button class="action-btn-sm" style="background: var(--accent); color: white;" onclick="openClosingReport()">Closing Report</button>
+        </div>
       </div>
 
-      <!-- Categories -->
+      <!-- Categories Navigation -->
       <div class="categories">
         <button class="cat-btn active" onclick="filterCategory('hot')">Hot Coffees & Teas</button>
         <button class="cat-btn" onclick="filterCategory('cold')">Cold Coffees & Teas</button>
@@ -432,7 +516,7 @@
         <button class="cat-btn" onclick="filterCategory('sweets')">Sweets & Bakery</button>
       </div>
 
-      <!-- Grid Items -->
+      <!-- Menu Items Grid -->
       <div class="menu-grid" id="menu-grid"></div>
     </div>
 
@@ -444,6 +528,11 @@
       </div>
       <div class="cart-items" id="cart-items"></div>
       <div class="cart-footer">
+        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px;">Payment Method</label>
+        <div class="payment-toggle">
+          <button class="pay-btn selected" id="pay-knet" onclick="selectPayment('K-NET', this)">K-NET</button>
+          <button class="pay-btn" id="pay-cash" onclick="selectPayment('Cash', this)">Cash</button>
+        </div>
         <div class="total-row">
           <span>Total</span>
           <span id="cart-total">0.000 KD</span>
@@ -461,41 +550,92 @@
       <div class="options-group" id="milk-group">
         <label>Milk Choice</label>
         <div class="options-grid">
-          <button class="opt-btn selected" onclick="selectOpt(this, 'milk', 'Full Cream')">Full Cream</button>
-          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Oat Milk (+0.250 KD)')">Oat (+0.250 KD)</button>
-          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Almond Milk (+0.250 KD)')">Almond (+0.250 KD)</button>
+          <button class="opt-btn selected" onclick="selectOpt(this, 'milk', 'Full Fat')">Full Fat</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Skimmed')">Skimmed</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Lactose Free')">Lactose Free</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Almond (+0.250 KD)')">Almond (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Oat (+0.250 KD)')">Oat (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Coconut (+0.250 KD)')">Coconut (+0.250 KD)</button>
         </div>
       </div>
 
       <div class="options-group" id="sugar-group">
-        <label>Sweetness</label>
+        <label>Sweetness Level</label>
         <div class="options-grid">
-          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Standard Sweetness')">Standard</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'No Sugar')">None</button>
           <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Less Sweet')">Less Sweet</button>
-          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Extra Sweet')">Extra Sweet</button>
+          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Normal Sweetness')">Normal</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'More Sweet')">More Sweet</button>
         </div>
       </div>
 
       <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal()">Cancel</button>
+        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal('customizeModal')">Cancel</button>
         <button class="checkout-btn" onclick="confirmAddToCart()">Add to Order</button>
       </div>
     </div>
   </div>
 
-  <!-- Receipt Modal -->
+  <!-- Order History / Refund / Edit Modal -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Completed & Canceled Orders</h3>
+        <button class="qty-btn" onclick="closeModal('historyModal')">✕</button>
+      </div>
+      <div class="history-list" id="history-container"></div>
+    </div>
+  </div>
+
+  <!-- Closing Z-Report Modal -->
+  <div class="modal" id="closingReportModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Daily Shift Closing Summary</h3>
+        <button class="qty-btn" onclick="closeModal('closingReportModal')">✕</button>
+      </div>
+      <div id="report-summary-body" style="font-size: 14px; line-height: 1.6;"></div>
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button class="checkout-btn" onclick="window.print()">Print Closing Report</button>
+        <button class="checkout-btn" style="background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Receipt & Kitchen Dual Print Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; padding: 0;">
+      
+      <!-- TICKET 1: KITCHEN SLIP -->
+      <div class="receipt-container page-break">
+        <div class="receipt-header">
+          <h2>** KITCHEN TICKET **</h2>
+          <h3 id="kitchen-order-id">ORDER #1</h3>
+        </div>
+        <div class="receipt-meta">
+          <span class="print-date"></span>
+          <span>BARISTA COPY</span>
+        </div>
+        <div class="receipt-divider"></div>
+        <div class="receipt-table-header">
+          <div class="col-qty">Qty</div>
+          <div class="col-item">Item & Customizations</div>
+        </div>
+        <div class="receipt-divider"></div>
+        <div id="kitchen-body"></div>
+      </div>
+
+      <!-- TICKET 2: CUSTOMER RECEIPT -->
       <div class="receipt-container">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
           <div class="receipt-divider"></div>
-          <h3 id="receipt-order-id">ORDER #1</h3>
+          <h3 id="customer-order-id">ORDER #1</h3>
         </div>
 
         <div class="receipt-meta">
-          <span id="receipt-date"></span>
-          <span>Staff Cashier</span>
+          <span class="print-date"></span>
+          <span id="customer-payment-type">K-NET</span>
         </div>
 
         <div class="receipt-divider"></div>
@@ -508,7 +648,7 @@
 
         <div class="receipt-divider"></div>
 
-        <div id="receipt-body"></div>
+        <div id="customer-body"></div>
 
         <div class="receipt-divider"></div>
 
@@ -525,13 +665,15 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" onclick="window.print()">Print Receipt</button>
+        <button class="checkout-btn" onclick="window.print()">Print Tickets</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
   </div>
 
   <script>
+    const MANAGER_PIN = "1234";
+
     const menuItems = [
       // Hot Coffees & Teas
       { id: 101, name: "Hot Espresso", category: "hot", price: 1.500, customizable: true },
@@ -588,10 +730,31 @@
       { id: 409, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
     ];
 
-    let cart = [];
+    // Load state immediately from localStorage so page reload loses NOTHING
+    let cart = JSON.parse(localStorage.getItem('south_current_cart') || '[]');
     let currentItemToAdd = null;
-    let selectedOptions = { milk: 'Full Cream', sugar: 'Standard Sweetness' };
-    let orderCounter = 1;
+    let selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+    let selectedPayment = localStorage.getItem('south_payment_method') || 'K-NET';
+    let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
+    let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
+
+    function saveState() {
+      localStorage.setItem('south_order_counter', orderCounter);
+      localStorage.setItem('south_order_history', JSON.stringify(orderHistory));
+      localStorage.setItem('south_current_cart', JSON.stringify(cart));
+      localStorage.setItem('south_payment_method', selectedPayment);
+      document.getElementById('order-number-display').innerText = 'Order #' + orderCounter;
+    }
+
+    function resetModalOptions() {
+      selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+      document.querySelectorAll('#milk-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Full Fat'));
+      });
+      document.querySelectorAll('#sugar-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText === 'Normal');
+      });
+    }
 
     function filterCategory(cat) {
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -615,6 +778,7 @@
       const item = menuItems.find(i => i.id === id);
       if (item.customizable) {
         currentItemToAdd = item;
+        resetModalOptions();
         document.getElementById('modal-item-title').innerText = item.name;
         document.getElementById('customizeModal').style.display = 'flex';
       } else {
@@ -628,21 +792,28 @@
       selectedOptions[group] = val;
     }
 
-    function closeModal() {
-      document.getElementById('customizeModal').style.display = 'none';
+    function selectPayment(method, btn) {
+      selectedPayment = method;
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      saveState();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
     }
 
     function confirmAddToCart() {
       let extra = 0;
       let notes = [];
-      if (selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Almond')) {
+      if (selectedOptions.milk.includes('Almond') || selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Coconut')) {
         extra += 0.250;
       }
-      notes.push(selectedOptions.milk);
-      if (selectedOptions.sugar !== 'Standard Sweetness') notes.push(selectedOptions.sugar);
+      if (selectedOptions.milk !== 'Full Fat') notes.push(selectedOptions.milk);
+      if (selectedOptions.sugar !== 'Normal Sweetness') notes.push(selectedOptions.sugar);
 
       addToCart(currentItemToAdd, notes.join(', '), extra);
-      closeModal();
+      closeModal('customizeModal');
     }
 
     function addToCart(item, notes, extraCost) {
@@ -658,17 +829,20 @@
           qty: 1
         });
       }
+      saveState();
       renderCart();
     }
 
     function updateQty(index, change) {
       cart[index].qty += change;
       if (cart[index].qty <= 0) cart.splice(index, 1);
+      saveState();
       renderCart();
     }
 
     function clearCart() {
       cart = [];
+      saveState();
       renderCart();
     }
 
@@ -705,14 +879,34 @@
     function processCheckout() {
       if (cart.length === 0) return alert('Please add items to cart first!');
       
-      const receiptBody = document.getElementById('receipt-body');
-      receiptBody.innerHTML = '';
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const fullDateStr = `${dateStr}  ${timeStr}`;
+
       let total = 0;
+      const kitchenBody = document.getElementById('kitchen-body');
+      const customerBody = document.getElementById('customer-body');
+      kitchenBody.innerHTML = '';
+      customerBody.innerHTML = '';
 
       cart.forEach(item => {
         const itemTotal = item.price * item.qty;
         total += itemTotal;
-        receiptBody.innerHTML += `
+
+        // Kitchen Line Item
+        kitchenBody.innerHTML += `
+          <div style="margin-bottom: 6px;">
+            <div class="receipt-row">
+              <div class="col-qty">${item.qty}x</div>
+              <div class="col-item">${item.name}</div>
+            </div>
+            ${item.notes ? `<div class="item-notes">> ${item.notes}</div>` : ''}
+          </div>
+        `;
+
+        // Customer Line Item
+        customerBody.innerHTML += `
           <div>
             <div class="receipt-row">
               <div class="col-qty">${item.qty}</div>
@@ -724,12 +918,23 @@
         `;
       });
 
-      const now = new Date();
-      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      // Save order to history
+      const orderRecord = {
+        id: orderCounter,
+        timestamp: fullDateStr,
+        items: JSON.parse(JSON.stringify(cart)),
+        total: total,
+        payment: selectedPayment,
+        status: 'COMPLETED'
+      };
 
-      document.getElementById('receipt-date').innerText = `${dateStr}  ${timeStr}`;
-      document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
+      orderHistory.push(orderRecord);
+
+      // Render details into receipt fields
+      document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
+      document.getElementById('kitchen-order-id').innerText = 'ORDER #' + orderCounter;
+      document.getElementById('customer-order-id').innerText = 'ORDER #' + orderCounter;
+      document.getElementById('customer-payment-type').innerText = selectedPayment;
       document.getElementById('receipt-subtotal').innerText = total.toFixed(3);
       document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
       
@@ -739,11 +944,129 @@
     function closeReceipt() {
       document.getElementById('receiptModal').style.display = 'none';
       orderCounter++;
-      document.getElementById('order-number-display').innerText = 'Order #' + orderCounter;
-      clearCart();
+      cart = [];
+      saveState();
+      renderCart();
     }
 
-    // Initialize View
+    function openOrderHistory() {
+      const container = document.getElementById('history-container');
+      container.innerHTML = '';
+
+      if (orderHistory.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No orders recorded yet.</p>';
+      } else {
+        [...orderHistory].reverse().forEach(order => {
+          container.innerHTML += `
+            <div class="history-card">
+              <div>
+                <strong>Order #${order.id}</strong> - ${order.total.toFixed(3)} KD (${order.payment})
+                <br><span style="font-size: 11px; color: var(--text-muted);">${order.timestamp}</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
+                ${order.status === 'COMPLETED' ? `
+                  <button class="action-btn-sm" onclick="editOrder(${order.id})">Edit</button>
+                  <button class="action-btn-sm" style="background: var(--danger); border: none;" onclick="cancelOrder(${order.id})">Cancel/Refund</button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function cancelOrder(orderId) {
+      const pin = prompt("Enter Manager PIN to cancel order #" + orderId + ":");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+
+      const target = orderHistory.find(o => o.id === orderId);
+      if (target) {
+        target.status = 'CANCELED';
+        saveState();
+        openOrderHistory();
+        alert("Order #" + orderId + " has been canceled and marked as refunded.");
+      }
+    }
+
+    function editOrder(orderId) {
+      const pin = prompt("Enter Manager PIN to reopen and edit order #" + orderId + ":");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+
+      const targetIndex = orderHistory.findIndex(o => o.id === orderId);
+      if (targetIndex !== -1) {
+        cart = JSON.parse(JSON.stringify(orderHistory[targetIndex].items));
+        selectedPayment = orderHistory[targetIndex].payment;
+        orderHistory.splice(targetIndex, 1);
+        saveState();
+        renderCart();
+        closeModal('historyModal');
+        alert("Order #" + orderId + " loaded into cart for editing.");
+      }
+    }
+
+    function openClosingReport() {
+      const pin = prompt("Enter Manager PIN for Daily Closing Report:");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+
+      let totalSales = 0;
+      let knetSales = 0;
+      let cashSales = 0;
+      let canceledTotal = 0;
+      let completedCount = 0;
+      let canceledCount = 0;
+
+      orderHistory.forEach(o => {
+        if (o.status === 'COMPLETED') {
+          totalSales += o.total;
+          completedCount++;
+          if (o.payment === 'K-NET') knetSales += o.total;
+          if (o.payment === 'Cash') cashSales += o.total;
+        } else if (o.status === 'CANCELED') {
+          canceledTotal += o.total;
+          canceledCount++;
+        }
+      });
+
+      document.getElementById('report-summary-body').innerHTML = `
+        <p><strong>Total Orders Processed:</strong> ${orderHistory.length}</p>
+        <p><strong>Completed Orders:</strong> ${completedCount}</p>
+        <p><strong>Canceled/Refunded Orders:</strong> ${canceledCount}</p>
+        <hr style="border-color: var(--border-color); margin: 10px 0;">
+        <p style="color: var(--accent-light); font-size: 16px;"><strong>Net Revenue: ${totalSales.toFixed(3)} KWD</strong></p>
+        <p><strong>K-NET Total:</strong> ${knetSales.toFixed(3)} KWD</p>
+        <p><strong>Cash Total:</strong> ${cashSales.toFixed(3)} KWD</p>
+        <hr style="border-color: var(--border-color); margin: 10px 0;">
+        <p style="color: #EF5350;"><strong>Total Canceled/Refunded Value:</strong> ${canceledTotal.toFixed(3)} KWD</p>
+      `;
+
+      document.getElementById('closingReportModal').style.display = 'flex';
+    }
+
+    function resetShiftData() {
+      const pin = prompt("Enter Manager PIN to CLEAR shift data and reset order count:");
+      if (pin !== MANAGER_PIN) return alert("Incorrect PIN.");
+
+      if (confirm("Are you sure you want to clear all order history for today?")) {
+        orderCounter = 1;
+        orderHistory = [];
+        cart = [];
+        saveState();
+        renderCart();
+        closeModal('closingReportModal');
+        alert("Shift reset complete.");
+      }
+    }
+
+    // Restore state on app start
+    saveState();
+    renderCart();
+    if (selectedPayment === 'Cash') {
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('pay-cash').classList.add('selected');
+    }
     filterCategory('hot');
   </script>
 </body>
