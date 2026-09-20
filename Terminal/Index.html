@@ -1,1056 +1,1058 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SOUTH Specialty Coffee - POS Terminal</title>
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Font: Inter -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" />
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            spaceBg: '#0d0f12',
-            spaceCard: '#161a1e',
-            spaceCardHover: '#1c2127',
-            spaceBorder: '#21262d',
-            spaceText: '#f0f3f6',
-            spaceMuted: '#8b949e',
-            champagne: {
-              DEFAULT: '#c8c3bc',
-              hover: '#b5afa7',
-              dark: '#9a948d',
-              light: '#e2ded9'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          }
-        }
-      }
-    };
-  </script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOUTH - Order Register Terminal</title>
   <style>
-    /* Custom Scrollbar for sleek modern aesthetics */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    :root {
+      --bg-dark: #121418;
+      --card-bg: #1A1D24;
+      --accent: #8A7B6C;
+      --accent-light: #C5A880;
+      --text-main: #EEEEEE;
+      --text-muted: #999999;
+      --border-color: #2A2E39;
+      --danger: #D32F2F;
+      --success: #2E7D32;
     }
-    ::-webkit-scrollbar-track {
-      background: #0d0f12;
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #21262d;
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .app-container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pos-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      letter-spacing: 2px;
+      color: var(--accent-light);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn-sm {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .action-btn-sm:hover {
+      border-color: var(--accent-light);
+    }
+
+    /* Categories Navigation */
+    .categories {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+
+    .cat-btn {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .cat-btn.active, .cat-btn:hover {
+      background: var(--accent);
+      color: #FFF;
+      border-color: var(--accent-light);
+    }
+
+    /* Items Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      min-height: 110px;
+    }
+
+    .item-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-light);
+    }
+
+    .item-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .item-price {
+      color: var(--accent-light);
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    /* Cart Sidebar */
+    .cart-section {
+      width: 380px;
+      background: var(--card-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .cart-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .cart-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .cart-item-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .cart-item-details {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .qty-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 28px;
+      height: 28px;
       border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #c8c3bc;
+      cursor: pointer;
+      font-weight: bold;
     }
 
-    /* Screen display defaults for thermal receipts */
-    #thermal-ticket, #closing-ticket {
+    .cart-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .payment-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .pay-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .pay-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent-light);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checkout-btn:hover {
+      background: var(--accent-light);
+    }
+
+    /* Modals */
+    .modal {
       display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
-    /* Thermal Receipt Printing CSS Engine */
+    .modal-content {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 540px;
+      border: 1px solid var(--border-color);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .options-group {
+      margin-bottom: 18px;
+    }
+
+    .options-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .options-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .opt-btn {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .opt-btn.selected {
+      background: var(--accent);
+      border-color: var(--accent-light);
+    }
+
+    /* History & Report Item Tables */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .history-card {
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-tag {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .status-completed { background: #1B5E20; color: #E8F5E9; }
+    .status-canceled { background: #B71C1C; color: #FFEBEE; }
+
+    /* Single Clean Receipt Layout */
+    .receipt-container {
+      background: #ffffff;
+      color: #000000;
+      padding: 8px 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.25;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .receipt-header h2 {
+      font-size: 14px;
+      margin: 0 0 2px 0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .receipt-header h3 {
+      font-size: 16px;
+      margin: 2px 0;
+      font-weight: 700;
+    }
+
+    .receipt-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #222;
+    }
+
+    .receipt-divider {
+      border-top: 1px dashed #000000;
+      margin: 5px 0;
+    }
+
+    .receipt-table-header {
+      display: flex;
+      font-weight: 600;
+      font-size: 11px;
+      padding: 2px 0;
+      text-transform: uppercase;
+    }
+
+    .col-qty { width: 28px; font-weight: 600; }
+    .col-item { flex: 1; padding-right: 4px; }
+    .col-price { width: 62px; text-align: right; }
+
+    .receipt-row {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 2px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .item-notes {
+      font-size: 10px;
+      color: #222222;
+      margin-left: 28px;
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+
+    .receipt-total-section {
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    .receipt-total-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Print Formatting Rules */
     @media print {
-      /* Hide all standard web interactive interface UI */
+      @page {
+        margin: 0 !important;
+        size: 80mm auto !important;
+      }
+
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        width: 80mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
       body * {
         visibility: hidden !important;
       }
 
-      /* Force visibility & exact styling onto thermal receipt targets */
-      #thermal-ticket, #thermal-ticket *,
-      #closing-ticket, #closing-ticket * {
+      #receiptModal, #receiptModal * {
         visibility: visible !important;
       }
 
-      #thermal-ticket, #closing-ticket {
-        display: block !important;
-        position: absolute !important;
+      #receiptModal {
+        position: fixed !important;
         left: 0 !important;
         top: 0 !important;
-        width: 58mm !important; /* Compatible with 58mm & 80mm ESC/POS thermal printers */
-        margin: 0 !important;
-        padding: 4px !important;
-        font-family: 'Courier New', Courier, monospace !important;
-        font-size: 11px !important;
-        line-height: 1.3 !important;
-        color: #000000 !important;
+        width: 80mm !important;
+        height: auto !important;
         background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
 
-      .ticket-header {
-        text-align: center;
-        border-bottom: 1px dashed #000;
-        padding-bottom: 6px;
-        margin-bottom: 6px;
+      .modal-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
       }
 
-      .ticket-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 3px;
-        font-size: 11px;
+      .receipt-container {
+        padding: 4px 6px !important;
+        margin: 0 !important;
+        width: 100% !important;
       }
 
-      .ticket-divider {
-        border-bottom: 1px dashed #000;
-        margin: 6px 0;
-      }
-
-      .ticket-footer {
-        text-align: center;
-        border-top: 1px dashed #000;
-        padding-top: 6px;
-        margin-top: 6px;
-      }
-
-      .item-subtext {
-        font-size: 9px;
-        padding-left: 8px;
-        color: #333;
+      .modal-actions, .no-print {
+        display: none !important;
       }
     }
   </style>
 </head>
+<body>
 
-<body class="bg-spaceBg text-spaceText font-sans h-screen flex flex-col overflow-hidden select-none">
+  <div class="app-container">
+    <!-- POS Main Section -->
+    <div class="pos-section">
+      <div class="header">
+        <div>
+          <h1>SOUTH SPECIALTY COFFEE</h1>
+          <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
+        </div>
+        <div class="nav-actions">
+          <button class="action-btn-sm" onclick="openOrderHistory()">Order History</button>
+          <button class="action-btn-sm" style="background: var(--accent); color: white;" onclick="openClosingReport()">Closing Report</button>
+        </div>
+      </div>
 
-  <!-- Top Navigation Header -->
-  <header class="h-16 bg-spaceCard border-b border-spaceBorder px-6 flex items-center justify-between shrink-0 z-10">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-champagne text-spaceBg font-bold flex items-center justify-center text-xl shadow-lg shadow-champagne/10">
-        S
+      <!-- Categories Navigation -->
+      <div class="categories">
+        <button class="cat-btn active" onclick="filterCategory('hot')">Hot Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('cold')">Cold Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('refreshers')">Refreshers & Water</button>
+        <button class="cat-btn" onclick="filterCategory('sweets')">Sweets & Bakery</button>
       </div>
-      <div>
-        <h1 class="font-bold text-lg leading-none tracking-tight text-spaceText">SOUTH</h1>
-        <p class="text-xs text-spaceMuted font-mono uppercase tracking-widest mt-0.5">Specialty Coffee • Kuwait</p>
-      </div>
+
+      <!-- Menu Items Grid -->
+      <div class="menu-grid" id="menu-grid"></div>
     </div>
 
-    <!-- Active Mode Navigation -->
-    <nav class="flex items-center gap-2 bg-spaceBg p-1 rounded-xl border border-spaceBorder">
-      <button id="nav-pos" onclick="switchTab('pos')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-champagne text-spaceBg font-semibold shadow-sm">
-        <i class="fa-solid fa-calculator mr-2"></i> POS Register
-      </button>
-      <button id="nav-orders" onclick="switchTab('orders')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-spaceMuted hover:text-spaceText hover:bg-spaceCard">
-        <i class="fa-solid fa-clock-history mr-2"></i> Order History
-      </button>
-      <button id="nav-closing" onclick="promptManagerAccess('closing')" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-spaceMuted hover:text-spaceText hover:bg-spaceCard">
-        <i class="fa-solid fa-receipt mr-2"></i> Z-Report Shift Closing
-      </button>
-    </nav>
-
-    <!-- Quick Utilities -->
-    <div class="flex items-center gap-3">
-      <button onclick="openGuideModal()" class="px-3 py-2 text-xs font-mono bg-spaceCard hover:bg-spaceCardHover border border-spaceBorder rounded-lg text-champagne flex items-center gap-2 transition">
-        <i class="fa-solid fa-download"></i> Offline & GitHub Setup
-      </button>
-      <div class="text-right font-mono hidden md:block">
-        <div id="live-clock" class="text-xs text-spaceText font-semibold">00:00:00</div>
-        <div id="live-date" class="text-[10px] text-spaceMuted">YYYY-MM-DD</div>
+    <!-- Sidebar Cart -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <h2>Current Order</h2>
+        <button class="qty-btn" onclick="clearCart()">✕</button>
+      </div>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-footer">
+        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px;">Payment Method</label>
+        <div class="payment-toggle">
+          <button class="pay-btn selected" id="pay-knet" onclick="selectPayment('K-NET', this)">K-NET</button>
+          <button class="pay-btn" id="pay-cash" onclick="selectPayment('Cash', this)">Cash</button>
+        </div>
+        <div class="total-row">
+          <span>Total</span>
+          <span id="cart-total">0.000 KD</span>
+        </div>
+        <button class="checkout-btn" onclick="processCheckout()">Checkout & Print</button>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- Main Workspace Container -->
-  <main class="flex-1 flex overflow-hidden">
-    
-    <!-- SECTION 1: POS REGISTER VIEW -->
-    <div id="view-pos" class="flex-1 flex w-full h-full">
+  <!-- Customization Modal -->
+  <div class="modal" id="customizeModal">
+    <div class="modal-content">
+      <h3 id="modal-item-title" style="margin-bottom: 15px;">Customize Drink</h3>
       
-      <!-- Catalog Grid Column -->
-      <div class="flex-1 flex flex-col h-full overflow-hidden border-r border-spaceBorder">
-        
-        <!-- Category Filter Pills -->
-        <div class="p-4 bg-spaceBg border-b border-spaceBorder flex items-center gap-2 overflow-x-auto shrink-0">
-          <button onclick="filterCategory('All')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-champagne text-spaceBg shadow">
-            All Items
-          </button>
-          <button onclick="filterCategory('Coffee')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-spaceCard border border-spaceBorder text-spaceMuted hover:text-spaceText">
-            Coffee
-          </button>
-          <button onclick="filterCategory('Espresso Special')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-spaceCard border border-spaceBorder text-spaceMuted hover:text-spaceText">
-            Espresso Specials
-          </button>
-          <button onclick="filterCategory('Non-Coffee')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-spaceCard border border-spaceBorder text-spaceMuted hover:text-spaceText">
-            Non-Coffee & Drinks
-          </button>
-        </div>
-
-        <!-- Menu Product Cards Grid -->
-        <div class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" id="menu-grid">
-          <!-- Dynamically populated via JS -->
+      <div class="options-group" id="milk-group">
+        <label>Milk Choice</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" onclick="selectOpt(this, 'milk', 'Full Fat')">Full Fat</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Skimmed')">Skimmed</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Lactose Free')">Lactose Free</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Almond (+0.250 KD)')">Almond (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Oat (+0.250 KD)')">Oat (+0.250 KD)</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'milk', 'Coconut (+0.250 KD)')">Coconut (+0.250 KD)</button>
         </div>
       </div>
 
-      <!-- Order Cart Panel -->
-      <div class="w-96 bg-spaceCard flex flex-col h-full shrink-0">
-        
-        <!-- Cart Header -->
-        <div class="p-4 border-b border-spaceBorder flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-shopping-bag text-champagne"></i>
-            <h2 class="font-bold text-spaceText text-sm uppercase tracking-wider">Current Order</h2>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-mono text-spaceMuted">Ticket #</span>
-            <span id="active-order-num" class="font-mono font-bold text-champagne bg-spaceBg px-2 py-0.5 rounded border border-spaceBorder text-xs">1001</span>
-            <button onclick="clearCart()" class="text-xs text-red-400 hover:text-red-300 ml-2 px-2 py-1 rounded hover:bg-red-400/10 transition" title="Clear Cart">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Cart Items Scrollable List -->
-        <div class="flex-1 overflow-y-auto p-4 divide-y divide-spaceBorder" id="cart-items-list">
-          <!-- Dynamically rendered cart items -->
-        </div>
-
-        <!-- Order Billing Totals & Actions -->
-        <div class="p-4 bg-spaceBg border-t border-spaceBorder flex flex-col gap-3">
-          
-          <div class="space-y-1.5 font-mono text-xs">
-            <div class="flex justify-between text-spaceMuted">
-              <span>Subtotal</span>
-              <span id="summary-subtotal">0.000 KD</span>
-            </div>
-            <div class="flex justify-between text-spaceMuted">
-              <span>Municipality Tax (0%)</span>
-              <span>0.000 KD</span>
-            </div>
-            <div class="flex justify-between text-spaceText text-base font-bold pt-2 border-t border-spaceBorder">
-              <span>Total Payable</span>
-              <span id="summary-total" class="text-champagne">0.000 KD</span>
-            </div>
-          </div>
-
-          <!-- Payment Method Selector -->
-          <div class="grid grid-cols-2 gap-2 mt-1">
-            <button id="pay-knet" onclick="selectPayment('K-NET')" class="pay-btn active py-2.5 px-3 rounded-xl border border-champagne bg-champagne/10 text-champagne font-bold text-xs flex items-center justify-center gap-2 transition">
-              <i class="fa-solid fa-credit-card"></i> K-NET
-            </button>
-            <button id="pay-cash" onclick="selectPayment('Cash')" class="pay-btn py-2.5 px-3 rounded-xl border border-spaceBorder bg-spaceCard text-spaceMuted font-bold text-xs flex items-center justify-center gap-2 transition hover:text-spaceText">
-              <i class="fa-solid fa-money-bill-wave"></i> Cash
-            </button>
-          </div>
-
-          <!-- Action Complete Order Button -->
-          <button onclick="checkoutOrder()" class="w-full py-3.5 rounded-xl bg-champagne hover:bg-champagne-hover text-spaceBg font-bold text-sm shadow-lg shadow-champagne/10 flex items-center justify-center gap-2 transition active:scale-[0.99]">
-            <i class="fa-solid fa-check-circle"></i> Complete Order & Print
-          </button>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- SECTION 2: ORDER HISTORY VIEW -->
-    <div id="view-orders" class="hidden flex-1 flex-col h-full bg-spaceBg p-6 overflow-y-auto">
-      <div class="max-w-6xl mx-auto w-full space-y-6">
-        <div class="flex items-center justify-between border-b border-spaceBorder pb-4">
-          <div>
-            <h2 class="text-xl font-bold text-spaceText">Order Transactions History</h2>
-            <p class="text-xs text-spaceMuted">View all saved tickets stored in local POS database memory</p>
-          </div>
-          <button onclick="exportOrdersCSV()" class="px-4 py-2 bg-spaceCard hover:bg-spaceCardHover border border-spaceBorder rounded-xl text-xs font-semibold text-champagne flex items-center gap-2">
-            <i class="fa-solid fa-file-csv"></i> Export CSV Report
-          </button>
-        </div>
-
-        <div class="bg-spaceCard border border-spaceBorder rounded-2xl overflow-hidden shadow-xl">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-spaceBg text-spaceMuted border-b border-spaceBorder uppercase tracking-wider">
-              <tr>
-                <th class="p-4">Ticket #</th>
-                <th class="p-4">Timestamp</th>
-                <th class="p-4">Items Summary</th>
-                <th class="p-4">Payment</th>
-                <th class="p-4 text-right">Total KD</th>
-                <th class="p-4 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody id="orders-table-body" class="divide-y divide-spaceBorder text-spaceText">
-              <!-- Dynamically populated orders -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 3: Z-REPORT CLOSING VIEW -->
-    <div id="view-closing" class="hidden flex-1 flex-col h-full bg-spaceBg p-6 overflow-y-auto">
-      <div class="max-w-4xl mx-auto w-full space-y-6">
-        <div class="flex items-center justify-between border-b border-spaceBorder pb-4">
-          <div>
-            <h2 class="text-xl font-bold text-spaceText">Manager Shift Closing (Z-Report)</h2>
-            <p class="text-xs text-spaceMuted">Daily financial totals, payment breakdowns, and audit summary</p>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="printClosingReport()" class="px-4 py-2 bg-champagne hover:bg-champagne-hover text-spaceBg font-bold rounded-xl text-xs flex items-center gap-2">
-              <i class="fa-solid fa-print"></i> Print Z-Report Slip
-            </button>
-            <button onclick="resetShiftData()" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition">
-              <i class="fa-solid fa-rotate-right"></i> Reset Shift Data
-            </button>
-          </div>
-        </div>
-
-        <!-- Key Financial Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="bg-spaceCard border border-spaceBorder p-5 rounded-2xl">
-            <div class="text-xs text-spaceMuted uppercase tracking-wider">Gross Sales</div>
-            <div id="z-total-sales" class="text-2xl font-bold font-mono text-champagne mt-2">0.000 KD</div>
-            <div class="text-[10px] text-spaceMuted mt-1">Net shift revenue</div>
-          </div>
-          <div class="bg-spaceCard border border-spaceBorder p-5 rounded-2xl">
-            <div class="text-xs text-spaceMuted uppercase tracking-wider">Total Orders</div>
-            <div id="z-total-count" class="text-2xl font-bold font-mono text-spaceText mt-2">0</div>
-            <div class="text-[10px] text-spaceMuted mt-1">Completed transactions</div>
-          </div>
-          <div class="bg-spaceCard border border-spaceBorder p-5 rounded-2xl">
-            <div class="text-xs text-spaceMuted uppercase tracking-wider">K-NET Card Total</div>
-            <div id="z-knet-sales" class="text-2xl font-bold font-mono text-blue-400 mt-2">0.000 KD</div>
-            <div class="text-[10px] text-spaceMuted mt-1">Card terminal total</div>
-          </div>
-          <div class="bg-spaceCard border border-spaceBorder p-5 rounded-2xl">
-            <div class="text-xs text-spaceMuted uppercase tracking-wider">Cash Drawer</div>
-            <div id="z-cash-sales" class="text-2xl font-bold font-mono text-emerald-400 mt-2">0.000 KD</div>
-            <div class="text-[10px] text-spaceMuted mt-1">Physical cash total</div>
-          </div>
-        </div>
-
-        <!-- Shift Details Slip Preview Box -->
-        <div class="bg-spaceCard border border-spaceBorder rounded-2xl p-6 space-y-4 max-w-md mx-auto font-mono text-xs">
-          <div class="text-center border-b border-spaceBorder pb-3">
-            <h3 class="font-bold text-spaceText text-sm">SOUTH SPECIALTY COFFEE</h3>
-            <p class="text-spaceMuted">Shift Z-Report Summary</p>
-            <p id="z-report-time" class="text-[10px] text-champagne mt-1">Date: -</p>
-          </div>
-          
-          <div class="space-y-2">
-            <div class="flex justify-between">
-              <span class="text-spaceMuted">Shift Status:</span>
-              <span class="text-emerald-400 font-bold">ACTIVE / OPEN</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-spaceMuted">Terminal ID:</span>
-              <span class="text-spaceText">POS-SOUTH-01</span>
-            </div>
-            <div class="flex justify-between border-t border-spaceBorder pt-2">
-              <span class="text-spaceMuted">K-NET Transactions:</span>
-              <span id="z-knet-count" class="text-spaceText">0</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-spaceMuted">Cash Transactions:</span>
-              <span id="z-cash-count" class="text-spaceText">0</span>
-            </div>
-            <div class="flex justify-between font-bold text-sm border-t border-spaceBorder pt-3 text-champagne">
-              <span>NET REVENUE:</span>
-              <span id="z-net-total">0.000 KD</span>
-            </div>
-          </div>
-          <div class="text-center text-[10px] text-spaceMuted border-t border-spaceBorder pt-3">
-            -- END OF FINANCIAL REPORT --
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ITEM CUSTOMIZATION MODAL -->
-  <div id="modal-custom" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-spaceCard border border-spaceBorder rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col">
-      <div class="p-4 border-b border-spaceBorder flex items-center justify-between">
-        <h3 id="cust-item-title" class="font-bold text-spaceText text-base">Customize Item</h3>
-        <button onclick="closeModal('modal-custom')" class="text-spaceMuted hover:text-spaceText p-1">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <div class="p-5 space-y-4 flex-1 overflow-y-auto">
-        <!-- Temp Selection Hot / Iced -->
-        <div>
-          <label class="block text-xs text-spaceMuted uppercase font-bold mb-2">Temperature</label>
-          <div class="grid grid-cols-2 gap-2" id="cust-temp-options">
-            <button type="button" onclick="setOption('temp', 'Hot')" class="opt-temp py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-bold">Hot</button>
-            <button type="button" onclick="setOption('temp', 'Iced')" class="opt-temp py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-bold">Iced</button>
-          </div>
-        </div>
-
-        <!-- Milk Choice -->
-        <div>
-          <label class="block text-xs text-spaceMuted uppercase font-bold mb-2">Milk Choice</label>
-          <div class="grid grid-cols-3 gap-2" id="cust-milk-options">
-            <button type="button" onclick="setOption('milk', 'Full Cream')" class="opt-milk py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">Full Cream</button>
-            <button type="button" onclick="setOption('milk', 'Oat Milk (+0.250 KD)')" class="opt-milk py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">Oat (+0.250)</button>
-            <button type="button" onclick="setOption('milk', 'Coconut Milk (+0.250 KD)')" class="opt-milk py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">Coconut (+0.250)</button>
-          </div>
-        </div>
-
-        <!-- Sugar Level -->
-        <div>
-          <label class="block text-xs text-spaceMuted uppercase font-bold mb-2">Sugar Level</label>
-          <div class="grid grid-cols-3 gap-2" id="cust-sugar-options">
-            <button type="button" onclick="setOption('sugar', 'Standard Sugar')" class="opt-sugar py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">Standard</button>
-            <button type="button" onclick="setOption('sugar', 'Half Sugar')" class="opt-sugar py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">Half Sugar</button>
-            <button type="button" onclick="setOption('sugar', 'No Sugar')" class="opt-sugar py-2 px-3 rounded-xl border border-spaceBorder bg-spaceBg text-xs font-medium">No Sugar</button>
-          </div>
-        </div>
-
-        <!-- Kitchen Special Notes -->
-        <div>
-          <label class="block text-xs text-spaceMuted uppercase font-bold mb-2">Special Instructions</label>
-          <input type="text" id="cust-notes" placeholder="e.g. Extra hot, Less ice, Double shot" class="w-full bg-spaceBg border border-spaceBorder rounded-xl p-3 text-xs text-spaceText focus:border-champagne focus:outline-none" />
+      <div class="options-group" id="sugar-group">
+        <label>Sweetness Level</label>
+        <div class="options-grid">
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'No Sugar')">None</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'Less Sweet')">Less Sweet</button>
+          <button class="opt-btn selected" onclick="selectOpt(this, 'sugar', 'Normal Sweetness')">Normal</button>
+          <button class="opt-btn" onclick="selectOpt(this, 'sugar', 'More Sweet')">More Sweet</button>
         </div>
       </div>
 
-      <div class="p-4 bg-spaceBg border-t border-spaceBorder flex items-center justify-between">
-        <div class="font-mono text-sm font-bold text-champagne" id="cust-price-preview">1.500 KD</div>
-        <button onclick="confirmCustomization()" class="py-2.5 px-6 rounded-xl bg-champagne hover:bg-champagne-hover text-spaceBg font-bold text-xs shadow-md">
-          Add to Cart
-        </button>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal('customizeModal')">Cancel</button>
+        <button class="checkout-btn" onclick="confirmAddToCart()">Add to Order</button>
       </div>
     </div>
   </div>
 
-  <!-- MANAGER PIN AUTHORIZATION MODAL -->
-  <div id="modal-pin" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-spaceCard border border-spaceBorder rounded-2xl w-full max-w-xs p-6 space-y-4 text-center">
-      <div class="w-12 h-12 bg-champagne/10 rounded-full text-champagne flex items-center justify-center mx-auto text-xl">
-        <i class="fa-solid fa-lock"></i>
+  <!-- Order History / Refund / Edit Modal -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Completed & Canceled Orders</h3>
+        <button class="qty-btn" onclick="closeModal('historyModal')">✕</button>
       </div>
-      <div>
-        <h3 class="font-bold text-spaceText text-base">Manager Access Required</h3>
-        <p class="text-xs text-spaceMuted mt-1">Enter PIN code (Default: 1234)</p>
+      <div class="history-list" id="history-container"></div>
+    </div>
+  </div>
+
+  <!-- Closing Z-Report Modal -->
+  <div class="modal" id="closingReportModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Daily Shift Closing Summary</h3>
+        <button class="qty-btn" onclick="closeModal('closingReportModal')">✕</button>
       </div>
-
-      <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full bg-spaceBg border border-spaceBorder rounded-xl p-3 text-center text-xl font-mono tracking-widest text-champagne focus:border-champagne focus:outline-none" />
-
-      <div class="flex gap-2">
-        <button onclick="closeModal('modal-pin')" class="flex-1 py-2.5 rounded-xl border border-spaceBorder text-xs font-bold text-spaceMuted hover:text-spaceText">
-          Cancel
-        </button>
-        <button onclick="verifyManagerPin()" class="flex-1 py-2.5 rounded-xl bg-champagne text-spaceBg text-xs font-bold">
-          Authenticate
-        </button>
+      <div id="report-summary-body" style="font-size: 14px; line-height: 1.6;"></div>
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Closing Report</button>
+        <button class="checkout-btn" style="background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
       </div>
     </div>
   </div>
 
-  <!-- OFFLINE & GITHUB GUIDE MODAL -->
-  <div id="modal-guide" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-spaceCard border border-spaceBorder rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl">
-      <div class="p-5 border-b border-spaceBorder flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-brands fa-github text-champagne text-xl"></i>
-          <h3 class="font-bold text-spaceText text-base">Windows & GitHub Offline Setup Guide</h3>
-        </div>
-        <button onclick="closeModal('modal-guide')" class="text-spaceMuted hover:text-spaceText">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <div class="p-6 overflow-y-auto space-y-5 text-xs text-spaceMuted leading-relaxed">
-        <div class="space-y-2">
-          <h4 class="font-bold text-champagne uppercase tracking-wider">Option A: Direct Offline Windows Desktop Use (No Internet)</h4>
-          <ol class="list-decimal pl-4 space-y-1.5 text-spaceText">
-            <li>Save this file directly to your desktop as <code class="bg-spaceBg px-1.5 py-0.5 rounded text-champagne">index.html</code>.</li>
-            <li>Double-click the file to open it in Google Chrome or Microsoft Edge.</li>
-            <li>All cart entries, order numbers, and Z-report shift totals auto-save instantly to your computer's browser storage (<code class="text-champagne">localStorage</code>).</li>
-          </ol>
+  <!-- Single Receipt Print Modal -->
+  <div class="modal" id="receiptModal">
+    <div class="modal-content" style="background: white; padding: 0;">
+      
+      <div class="receipt-container">
+        <div class="receipt-header">
+          <h2>SOUTH SPECIALTY COFFEE</h2>
+          <div class="receipt-divider"></div>
+          <h3 id="receipt-order-id">ORDER #1</h3>
         </div>
 
-        <div class="space-y-2">
-          <h4 class="font-bold text-champagne uppercase tracking-wider">Option B: Hosting via GitHub Pages (Cloud Access)</h4>
-          <ol class="list-decimal pl-4 space-y-1.5 text-spaceText">
-            <li>Create a free account on <strong>GitHub.com</strong>.</li>
-            <li>Create a new repository named <code class="bg-spaceBg px-1.5 py-0.5 rounded text-champagne">south-coffee-pos</code>.</li>
-            <li>Upload this single <code class="text-champagne">index.html</code> file to the main branch.</li>
-            <li>Navigate to <strong>Settings > Pages</strong> in your repository menu.</li>
-            <li>Set Source to <strong>Deploy from a branch (main)</strong> and click <strong>Save</strong>.</li>
-            <li>Your terminal will be live at: <code class="text-champagne font-mono">https://yourusername.github.io/south-coffee-pos/</code></li>
-          </ol>
+        <div class="receipt-meta">
+          <span class="print-date"></span>
+          <span id="receipt-payment-type">K-NET</span>
         </div>
 
-        <div class="p-4 bg-spaceBg border border-spaceBorder rounded-xl space-y-1">
-          <div class="font-bold text-spaceText flex items-center gap-2">
-            <i class="fa-solid fa-print text-champagne"></i> Thermal Printer Setup Tip
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-table-header">
+          <div class="col-qty">Qty</div>
+          <div class="col-item">Item</div>
+          <div class="col-price">Price</div>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div id="receipt-body"></div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-total-section">
+          <div class="receipt-total-row">
+            <span>Sub Total</span>
+            <span id="receipt-subtotal">0.000</span>
           </div>
-          <p>In Chrome print settings, select your 58mm / 80mm ESC/POS thermal receipt printer, set margins to <strong>None</strong>, and check the box for <strong>Background graphics</strong> to ensure solid dark formatting.</p>
+          <div class="receipt-total-row" style="font-size: 14px; font-weight: 700;">
+            <span>TOTAL</span>
+            <span id="receipt-total">KWD 0.000</span>
+          </div>
         </div>
       </div>
 
-      <div class="p-4 border-t border-spaceBorder bg-spaceBg text-right">
-        <button onclick="closeModal('modal-guide')" class="px-5 py-2.5 bg-champagne text-spaceBg font-bold rounded-xl text-xs">
-          Got it
-        </button>
+      <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
+        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Tickets (x2)</button>
+        <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
   </div>
-
-  <!-- THERMAL PRINT SLIP CONTAINERS (DOM target for @media print) -->
-  <div id="thermal-ticket"></div>
-  <div id="closing-ticket"></div>
 
   <script>
-    /* ==========================================================================
-       1. MENU DATA CATALOG & SYSTEM STATE
-       ========================================================================== */
-    const MENU_ITEMS = [
-      { id: 'esp', name: 'Espresso', price: 1.250, category: 'Coffee', allowTemp: false },
-      { id: 'ame', name: 'Americano', price: 1.500, category: 'Coffee', allowTemp: true },
-      { id: 'cor', name: 'Cortado', price: 1.500, category: 'Coffee', allowTemp: false },
-      { id: 'flw', name: 'Flat White', price: 1.750, category: 'Coffee', allowTemp: false },
-      { id: 'cap', name: 'Cappuccino', price: 1.750, category: 'Coffee', allowTemp: false },
-      { id: 'lat', name: 'Latte', price: 1.750, category: 'Coffee', allowTemp: true },
-      { id: 'spl', name: 'Spanish Latte', price: 2.000, category: 'Espresso Special', allowTemp: true },
-      { id: 'wmc', name: 'White Mocha', price: 2.000, category: 'Espresso Special', allowTemp: true },
-      { id: 'dmc', name: 'Dark Mocha', price: 2.000, category: 'Espresso Special', allowTemp: true },
-      { id: 'v60', name: 'V60 Pour-Over', price: 2.000, category: 'Coffee', allowTemp: true },
-      { id: 'ict', name: 'Iced Tea', price: 1.750, category: 'Non-Coffee', allowTemp: false, defaultTemp: 'Iced' },
-      { id: 'mat', name: 'Matcha Latte', price: 1.750, category: 'Non-Coffee', allowTemp: true },
-      { id: 'htc', name: 'Hot Chocolate', price: 2.000, category: 'Non-Coffee', allowTemp: false, defaultTemp: 'Hot' },
-      { id: 'moj', name: 'Mojito (All Flavors)', price: 1.750, category: 'Non-Coffee', allowTemp: false, defaultTemp: 'Iced' },
-      { id: 'wtr', name: 'Water', price: 0.500, category: 'Non-Coffee', allowTemp: false, defaultTemp: 'Chilled' }
+    const MANAGER_PIN = "1234";
+
+    const menuItems = [
+      // Hot Coffees & Teas
+      { id: 101, name: "Hot Espresso", category: "hot", price: 1.500, customizable: true },
+      { id: 102, name: "Hot Americano", category: "hot", price: 1.750, customizable: true },
+      { id: 103, name: "Hot Cortado", category: "hot", price: 1.500, customizable: true },
+      { id: 104, name: "Hot Flat White", category: "hot", price: 1.750, customizable: true },
+      { id: 105, name: "Hot Cappuccino", category: "hot", price: 1.750, customizable: true },
+      { id: 106, name: "Hot Latte", category: "hot", price: 1.750, customizable: true },
+      { id: 107, name: "Hot Spanish Latte", category: "hot", price: 2.000, customizable: true },
+      { id: 108, name: "Hot White Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 109, name: "Hot Dark Mocha", category: "hot", price: 2.000, customizable: true },
+      { id: 110, name: "Hot Salted Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 111, name: "Hot Caramel Coffee", category: "hot", price: 2.000, customizable: true },
+      { id: 112, name: "Hot Matcha Latte", category: "hot", price: 1.750, customizable: true },
+      { id: 113, name: "Hot V60", category: "hot", price: 2.000, customizable: true },
+      { id: 114, name: "Hot Chocolate", category: "hot", price: 2.000, customizable: true },
+      { id: 115, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
+      { id: 116, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
+
+      // Cold Coffees & Teas
+      { id: 201, name: "Iced Americano", category: "cold", price: 1.750, customizable: true },
+      { id: 204, name: "Iced Latte", category: "cold", price: 1.750, customizable: true },
+      { id: 205, name: "Iced Spanish Latte", category: "cold", price: 2.000, customizable: true },
+      { id: 206, name: "Iced White Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 207, name: "Iced Dark Mocha", category: "cold", price: 2.000, customizable: true },
+      { id: 208, name: "Iced Salted Caramel Coffee", category: "cold", price: 2.000, customizable: true },
+      { id: 209, name: "Iced Caramel Coffee", category: "cold", price: 2.000, customizable: true },
+      { id: 210, name: "Iced Matcha Latte", category: "cold", price: 1.750, customizable: true },
+      { id: 211, name: "Iced V60", category: "cold", price: 2.000, customizable: true },
+      { id: 212, name: "Iced Chocolate", category: "cold", price: 2.000, customizable: true },
+      { id: 213, name: "Iced Peach Tea", category: "cold", price: 1.750, customizable: false },
+      { id: 214, name: "Iced Raspberry Tea", category: "cold", price: 1.750, customizable: false },
+
+      // Refreshers & Water
+      { id: 301, name: "Strawberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 302, name: "Blueberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 303, name: "Blue Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 304, name: "Passion Fruit Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 305, name: "Raspberry Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 306, name: "Peach Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 307, name: "Watermelon Mojito", category: "refreshers", price: 2.000, customizable: false },
+      { id: 308, name: "Still Water", category: "refreshers", price: 1.000, customizable: false },
+      { id: 309, name: "Sparkling Water", category: "refreshers", price: 0.750, customizable: false },
+
+      // Sweets & Bakery
+      { id: 401, name: "Peanut Butter", category: "sweets", price: 1.500, customizable: false },
+      { id: 402, name: "Plain Croissant", category: "sweets", price: 1.500, customizable: false },
+      { id: 403, name: "Danish Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 404, name: "Raspberry Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 405, name: "Almond Croissant", category: "sweets", price: 1.750, customizable: false },
+      { id: 406, name: "Muffin", category: "sweets", price: 1.500, customizable: false },
+      { id: 407, name: "Round Éclair", category: "sweets", price: 1.750, customizable: false },
+      { id: 408, name: "Kinder Cookie", category: "sweets", price: 1.750, customizable: false },
+      { id: 409, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
     ];
 
-    let currentCart = [];
-    let selectedPayment = 'K-NET';
-    let pendingNavTarget = null;
-    let pendingCustomItem = null;
-    let customState = { temp: 'Hot', milk: 'Full Cream', sugar: 'Standard Sugar' };
+    let cart = JSON.parse(localStorage.getItem('south_current_cart') || '[]');
+    let currentItemToAdd = null;
+    let selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+    let selectedPayment = localStorage.getItem('south_payment_method') || 'K-NET';
+    let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
+    let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
 
-    // Persistent database variables
-    let completedOrders = JSON.parse(localStorage.getItem('south_orders') || '[]');
-    let activeOrderNum = parseInt(localStorage.getItem('south_order_num') || '1001');
-
-    /* ==========================================================================
-       2. INITIALIZATION & LIFECYCLE
-       ========================================================================== */
-    window.onload = function() {
-      renderMenuGrid('All');
-      updateCartUI();
-      updateLiveClock();
-      setInterval(updateLiveClock, 1000);
-      document.getElementById('active-order-num').innerText = activeOrderNum;
-    };
-
-    function updateLiveClock() {
-      const now = new Date();
-      document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-GB');
-      document.getElementById('live-date').innerText = now.toISOString().split('T')[0];
+    function saveState() {
+      localStorage.setItem('south_order_counter', orderCounter);
+      localStorage.setItem('south_order_history', JSON.stringify(orderHistory));
+      localStorage.setItem('south_current_cart', JSON.stringify(cart));
+      localStorage.setItem('south_payment_method', selectedPayment);
+      document.getElementById('order-number-display').innerText = 'Order #' + orderCounter;
     }
 
-    /* ==========================================================================
-       3. MENU RENDERING & FILTERS
-       ========================================================================== */
-    function renderMenuGrid(category) {
-      const grid = document.getElementById('menu-grid');
-      grid.innerHTML = '';
-
-      const filtered = category === 'All' 
-        ? MENU_ITEMS 
-        : MENU_ITEMS.filter(item => item.category === category);
-
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-spaceCard hover:bg-spaceCardHover border border-spaceBorder hover:border-champagne/50 p-4 rounded-2xl flex flex-col justify-between cursor-pointer transition duration-200 group active:scale-[0.98]";
-        card.onclick = () => openCustomModal(item);
-
-        card.innerHTML = `
-          <div>
-            <div class="flex justify-between items-start">
-              <span class="text-[10px] uppercase font-mono text-spaceMuted tracking-wider">${item.category}</span>
-              <span class="w-6 h-6 rounded-full bg-spaceBg group-hover:bg-champagne group-hover:text-spaceBg border border-spaceBorder flex items-center justify-center text-xs transition">
-                <i class="fa-solid fa-plus"></i>
-              </span>
-            </div>
-            <h3 class="font-bold text-spaceText text-sm mt-2 group-hover:text-champagne transition">${item.name}</h3>
-          </div>
-          <div class="mt-4 pt-2 border-t border-spaceBorder/50 flex justify-between items-center">
-            <span class="font-mono text-xs font-bold text-champagne">${item.price.toFixed(3)} KD</span>
-          </div>
-        `;
-        grid.appendChild(card);
+    function resetModalOptions() {
+      selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
+      document.querySelectorAll('#milk-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Full Fat'));
+      });
+      document.querySelectorAll('#sugar-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText === 'Normal');
       });
     }
 
     function filterCategory(cat) {
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.classList.remove('bg-champagne', 'text-spaceBg', 'shadow');
-        btn.classList.add('bg-spaceCard', 'border', 'border-spaceBorder', 'text-spaceMuted');
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const grid = document.getElementById('menu-grid');
+      grid.innerHTML = '';
+      
+      const filtered = menuItems.filter(i => i.category === cat);
+      filtered.forEach(item => {
+        grid.innerHTML += `
+          <div class="item-card" onclick="handleItemClick(${item.id})">
+            <div class="item-title">${item.name}</div>
+            <div class="item-price">${item.price.toFixed(3)} KD</div>
+          </div>
+        `;
       });
-      event.currentTarget.classList.remove('bg-spaceCard', 'border', 'border-spaceBorder', 'text-spaceMuted');
-      event.currentTarget.classList.add('bg-champagne', 'text-spaceBg', 'shadow');
-      renderMenuGrid(cat);
     }
 
-    /* ==========================================================================
-       4. ITEM CUSTOMIZATION MODAL LOGIC
-       ========================================================================== */
-    function openCustomModal(item) {
-      pendingCustomItem = item;
-      customState = {
-        temp: item.allowTemp ? 'Hot' : (item.defaultTemp || 'Standard'),
-        milk: 'Full Cream',
-        sugar: 'Standard Sugar'
-      };
-
-      document.getElementById('cust-item-title').innerText = item.name;
-      document.getElementById('cust-notes').value = '';
-
-      // Toggle temperature options visibility
-      const tempGroup = document.getElementById('cust-temp-options');
-      if (!item.allowTemp) {
-        tempGroup.parentElement.classList.add('hidden');
+    function handleItemClick(id) {
+      const item = menuItems.find(i => i.id === id);
+      if (item.customizable) {
+        currentItemToAdd = item;
+        resetModalOptions();
+        document.getElementById('modal-item-title').innerText = item.name;
+        document.getElementById('customizeModal').style.display = 'flex';
       } else {
-        tempGroup.parentElement.classList.remove('hidden');
+        addToCart(item, '', 0);
       }
-
-      updateCustomUI();
-      openModal('modal-custom');
     }
 
-    function setOption(type, val) {
-      customState[type] = val;
-      updateCustomUI();
+    function selectOpt(btn, group, val) {
+      btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedOptions[group] = val;
     }
 
-    function updateCustomUI() {
-      // Temp buttons
-      document.querySelectorAll('.opt-temp').forEach(btn => {
-        const isActive = btn.innerText === customState.temp;
-        btn.className = `opt-temp py-2 px-3 rounded-xl border text-xs font-bold transition ${isActive ? 'border-champagne bg-champagne/10 text-champagne' : 'border-spaceBorder bg-spaceBg text-spaceMuted'}`;
-      });
+    function selectPayment(method, btn) {
+      selectedPayment = method;
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      saveState();
+    }
 
-      // Milk buttons
-      document.querySelectorAll('.opt-milk').forEach(btn => {
-        const isActive = customState.milk.startsWith(btn.innerText.split(' ')[0]);
-        btn.className = `opt-milk py-2 px-3 rounded-xl border text-xs font-medium transition ${isActive ? 'border-champagne bg-champagne/10 text-champagne' : 'border-spaceBorder bg-spaceBg text-spaceMuted'}`;
-      });
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
 
-      // Sugar buttons
-      document.querySelectorAll('.opt-sugar').forEach(btn => {
-        const isActive = btn.innerText === customState.sugar || (btn.innerText === 'Standard' && customState.sugar === 'Standard Sugar');
-        btn.className = `opt-sugar py-2 px-3 rounded-xl border text-xs font-medium transition ${isActive ? 'border-champagne bg-champagne/10 text-champagne' : 'border-spaceBorder bg-spaceBg text-spaceMuted'}`;
-      });
-
-      // Calculate preview price
+    function confirmAddToCart() {
       let extra = 0;
-      if (customState.milk.includes('+0.250')) extra += 0.250;
-      const total = pendingCustomItem ? (pendingCustomItem.price + extra) : 0;
-      document.getElementById('cust-price-preview').innerText = `${total.toFixed(3)} KD`;
-    }
-
-    function confirmCustomization() {
-      if (!pendingCustomItem) return;
-
-      let extraPrice = 0;
-      if (customState.milk.includes('+0.250')) extraPrice += 0.250;
-
-      const notes = document.getElementById('cust-notes').value.trim();
-
-      const cartItem = {
-        cartId: Date.now() + Math.random(),
-        id: pendingCustomItem.id,
-        name: pendingCustomItem.name,
-        basePrice: pendingCustomItem.price,
-        unitPrice: pendingCustomItem.price + extraPrice,
-        qty: 1,
-        temp: customState.temp,
-        milk: customState.milk,
-        sugar: customState.sugar,
-        notes: notes
-      };
-
-      currentCart.push(cartItem);
-      closeModal('modal-custom');
-      updateCartUI();
-    }
-
-    /* ==========================================================================
-       5. CART MANAGEMENT & CHECKOUT
-       ========================================================================== */
-    function updateCartUI() {
-      const list = document.getElementById('cart-items-list');
-      list.innerHTML = '';
-
-      if (currentCart.length === 0) {
-        list.innerHTML = `
-          <div class="h-full flex flex-col items-center justify-center text-center text-spaceMuted p-6">
-            <i class="fa-solid fa-mug-hot text-3xl mb-2 opacity-30"></i>
-            <p class="text-xs">No items in current order</p>
-          </div>
-        `;
-        document.getElementById('summary-subtotal').innerText = '0.000 KD';
-        document.getElementById('summary-total').innerText = '0.000 KD';
-        return;
+      let notes = [];
+      if (selectedOptions.milk.includes('Almond') || selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Coconut')) {
+        extra += 0.250;
       }
+      if (selectedOptions.milk !== 'Full Fat') notes.push(selectedOptions.milk);
+      if (selectedOptions.sugar !== 'Normal Sweetness') notes.push(selectedOptions.sugar);
 
-      let subtotal = 0;
-
-      currentCart.forEach(item => {
-        const itemTotal = item.unitPrice * item.qty;
-        subtotal += itemTotal;
-
-        const el = document.createElement('div');
-        el.className = "py-3 space-y-1.5";
-        el.innerHTML = `
-          <div class="flex justify-between items-start">
-            <div class="font-bold text-xs text-spaceText">${item.name}</div>
-            <div class="font-mono text-xs font-bold text-champagne">${itemTotal.toFixed(3)} KD</div>
-          </div>
-          <div class="text-[10px] text-spaceMuted space-x-1">
-            <span>${item.temp}</span> • <span>${item.milk}</span> • <span>${item.sugar}</span>
-            ${item.notes ? `<div class="text-champagne/80 italic mt-0.5"><i class="fa-solid fa-pen text-[8px]"></i> ${item.notes}</div>` : ''}
-          </div>
-          <div class="flex items-center justify-between pt-1">
-            <div class="flex items-center gap-2 bg-spaceBg px-2 py-0.5 rounded-lg border border-spaceBorder">
-              <button onclick="changeQty(${item.cartId}, -1)" class="text-spaceMuted hover:text-spaceText text-xs px-1">-</button>
-              <span class="font-mono text-xs font-bold text-spaceText">${item.qty}</span>
-              <button onclick="changeQty(${item.cartId}, 1)" class="text-spaceMuted hover:text-spaceText text-xs px-1">+</button>
-            </div>
-            <button onclick="removeCartItem(${item.cartId})" class="text-[10px] text-red-400 hover:text-red-300">
-              <i class="fa-solid fa-trash"></i> Remove
-            </button>
-          </div>
-        `;
-        list.appendChild(el);
-      });
-
-      document.getElementById('summary-subtotal').innerText = `${subtotal.toFixed(3)} KD`;
-      document.getElementById('summary-total').innerText = `${subtotal.toFixed(3)} KD`;
+      addToCart(currentItemToAdd, notes.join(', '), extra);
+      closeModal('customizeModal');
     }
 
-    function changeQty(cartId, delta) {
-      const idx = currentCart.findIndex(i => i.cartId === cartId);
-      if (idx !== -1) {
-        currentCart[idx].qty += delta;
-        if (currentCart[idx].qty <= 0) {
-          currentCart.splice(idx, 1);
-        }
-        updateCartUI();
+    function addToCart(item, notes, extraCost) {
+      const existing = cart.find(c => c.id === item.id && c.notes === notes);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({
+          id: item.id,
+          name: item.name,
+          price: item.price + extraCost,
+          notes: notes,
+          qty: 1
+        });
       }
+      saveState();
+      renderCart();
     }
 
-    function removeCartItem(cartId) {
-      currentCart = currentCart.filter(i => i.cartId !== cartId);
-      updateCartUI();
+    function updateQty(index, change) {
+      cart[index].qty += change;
+      if (cart[index].qty <= 0) cart.splice(index, 1);
+      saveState();
+      renderCart();
     }
 
     function clearCart() {
-      currentCart = [];
-      updateCartUI();
+      cart = [];
+      saveState();
+      renderCart();
     }
 
-    function selectPayment(method) {
-      selectedPayment = method;
-      document.querySelectorAll('.pay-btn').forEach(btn => {
-        btn.classList.remove('border-champagne', 'bg-champagne/10', 'text-champagne');
-        btn.classList.add('border-spaceBorder', 'bg-spaceCard', 'text-spaceMuted');
-      });
-      
-      const activeBtn = method === 'K-NET' ? document.getElementById('pay-knet') : document.getElementById('pay-cash');
-      activeBtn.classList.remove('border-spaceBorder', 'bg-spaceCard', 'text-spaceMuted');
-      activeBtn.classList.add('border-champagne', 'bg-champagne/10', 'text-champagne');
-    }
+    function renderCart() {
+      const container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      let total = 0;
 
-    /* ==========================================================================
-       6. CHECKOUT & THERMAL PRINT GENERATION
-       ========================================================================== */
-    function checkoutOrder() {
-      if (currentCart.length === 0) {
-        alert("Cart is empty! Add items before completing order.");
-        return;
-      }
-
-      const total = currentCart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
-      const order = {
-        orderNum: activeOrderNum,
-        timestamp: new Date().toLocaleString('en-GB'),
-        items: [...currentCart],
-        payment: selectedPayment,
-        total: total
-      };
-
-      // Save to Database
-      completedOrders.push(order);
-      localStorage.setItem('south_orders', JSON.stringify(completedOrders));
-
-      // Print Receipt
-      printCustomerReceipt(order);
-
-      // Advance Order Number
-      activeOrderNum++;
-      localStorage.setItem('south_order_num', activeOrderNum.toString());
-      document.getElementById('active-order-num').innerText = activeOrderNum;
-
-      // Reset Cart
-      clearCart();
-    }
-
-    function printCustomerReceipt(order) {
-      const ticket = document.getElementById('thermal-ticket');
-      if (!ticket) return;
-
-      let itemsHTML = '';
-      order.items.forEach(item => {
-        itemsHTML += `
-          <div class="ticket-row">
-            <span>${item.qty}x ${item.name}</span>
-            <span>${(item.unitPrice * item.qty).toFixed(3)}</span>
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        container.innerHTML += `
+          <div class="cart-item">
+            <div class="cart-item-header">
+              <span>${item.name}</span>
+              <span>${itemTotal.toFixed(3)} KD</span>
+            </div>
+            ${item.notes ? `<div class="cart-item-details">${item.notes}</div>` : ''}
+            <div class="cart-item-actions">
+              <span>${item.price.toFixed(3)} KD</span>
+              <div>
+                <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                <span style="margin: 0 8px;">${item.qty}</span>
+                <button class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+              </div>
+            </div>
           </div>
-          <div class="item-subtext">• ${item.temp}, ${item.milk}, ${item.sugar}${item.notes ? `, Note: ${item.notes}` : ''}</div>
         `;
       });
 
-      ticket.innerHTML = `
-        <div class="ticket-header">
-          <strong>SOUTH SPECIALTY COFFEE</strong><br>
-          Shuwaikh Industrial, Kuwait<br>
-          ------------------------------<br>
-          <strong>TICKET #${order.orderNum}</strong><br>
-          <span>${order.timestamp}</span>
-        </div>
-        <div>
-          ${itemsHTML}
-        </div>
-        <div class="ticket-divider"></div>
-        <div class="ticket-row" style="font-weight:bold;">
-          <span>TOTAL PAYABLE:</span>
-          <span>${order.total.toFixed(3)} KD</span>
-        </div>
-        <div class="ticket-row">
-          <span>Payment Method:</span>
-          <span>${order.payment}</span>
-        </div>
-        <div class="ticket-footer">
-          Thank you for visiting SOUTH!<br>
-          Enjoy your specialty coffee.
-        </div>
-      `;
+      document.getElementById('cart-total').innerText = total.toFixed(3) + ' KD';
+    }
 
+    function processCheckout() {
+      if (cart.length === 0) return alert('Please add items to cart first!');
+      
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const fullDateStr = `${dateStr}  ${timeStr}`;
+
+      let total = 0;
+      const receiptBody = document.getElementById('receipt-body');
+      receiptBody.innerHTML = '';
+
+      cart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+
+        receiptBody.innerHTML += `
+          <div>
+            <div class="receipt-row">
+              <div class="col-qty">${item.qty}</div>
+              <div class="col-item">${item.name}</div>
+              <div class="col-price">${itemTotal.toFixed(3)}</div>
+            </div>
+            ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ''}
+          </div>
+        `;
+      });
+
+      // Save order to history
+      const orderRecord = {
+        id: orderCounter,
+        timestamp: fullDateStr,
+        items: JSON.parse(JSON.stringify(cart)),
+        total: total,
+        payment: selectedPayment,
+        status: 'COMPLETED'
+      };
+
+      orderHistory.push(orderRecord);
+
+      // Render details into receipt fields
+      document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
+      document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
+      document.getElementById('receipt-payment-type').innerText = selectedPayment;
+      document.getElementById('receipt-subtotal').innerText = total.toFixed(3);
+      document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
+      
+      document.getElementById('receiptModal').style.display = 'flex';
+
+      // Automatically trigger 2 sequential prints upon checkout
+      triggerSequentialPrint();
+    }
+
+    // Function to handle printing twice sequentially
+    function triggerSequentialPrint() {
+      let printCount = 0;
+
+      function handleAfterPrint() {
+        printCount++;
+        if (printCount < 2) {
+          setTimeout(() => {
+            window.print();
+          }, 300);
+        } else {
+          window.removeEventListener('afterprint', handleAfterPrint);
+        }
+      }
+
+      window.addEventListener('afterprint', handleAfterPrint);
       window.print();
     }
 
-    /* ==========================================================================
-       7. NAVIGATION & MANAGER PIN AUTHENTICATION
-       ========================================================================== */
-    function switchTab(tabName) {
-      document.getElementById('view-pos').classList.add('hidden');
-      document.getElementById('view-orders').classList.add('hidden');
-      document.getElementById('view-closing').classList.add('hidden');
-
-      document.querySelectorAll('nav button').forEach(b => {
-        b.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-spaceMuted hover:text-spaceText hover:bg-spaceCard";
-      });
-
-      if (tabName === 'pos') {
-        document.getElementById('view-pos').classList.remove('hidden');
-        document.getElementById('nav-pos').className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-champagne text-spaceBg font-semibold shadow-sm";
-      } else if (tabName === 'orders') {
-        document.getElementById('view-orders').classList.remove('hidden');
-        document.getElementById('nav-orders').className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-champagne text-spaceBg font-semibold shadow-sm";
-        renderOrdersHistory();
-      } else if (tabName === 'closing') {
-        document.getElementById('view-closing').classList.remove('hidden');
-        document.getElementById('nav-closing').className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-champagne text-spaceBg font-semibold shadow-sm";
-        renderClosingReport();
-      }
+    function closeReceipt() {
+      document.getElementById('receiptModal').style.display = 'none';
+      orderCounter++;
+      cart = [];
+      saveState();
+      renderCart();
     }
 
-    function promptManagerAccess(targetTab) {
-      pendingNavTarget = targetTab;
-      document.getElementById('pin-input').value = '';
-      openModal('modal-pin');
-      setTimeout(() => document.getElementById('pin-input').focus(), 100);
-    }
+    function openOrderHistory() {
+      const container = document.getElementById('history-container');
+      container.innerHTML = '';
 
-    function verifyManagerPin() {
-      const pin = document.getElementById('pin-input').value;
-      if (pin === '1234') {
-        closeModal('modal-pin');
-        if (pendingNavTarget) switchTab(pendingNavTarget);
+      if (orderHistory.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No orders recorded yet.</p>';
       } else {
-        alert("Invalid Manager PIN Code!");
-        document.getElementById('pin-input').value = '';
+        [...orderHistory].reverse().forEach(order => {
+          container.innerHTML += `
+            <div class="history-card">
+              <div>
+                <strong>Order #${order.id}</strong> - ${order.total.toFixed(3)} KD (${order.payment})
+                <br><span style="font-size: 11px; color: var(--text-muted);">${order.timestamp}</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
+                ${order.status === 'COMPLETED' ? `
+                  <button class="action-btn-sm" onclick="editOrder(${order.id})">Edit</button>
+                  <button class="action-btn-sm" style="background: var(--danger); border: none;" onclick="cancelOrder(${order.id})">Cancel/Refund</button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function cancelOrder(orderId) {
+      const pin = prompt("Enter Manager PIN to cancel order #" + orderId + ":");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+
+      const target = orderHistory.find(o => o.id === orderId);
+      if (target) {
+        target.status = 'CANCELED';
+        saveState();
+        openOrderHistory();
+        alert("Order #" + orderId + " has been canceled and marked as refunded.");
       }
     }
 
-    /* ==========================================================================
-       8. HISTORY & REPORTS LOGIC
-       ========================================================================== */
-    function renderOrdersHistory() {
-      const tbody = document.getElementById('orders-table-body');
-      tbody.innerHTML = '';
+    function editOrder(orderId) {
+      const pin = prompt("Enter Manager PIN to reopen and edit order #" + orderId + ":");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
 
-      if (completedOrders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-spaceMuted">No past transactions recorded.</td></tr>`;
-        return;
+      const targetIndex = orderHistory.findIndex(o => o.id === orderId);
+      if (targetIndex !== -1) {
+        cart = JSON.parse(JSON.stringify(orderHistory[targetIndex].items));
+        selectedPayment = orderHistory[targetIndex].payment;
+        orderHistory.splice(targetIndex, 1);
+        saveState();
+        renderCart();
+        closeModal('historyModal');
+        alert("Order #" + orderId + " loaded into cart for editing.");
       }
-
-      completedOrders.slice().reverse().forEach(ord => {
-        const summary = ord.items.map(i => `${i.qty}x ${i.name}`).join(', ');
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-spaceCardHover/50 transition";
-        tr.innerHTML = `
-          <td class="p-4 font-bold text-champagne">#${ord.orderNum}</td>
-          <td class="p-4 text-spaceMuted">${ord.timestamp}</td>
-          <td class="p-4 text-spaceText max-w-xs truncate" title="${summary}">${summary}</td>
-          <td class="p-4"><span class="px-2 py-0.5 rounded text-[10px] ${ord.payment === 'K-NET' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}">${ord.payment}</span></td>
-          <td class="p-4 text-right font-bold text-spaceText">${ord.total.toFixed(3)} KD</td>
-          <td class="p-4 text-center">
-            <button onclick='reprintReceipt(${ord.orderNum})' class="px-2 py-1 rounded bg-spaceBg border border-spaceBorder text-spaceMuted hover:text-champagne text-[10px]">
-              <i class="fa-solid fa-print"></i> Reprint
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
 
-    function reprintReceipt(orderNum) {
-      const ord = completedOrders.find(o => o.orderNum === orderNum);
-      if (ord) printCustomerReceipt(ord);
-    }
-
-    function exportOrdersCSV() {
-      if (completedOrders.length === 0) {
-        alert("No sales data available to export.");
-        return;
-      }
-
-      let csv = "OrderNum,Timestamp,PaymentMethod,TotalKD,Items\n";
-      completedOrders.forEach(o => {
-        const itemsStr = o.items.map(i => `${i.qty}x ${i.name}`).join(' | ');
-        csv += `"${o.orderNum}","${o.timestamp}","${o.payment}","${o.total.toFixed(3)}","${itemsStr}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `SOUTH_Coffee_Sales_${new Date().toISOString().split('T')[0]}.csv`;
-      a.click();
-    }
-
-    /* ==========================================================================
-       9. SHIFT CLOSING (Z-REPORT) LOGIC
-       ========================================================================== */
-    function renderClosingReport() {
-      let gross = 0;
-      let knetSum = 0;
-      let cashSum = 0;
-      let knetCount = 0;
-      let cashCount = 0;
-
-      completedOrders.forEach(ord => {
-        gross += ord.total;
-        if (ord.payment === 'K-NET') {
-          knetSum += ord.total;
-          knetCount++;
-        } else if (ord.payment === 'Cash') {
-          cashSum += ord.total;
-          cashCount++;
-        }
-      });
-
-      document.getElementById('z-total-sales').innerText = `${gross.toFixed(3)} KD`;
-      document.getElementById('z-total-count').innerText = completedOrders.length.toString();
-      document.getElementById('z-knet-sales').innerText = `${knetSum.toFixed(3)} KD`;
-      document.getElementById('z-cash-sales').innerText = `${cashSum.toFixed(3)} KD`;
-
-      document.getElementById('z-knet-count').innerText = `${knetCount} (${knetSum.toFixed(3)} KD)`;
-      document.getElementById('z-cash-count').innerText = `${cashCount} (${cashSum.toFixed(3)} KD)`;
-      document.getElementById('z-net-total').innerText = `${gross.toFixed(3)} KD`;
-      document.getElementById('z-report-time').innerText = `Generated: ${new Date().toLocaleString('en-GB')}`;
-    }
-
-    function printClosingReport() {
-      const closingTicket = document.getElementById('closing-ticket');
-      if (!closingTicket) return;
+    function openClosingReport() {
+      const pin = prompt("Enter Manager PIN for Daily Closing Report:");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
 
       let totalSales = 0;
       let knetSales = 0;
       let cashSales = 0;
-      let orderCount = completedOrders.length;
+      let canceledTotal = 0;
+      let completedCount = 0;
+      let canceledCount = 0;
 
-      completedOrders.forEach(ord => {
-        totalSales += ord.total;
-        if (ord.payment === 'K-NET') knetSales += ord.total;
-        if (ord.payment === 'Cash') cashSales += ord.total;
+      orderHistory.forEach(o => {
+        if (o.status === 'COMPLETED') {
+          totalSales += o.total;
+          completedCount++;
+          if (o.payment === 'K-NET') knetSales += o.total;
+          if (o.payment === 'Cash') cashSales += o.total;
+        } else if (o.status === 'CANCELED') {
+          canceledTotal += o.total;
+          canceledCount++;
+        }
       });
 
-      const reportDate = new Date().toLocaleString('en-GB');
-
-      closingTicket.innerHTML = `
-        <div class="ticket-header">
-          <strong>SOUTH SPECIALTY COFFEE</strong><br>
-          DAILY Z-REPORT / SHIFT SUMMARY<br>
-          <span>${reportDate}</span>
-        </div>
-        <div class="ticket-row">
-          <span>Total Orders:</span>
-          <span>${orderCount}</span>
-        </div>
-        <div class="ticket-row">
-          <span>K-NET Sales:</span>
-          <span>${knetSales.toFixed(3)} KD</span>
-        </div>
-        <div class="ticket-row">
-          <span>Cash Sales:</span>
-          <span>${cashSales.toFixed(3)} KD</span>
-        </div>
-        <div class="ticket-footer">
-          <div class="ticket-row" style="font-weight: bold; font-size: 13px;">
-            <span>TOTAL NET:</span>
-            <span>${totalSales.toFixed(3)} KD</span>
-          </div>
-          <br>
-          --- END OF SHIFT REPORT ---
-        </div>
+      document.getElementById('report-summary-body').innerHTML = `
+        <p><strong>Total Orders Processed:</strong> ${orderHistory.length}</p>
+        <p><strong>Completed Orders:</strong> ${completedCount}</p>
+        <p><strong>Canceled/Refunded Orders:</strong> ${canceledCount}</p>
+        <hr style="border-color: var(--border-color); margin: 10px 0;">
+        <p style="color: var(--accent-light); font-size: 16px;"><strong>Net Revenue: ${totalSales.toFixed(3)} KWD</strong></p>
+        <p><strong>K-NET Total:</strong> ${knetSales.toFixed(3)} KWD</p>
+        <p><strong>Cash Total:</strong> ${cashSales.toFixed(3)} KWD</p>
+        <hr style="border-color: var(--border-color); margin: 10px 0;">
+        <p style="color: #EF5350;"><strong>Total Canceled/Refunded Value:</strong> ${canceledTotal.toFixed(3)} KWD</p>
       `;
 
-      window.print();
+      document.getElementById('closingReportModal').style.display = 'flex';
     }
 
     function resetShiftData() {
-      if (confirm("Are you sure you want to reset all shift data? This will archive active order history.")) {
-        completedOrders = [];
-        localStorage.removeItem('south_orders');
-        renderClosingReport();
-        alert("Shift data reset successfully.");
+      const pin = prompt("Enter Manager PIN to CLEAR shift data and reset order count:");
+      if (pin !== MANAGER_PIN) return alert("Incorrect PIN.");
+
+      if (confirm("Are you sure you want to clear all order history for today?")) {
+        orderCounter = 1;
+        orderHistory = [];
+        cart = [];
+        saveState();
+        renderCart();
+        closeModal('closingReportModal');
+        alert("Shift reset complete.");
       }
     }
 
-    /* ==========================================================================
-       10. UTILITY MODAL CONTROLLERS
-       ========================================================================== */
-    function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
+    // Restore state on app start
+    saveState();
+    renderCart();
+    if (selectedPayment === 'Cash') {
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('pay-cash').classList.add('selected');
     }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
-    }
-
-    function openGuideModal() {
-      openModal('modal-guide');
-    }
+    filterCategory('hot');
   </script>
 </body>
 </html>
