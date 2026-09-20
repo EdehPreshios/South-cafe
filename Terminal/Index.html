@@ -647,7 +647,7 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" style="flex: 1;" onclick="triggerSequentialPrint()">Print Closing Report</button>
+        <button class="checkout-btn" style="flex: 1;" onclick="triggerPrint()">Print Closing Report</button>
         <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
@@ -694,7 +694,7 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Tickets (x2)</button>
+        <button class="checkout-btn" onclick="triggerPrint()">Print Ticket</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
@@ -985,34 +985,19 @@
       
       document.getElementById('receiptModal').style.display = 'flex';
       
-      // Auto-triggers twin prints for receipt and kitchen ticket
-      triggerSequentialPrint();
+      // Clear order state
+      orderCounter++;
+      cart = [];
+      saveState();
+      renderCart();
     }
 
-    function triggerSequentialPrint() {
-      let printCount = 0;
-
-      function handleAfterPrint() {
-        printCount++;
-        if (printCount < 2) {
-          setTimeout(() => {
-            window.print();
-          }, 300);
-        } else {
-          window.removeEventListener('afterprint', handleAfterPrint);
-        }
-      }
-
-      window.addEventListener('afterprint', handleAfterPrint);
+    function triggerPrint() {
       window.print();
     }
 
     function closeReceipt() {
       document.getElementById('receiptModal').style.display = 'none';
-      orderCounter++;
-      cart = [];
-      saveState();
-      renderCart();
     }
 
     function openOrderHistory() {
