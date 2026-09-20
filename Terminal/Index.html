@@ -458,7 +458,6 @@
         visibility: hidden !important;
       }
 
-      /* Allow both Receipt and Closing Report Modals to be visible when printing */
       #receiptModal, #receiptModal *,
       #closingReportModal, #closingReportModal * {
         visibility: visible !important;
@@ -517,10 +516,10 @@
 
       <!-- Categories Navigation -->
       <div class="categories">
-        <button class="cat-btn active" onclick="filterCategory('hot')">Hot Coffees & Teas</button>
-        <button class="cat-btn" onclick="filterCategory('cold')">Cold Coffees & Teas</button>
-        <button class="cat-btn" onclick="filterCategory('refreshers')">Refreshers & Water</button>
-        <button class="cat-btn" onclick="filterCategory('sweets')">Sweets & Bakery</button>
+        <button class="cat-btn active" onclick="filterCategory('hot', this)">Hot Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('cold', this)">Cold Coffees & Teas</button>
+        <button class="cat-btn" onclick="filterCategory('refreshers', this)">Refreshers & Water</button>
+        <button class="cat-btn" onclick="filterCategory('sweets', this)">Sweets & Bakery</button>
       </div>
 
       <!-- Menu Items Grid -->
@@ -583,7 +582,7 @@
     </div>
   </div>
 
-  <!-- Order History / Refund / Edit Modal -->
+  <!-- Order History Modal -->
   <div class="modal" id="historyModal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -597,7 +596,6 @@
   <!-- Closing Z-Report Modal -->
   <div class="modal" id="closingReportModal">
     <div class="modal-content" style="background: white; padding: 0;">
-      
       <div class="receipt-container">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
@@ -611,7 +609,6 @@
         </div>
 
         <div class="receipt-divider"></div>
-
         <div id="report-summary-body"></div>
       </div>
 
@@ -620,14 +617,12 @@
         <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
-
     </div>
   </div>
 
   <!-- Single Receipt Print Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; padding: 0;">
-      
       <div class="receipt-container">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
@@ -649,9 +644,7 @@
         </div>
 
         <div class="receipt-divider"></div>
-
         <div id="receipt-body"></div>
-
         <div class="receipt-divider"></div>
 
         <div class="receipt-total-section">
@@ -677,7 +670,6 @@
     const MANAGER_PIN = "1234";
 
     const menuItems = [
-      // Hot Coffees & Teas
       { id: 101, name: "Hot Espresso", category: "hot", price: 1.500, customizable: true },
       { id: 102, name: "Hot Americano", category: "hot", price: 1.750, customizable: true },
       { id: 103, name: "Hot Cortado", category: "hot", price: 1.500, customizable: true },
@@ -695,7 +687,6 @@
       { id: 115, name: "Black Tea", category: "hot", price: 1.000, customizable: false },
       { id: 116, name: "Green Tea", category: "hot", price: 1.000, customizable: false },
 
-      // Cold Coffees & Teas
       { id: 201, name: "Iced Americano", category: "cold", price: 1.750, customizable: true },
       { id: 204, name: "Iced Latte", category: "cold", price: 1.750, customizable: true },
       { id: 205, name: "Iced Spanish Latte", category: "cold", price: 2.000, customizable: true },
@@ -709,7 +700,6 @@
       { id: 213, name: "Iced Peach Tea", category: "cold", price: 1.750, customizable: false },
       { id: 214, name: "Iced Raspberry Tea", category: "cold", price: 1.750, customizable: false },
 
-      // Refreshers & Water
       { id: 301, name: "Strawberry Mojito", category: "refreshers", price: 2.000, customizable: false },
       { id: 302, name: "Blueberry Mojito", category: "refreshers", price: 2.000, customizable: false },
       { id: 303, name: "Blue Mojito", category: "refreshers", price: 2.000, customizable: false },
@@ -720,7 +710,6 @@
       { id: 308, name: "Still Water", category: "refreshers", price: 1.000, customizable: false },
       { id: 309, name: "Sparkling Water", category: "refreshers", price: 0.750, customizable: false },
 
-      // Sweets & Bakery
       { id: 401, name: "Peanut Butter", category: "sweets", price: 1.500, customizable: false },
       { id: 402, name: "Plain Croissant", category: "sweets", price: 1.500, customizable: false },
       { id: 403, name: "Danish Croissant", category: "sweets", price: 1.750, customizable: false },
@@ -757,9 +746,9 @@
       });
     }
 
-    function filterCategory(cat) {
+    function filterCategory(cat, btnElement) {
       document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      if (btnElement) btnElement.classList.add('active');
       
       const grid = document.getElementById('menu-grid');
       grid.innerHTML = '';
@@ -905,7 +894,6 @@
         `;
       });
 
-      // Save order to history
       const orderRecord = {
         id: orderCounter,
         timestamp: fullDateStr,
@@ -917,7 +905,6 @@
 
       orderHistory.push(orderRecord);
 
-      // Render details into receipt fields
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
       document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
       document.getElementById('receipt-payment-type').innerText = selectedPayment;
@@ -925,12 +912,11 @@
       document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
       
       document.getElementById('receiptModal').style.display = 'flex';
-
-      // Automatically trigger 2 sequential prints upon checkout
+      
+      // Auto-triggers twin prints for receipt and kitchen ticket
       triggerSequentialPrint();
     }
 
-    // Function to handle printing twice sequentially
     function triggerSequentialPrint() {
       let printCount = 0;
 
@@ -1102,14 +1088,15 @@
       }
     }
 
-    // Restore state on app start
+    // App Initializer
     saveState();
     renderCart();
     if (selectedPayment === 'Cash') {
       document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
       document.getElementById('pay-cash').classList.add('selected');
     }
-    filterCategory('hot');
+    const firstCatBtn = document.querySelector('.cat-btn');
+    filterCategory('hot', firstCatBtn);
   </script>
 </body>
 </html>
