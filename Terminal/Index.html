@@ -438,9 +438,7 @@
     }
 
     .page-break {
-      page-break-before: always !important;
-      break-before: page !important;
-      margin-top: 15px;
+      display: none;
     }
 
     /* Print Formatting Rules */
@@ -483,7 +481,7 @@
       }
 
       .receipt-container {
-        padding: 4px 6px !important;
+        padding: 4px 6px 25px 6px !important; /* Extra bottom padding so blade doesn't cut text */
         margin: 0 !important;
         width: 100% !important;
       }
@@ -653,7 +651,7 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" style="flex: 1;" onclick="triggerPrint()">Print Closing Report</button>
+        <button class="checkout-btn" style="flex: 1;" onclick="triggerPrintReport()">Print Closing Report</button>
         <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
@@ -665,7 +663,7 @@
     <div class="modal-content" style="background: white; padding: 0;">
       <div id="receipt-print-wrapper">
         <!-- Copy 1: Customer Receipt -->
-        <div class="receipt-container">
+        <div class="receipt-container" id="customer-receipt">
           <div class="receipt-header">
             <h2>SOUTH SPECIALTY COFFEE</h2>
             <div style="font-size: 10px; font-weight: bold;">CUSTOMER COPY</div>
@@ -702,10 +700,8 @@
           </div>
         </div>
 
-        <div class="page-break"></div>
-
         <!-- Copy 2: Barista / Kitchen Ticket -->
-        <div class="receipt-container">
+        <div class="receipt-container" id="barista-receipt">
           <div class="receipt-header">
             <h2>SOUTH SPECIALTY COFFEE</h2>
             <div style="font-size: 10px; font-weight: bold;">BARISTA / KITCHEN COPY</div>
@@ -1037,7 +1033,7 @@
       
       document.getElementById('receiptModal').style.display = 'flex';
       
-      // Auto-trigger print for 2 copies
+      // Auto-trigger sequential print for physical ticket cut
       setTimeout(() => {
         triggerPrint();
       }, 100);
@@ -1050,6 +1046,31 @@
     }
 
     function triggerPrint() {
+      const customerCopy = document.getElementById('customer-receipt');
+      const baristaCopy = document.getElementById('barista-receipt');
+
+      // Step 1: Print Customer Copy only
+      baristaCopy.style.display = 'none';
+      customerCopy.style.display = 'block';
+
+      window.print();
+
+      // Step 2: Print Barista Copy after a short delay so thermal printer cuts ticket #1
+      setTimeout(() => {
+        customerCopy.style.display = 'none';
+        baristaCopy.style.display = 'block';
+
+        window.print();
+
+        // Reset visibility for screen display
+        setTimeout(() => {
+          customerCopy.style.display = 'block';
+          baristaCopy.style.display = 'block';
+        }, 500);
+      }, 1000);
+    }
+
+    function triggerPrintReport() {
       window.print();
     }
 
