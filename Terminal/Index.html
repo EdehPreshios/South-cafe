@@ -368,26 +368,28 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
+      color: #000000;
     }
 
     .receipt-header h3 {
-      font-size: 16px;
+      font-size: 15px;
       margin: 2px 0;
       font-weight: 700;
+      color: #000000;
     }
 
     .receipt-meta {
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 500;
-      color: #222;
+      color: #000000;
     }
 
     .receipt-divider {
       border-top: 1px dashed #000000;
-      margin: 5px 0;
+      margin: 6px 0;
     }
 
     .receipt-table-header {
@@ -396,6 +398,7 @@
       font-size: 11px;
       padding: 2px 0;
       text-transform: uppercase;
+      color: #000000;
     }
 
     .col-qty { width: 28px; font-weight: 600; }
@@ -404,15 +407,17 @@
 
     .receipt-row {
       display: flex;
-      align-items: flex-start;
-      margin-bottom: 2px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
       font-size: 11px;
       font-weight: 500;
+      color: #000000;
     }
 
     .item-notes {
       font-size: 10px;
-      color: #222222;
+      color: #000000;
       margin-left: 28px;
       font-weight: 500;
       margin-bottom: 3px;
@@ -425,11 +430,11 @@
 
     .receipt-total-row {
       display: flex;
-      justify-content: flex-end;
-      gap: 12px;
+      justify-content: space-between;
       font-size: 12px;
       font-weight: 600;
       margin-top: 2px;
+      color: #000000;
     }
 
     /* Print Formatting Rules */
@@ -450,42 +455,33 @@
       }
 
       body * {
-  visibility: hidden !important;
-}
+        visibility: hidden !important;
+      }
 
-/* Allow both the Receipt Modal AND the Closing Report Modal to be visible when printing */
-#receiptModal, #receiptModal *,
-#closingReportModal, #closingReportModal * {
-  visibility: visible !important;
-}
+      /* Allow both Receipt and Closing Report Modals to be visible when printing */
+      #receiptModal, #receiptModal *,
+      #closingReportModal, #closingReportModal * {
+        visibility: visible !important;
+      }
 
-#receiptModal, #closingReportModal {
-  position: fixed !important;
-  left: 0 !important;
-  top: 0 !important;
-  width: 80mm !important;
-  height: auto !important;
-  background: #ffffff !important;
-  color: #000000 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+      #receiptModal, #closingReportModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 80mm !important;
+        height: auto !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
 
-/* Ensure report modal text renders clean black for thermal paper */
-#closingReportModal .modal-content {
-  background: #ffffff !important;
-  color: #000000 !important;
-  border: none !important;
-  padding: 10px !important;
-}
-
-#closingReportModal h3,
-#closingReportModal p,
-#closingReportModal div,
-#closingReportModal strong {
-  color: #000000 !important;
-}
+      .receipt-container {
+        padding: 8px 10px !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
 
       .modal-content {
         width: 100% !important;
@@ -494,12 +490,7 @@
         margin: 0 !important;
         border: none !important;
         box-shadow: none !important;
-      }
-
-      .receipt-container {
-        padding: 4px 6px !important;
-        margin: 0 !important;
-        width: 100% !important;
+        background: #ffffff !important;
       }
 
       .modal-actions, .no-print {
@@ -605,16 +596,31 @@
 
   <!-- Closing Z-Report Modal -->
   <div class="modal" id="closingReportModal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3>Daily Shift Closing Summary</h3>
-        <button class="qty-btn" onclick="closeModal('closingReportModal')">✕</button>
+    <div class="modal-content" style="background: white; padding: 0;">
+      
+      <div class="receipt-container">
+        <div class="receipt-header">
+          <h2>SOUTH SPECIALTY COFFEE</h2>
+          <div class="receipt-divider"></div>
+          <h3>DAILY CLOSING REPORT</h3>
+        </div>
+
+        <div class="receipt-meta">
+          <span class="print-date"></span>
+          <span>Z-REPORT</span>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div id="report-summary-body"></div>
       </div>
-      <div id="report-summary-body" style="font-size: 14px; line-height: 1.6;"></div>
-      <div style="margin-top: 20px; display: flex; gap: 10px;">
-        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Closing Report</button>
-        <button class="checkout-btn" style="background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
+
+      <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
+        <button class="checkout-btn" style="flex: 1;" onclick="triggerSequentialPrint()">Print Closing Report</button>
+        <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
+        <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
+
     </div>
   </div>
 
@@ -1020,6 +1026,11 @@
       let completedCount = 0;
       let canceledCount = 0;
 
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const fullDateStr = `${dateStr}  ${timeStr}`;
+
       orderHistory.forEach(o => {
         if (o.status === 'COMPLETED') {
           totalSales += o.total;
@@ -1032,16 +1043,45 @@
         }
       });
 
+      document.querySelectorAll('#closingReportModal .print-date').forEach(el => el.innerText = fullDateStr);
+
       document.getElementById('report-summary-body').innerHTML = `
-        <p><strong>Total Orders Processed:</strong> ${orderHistory.length}</p>
-        <p><strong>Completed Orders:</strong> ${completedCount}</p>
-        <p><strong>Canceled/Refunded Orders:</strong> ${canceledCount}</p>
-        <hr style="border-color: var(--border-color); margin: 10px 0;">
-        <p style="color: var(--accent-light); font-size: 16px;"><strong>Net Revenue: ${totalSales.toFixed(3)} KWD</strong></p>
-        <p><strong>K-NET Total:</strong> ${knetSales.toFixed(3)} KWD</p>
-        <p><strong>Cash Total:</strong> ${cashSales.toFixed(3)} KWD</p>
-        <hr style="border-color: var(--border-color); margin: 10px 0;">
-        <p style="color: #EF5350;"><strong>Total Canceled/Refunded Value:</strong> ${canceledTotal.toFixed(3)} KWD</p>
+        <div class="receipt-row">
+          <span>Total Orders Processed:</span>
+          <strong>${orderHistory.length}</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Completed Orders:</span>
+          <strong>${completedCount}</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Canceled/Refunded Orders:</span>
+          <strong>${canceledCount}</strong>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-row">
+          <span>K-NET Total:</span>
+          <strong>${knetSales.toFixed(3)} KWD</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Cash Total:</span>
+          <strong>${cashSales.toFixed(3)} KWD</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Refunded Value:</span>
+          <strong>${canceledTotal.toFixed(3)} KWD</strong>
+        </div>
+
+        <div class="receipt-divider"></div>
+
+        <div class="receipt-total-section">
+          <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
+            <span>NET REVENUE</span>
+            <span>KWD ${totalSales.toFixed(3)}</span>
+          </div>
+        </div>
       `;
 
       document.getElementById('closingReportModal').style.display = 'flex';
