@@ -450,25 +450,42 @@
       }
 
       body * {
-        visibility: hidden !important;
-      }
+  visibility: hidden !important;
+}
 
-      #receiptModal, #receiptModal * {
-        visibility: visible !important;
-      }
+/* Allow both the Receipt Modal AND the Closing Report Modal to be visible when printing */
+#receiptModal, #receiptModal *,
+#closingReportModal, #closingReportModal * {
+  visibility: visible !important;
+}
 
-      #receiptModal {
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 80mm !important;
-        height: auto !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-      }
+#receiptModal, #closingReportModal {
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 80mm !important;
+  height: auto !important;
+  background: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Ensure report modal text renders clean black for thermal paper */
+#closingReportModal .modal-content {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: none !important;
+  padding: 10px !important;
+}
+
+#closingReportModal h3,
+#closingReportModal p,
+#closingReportModal div,
+#closingReportModal strong {
+  color: #000000 !important;
+}
 
       .modal-content {
         width: 100% !important;
