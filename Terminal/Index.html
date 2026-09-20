@@ -345,14 +345,14 @@
     .status-completed { background: #1B5E20; color: #E8F5E9; }
     .status-canceled { background: #B71C1C; color: #FFEBEE; }
 
-    /* Thermal Print Ticket Formatting */
+    /* Single Clean Receipt Layout */
     .receipt-container {
-      background: #fff;
-      color: #000;
-      padding: 8px;
-      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #000000;
+      padding: 8px 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       font-size: 12px;
-      line-height: 1.2;
+      line-height: 1.25;
       width: 100%;
       box-sizing: border-box;
     }
@@ -364,54 +364,58 @@
 
     .receipt-header h2 {
       font-size: 14px;
-      margin: 0 0 4px 0;
-      font-weight: 800;
+      margin: 0 0 2px 0;
+      font-weight: 700;
       letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
     .receipt-header h3 {
-      font-size: 18px;
-      margin: 4px 0;
-      font-weight: 800;
+      font-size: 16px;
+      margin: 2px 0;
+      font-weight: 700;
     }
 
     .receipt-meta {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 11px;
-      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #222;
     }
 
     .receipt-divider {
-      border-top: 2px dashed #000;
-      margin: 6px 0;
+      border-top: 1px dashed #000000;
+      margin: 5px 0;
     }
 
     .receipt-table-header {
       display: flex;
-      font-weight: 800;
-      font-size: 12px;
+      font-weight: 600;
+      font-size: 11px;
       padding: 2px 0;
+      text-transform: uppercase;
     }
 
-    .col-qty { width: 30px; }
-    .col-item { flex: 1; padding-right: 5px; }
-    .col-price { width: 60px; text-align: right; }
+    .col-qty { width: 28px; font-weight: 600; }
+    .col-item { flex: 1; padding-right: 4px; }
+    .col-price { width: 62px; text-align: right; }
 
     .receipt-row {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 3px;
-      font-weight: 600;
+      margin-bottom: 2px;
+      font-size: 11px;
+      font-weight: 500;
     }
 
     .item-notes {
       font-size: 10px;
-      color: #333;
-      margin-left: 30px;
-      font-weight: bold;
-      margin-bottom: 2px;
+      color: #222222;
+      margin-left: 28px;
+      font-weight: 500;
+      margin-bottom: 3px;
     }
 
     .receipt-total-section {
@@ -422,9 +426,9 @@
     .receipt-total-row {
       display: flex;
       justify-content: flex-end;
-      gap: 15px;
-      font-size: 13px;
-      font-weight: 800;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 600;
       margin-top: 2px;
     }
 
@@ -483,11 +487,6 @@
 
       .modal-actions, .no-print {
         display: none !important;
-      }
-
-      .page-break {
-        page-break-after: always;
-        break-after: page;
       }
     }
   </style>
@@ -596,46 +595,26 @@
       </div>
       <div id="report-summary-body" style="font-size: 14px; line-height: 1.6;"></div>
       <div style="margin-top: 20px; display: flex; gap: 10px;">
-        <button class="checkout-btn" onclick="window.print()">Print Closing Report</button>
+        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Closing Report</button>
         <button class="checkout-btn" style="background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
       </div>
     </div>
   </div>
 
-  <!-- Receipt & Kitchen Dual Print Modal -->
+  <!-- Single Receipt Print Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; padding: 0;">
       
-      <!-- TICKET 1: KITCHEN SLIP -->
-      <div class="receipt-container page-break">
-        <div class="receipt-header">
-          <h2>** KITCHEN TICKET **</h2>
-          <h3 id="kitchen-order-id">ORDER #1</h3>
-        </div>
-        <div class="receipt-meta">
-          <span class="print-date"></span>
-          <span>BARISTA COPY</span>
-        </div>
-        <div class="receipt-divider"></div>
-        <div class="receipt-table-header">
-          <div class="col-qty">Qty</div>
-          <div class="col-item">Item & Customizations</div>
-        </div>
-        <div class="receipt-divider"></div>
-        <div id="kitchen-body"></div>
-      </div>
-
-      <!-- TICKET 2: CUSTOMER RECEIPT -->
       <div class="receipt-container">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
           <div class="receipt-divider"></div>
-          <h3 id="customer-order-id">ORDER #1</h3>
+          <h3 id="receipt-order-id">ORDER #1</h3>
         </div>
 
         <div class="receipt-meta">
           <span class="print-date"></span>
-          <span id="customer-payment-type">K-NET</span>
+          <span id="receipt-payment-type">K-NET</span>
         </div>
 
         <div class="receipt-divider"></div>
@@ -648,7 +627,7 @@
 
         <div class="receipt-divider"></div>
 
-        <div id="customer-body"></div>
+        <div id="receipt-body"></div>
 
         <div class="receipt-divider"></div>
 
@@ -657,7 +636,7 @@
             <span>Sub Total</span>
             <span id="receipt-subtotal">0.000</span>
           </div>
-          <div class="receipt-total-row" style="font-size: 15px;">
+          <div class="receipt-total-row" style="font-size: 14px; font-weight: 700;">
             <span>TOTAL</span>
             <span id="receipt-total">KWD 0.000</span>
           </div>
@@ -665,7 +644,7 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" onclick="window.print()">Print Tickets</button>
+        <button class="checkout-btn" onclick="triggerSequentialPrint()">Print Tickets (x2)</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
@@ -730,7 +709,6 @@
       { id: 409, name: "Brownie", category: "sweets", price: 1.500, customizable: false }
     ];
 
-    // Load state immediately from localStorage so page reload loses NOTHING
     let cart = JSON.parse(localStorage.getItem('south_current_cart') || '[]');
     let currentItemToAdd = null;
     let selectedOptions = { milk: 'Full Fat', sugar: 'Normal Sweetness' };
@@ -885,28 +863,14 @@
       const fullDateStr = `${dateStr}  ${timeStr}`;
 
       let total = 0;
-      const kitchenBody = document.getElementById('kitchen-body');
-      const customerBody = document.getElementById('customer-body');
-      kitchenBody.innerHTML = '';
-      customerBody.innerHTML = '';
+      const receiptBody = document.getElementById('receipt-body');
+      receiptBody.innerHTML = '';
 
       cart.forEach(item => {
         const itemTotal = item.price * item.qty;
         total += itemTotal;
 
-        // Kitchen Line Item
-        kitchenBody.innerHTML += `
-          <div style="margin-bottom: 6px;">
-            <div class="receipt-row">
-              <div class="col-qty">${item.qty}x</div>
-              <div class="col-item">${item.name}</div>
-            </div>
-            ${item.notes ? `<div class="item-notes">> ${item.notes}</div>` : ''}
-          </div>
-        `;
-
-        // Customer Line Item
-        customerBody.innerHTML += `
+        receiptBody.innerHTML += `
           <div>
             <div class="receipt-row">
               <div class="col-qty">${item.qty}</div>
@@ -932,13 +896,34 @@
 
       // Render details into receipt fields
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
-      document.getElementById('kitchen-order-id').innerText = 'ORDER #' + orderCounter;
-      document.getElementById('customer-order-id').innerText = 'ORDER #' + orderCounter;
-      document.getElementById('customer-payment-type').innerText = selectedPayment;
+      document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
+      document.getElementById('receipt-payment-type').innerText = selectedPayment;
       document.getElementById('receipt-subtotal').innerText = total.toFixed(3);
       document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
       
       document.getElementById('receiptModal').style.display = 'flex';
+
+      // Automatically trigger 2 sequential prints upon checkout
+      triggerSequentialPrint();
+    }
+
+    // Function to handle printing twice sequentially
+    function triggerSequentialPrint() {
+      let printCount = 0;
+
+      function handleAfterPrint() {
+        printCount++;
+        if (printCount < 2) {
+          setTimeout(() => {
+            window.print();
+          }, 300);
+        } else {
+          window.removeEventListener('afterprint', handleAfterPrint);
+        }
+      }
+
+      window.addEventListener('afterprint', handleAfterPrint);
+      window.print();
     }
 
     function closeReceipt() {
