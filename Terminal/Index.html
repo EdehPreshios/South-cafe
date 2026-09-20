@@ -349,21 +349,21 @@
     .receipt-container {
       background: #ffffff;
       color: #000000;
-      padding: 8px 10px;
+      padding: 6px 8px;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      font-size: 12px;
-      line-height: 1.25;
+      font-size: 11px;
+      line-height: 1.2;
       width: 100%;
       box-sizing: border-box;
     }
 
     .receipt-header {
       text-align: center;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .receipt-header h2 {
-      font-size: 14px;
+      font-size: 13px;
       margin: 0 0 2px 0;
       font-weight: 700;
       letter-spacing: 0.5px;
@@ -372,7 +372,7 @@
     }
 
     .receipt-header h3 {
-      font-size: 15px;
+      font-size: 14px;
       margin: 2px 0;
       font-weight: 700;
       color: #000000;
@@ -382,59 +382,65 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
-      font-size: 11px;
-      font-weight: 500;
+      font-size: 10px;
+      font-weight: 600;
       color: #000000;
     }
 
     .receipt-divider {
       border-top: 1px dashed #000000;
-      margin: 6px 0;
+      margin: 4px 0;
     }
 
     .receipt-table-header {
       display: flex;
-      font-weight: 600;
-      font-size: 11px;
+      font-weight: 700;
+      font-size: 10px;
       padding: 2px 0;
       text-transform: uppercase;
       color: #000000;
     }
 
-    .col-qty { width: 28px; font-weight: 600; }
-    .col-item { flex: 1; padding-right: 4px; }
-    .col-price { width: 62px; text-align: right; }
+    .col-qty { width: 22px; font-weight: 700; }
+    .col-item { flex: 1; padding-right: 2px; }
+    .col-price { width: 50px; text-align: right; }
 
     .receipt-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
-      font-size: 11px;
+      margin-bottom: 2px;
+      font-size: 10px;
       font-weight: 500;
       color: #000000;
     }
 
     .item-notes {
-      font-size: 10px;
+      font-size: 9px;
       color: #000000;
-      margin-left: 28px;
-      font-weight: 500;
-      margin-bottom: 3px;
+      margin-left: 22px;
+      font-weight: 600;
+      margin-bottom: 2px;
     }
 
     .receipt-total-section {
-      margin-top: 6px;
+      margin-top: 4px;
       text-align: right;
     }
 
     .receipt-total-row {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       margin-top: 2px;
       color: #000000;
+    }
+
+    .page-break {
+      page-break-before: always !important;
+      break-before: page !important;
+      margin-top: 15px;
     }
 
     /* Print Formatting Rules */
@@ -477,7 +483,7 @@
       }
 
       .receipt-container {
-        padding: 8px 10px !important;
+        padding: 4px 6px !important;
         margin: 0 !important;
         width: 100% !important;
       }
@@ -543,7 +549,7 @@
           <span>Total</span>
           <span id="cart-total">0.000 KD</span>
         </div>
-        <button class="checkout-btn" onclick="processCheckout()">Checkout & Print</button>
+        <button class="checkout-btn" onclick="processCheckout()">Checkout & Print (2 Copies)</button>
       </div>
     </div>
   </div>
@@ -654,47 +660,91 @@
     </div>
   </div>
 
-  <!-- Single Receipt Print Modal -->
+  <!-- Double Receipt Print Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; padding: 0;">
-      <div class="receipt-container">
-        <div class="receipt-header">
-          <h2>SOUTH SPECIALTY COFFEE</h2>
-          <div class="receipt-divider"></div>
-          <h3 id="receipt-order-id">ORDER #1</h3>
-        </div>
-
-        <div class="receipt-meta">
-          <span class="print-date"></span>
-          <span id="receipt-payment-type">K-NET</span>
-        </div>
-
-        <div class="receipt-divider"></div>
-
-        <div class="receipt-table-header">
-          <div class="col-qty">Qty</div>
-          <div class="col-item">Item</div>
-          <div class="col-price">Price</div>
-        </div>
-
-        <div class="receipt-divider"></div>
-        <div id="receipt-body"></div>
-        <div class="receipt-divider"></div>
-
-        <div class="receipt-total-section">
-          <div class="receipt-total-row">
-            <span>Sub Total</span>
-            <span id="receipt-subtotal">0.000</span>
+      <div id="receipt-print-wrapper">
+        <!-- Copy 1: Customer Receipt -->
+        <div class="receipt-container">
+          <div class="receipt-header">
+            <h2>SOUTH SPECIALTY COFFEE</h2>
+            <div style="font-size: 10px; font-weight: bold;">CUSTOMER COPY</div>
+            <div class="receipt-divider"></div>
+            <h3 class="receipt-order-id">ORDER #1</h3>
           </div>
-          <div class="receipt-total-row" style="font-size: 14px; font-weight: 700;">
-            <span>TOTAL</span>
-            <span id="receipt-total">KWD 0.000</span>
+
+          <div class="receipt-meta">
+            <span class="print-date"></span>
+            <span class="receipt-payment-type">K-NET</span>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-table-header">
+            <div class="col-qty">QTY</div>
+            <div class="col-item">ITEM</div>
+            <div class="col-price">PRICE</div>
+          </div>
+
+          <div class="receipt-divider"></div>
+          <div class="receipt-body"></div>
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-total-section">
+            <div class="receipt-total-row">
+              <span>Sub Total</span>
+              <span class="receipt-subtotal">0.000</span>
+            </div>
+            <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
+              <span>TOTAL</span>
+              <span class="receipt-total">KWD 0.000</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- Copy 2: Barista / Kitchen Ticket -->
+        <div class="receipt-container">
+          <div class="receipt-header">
+            <h2>SOUTH SPECIALTY COFFEE</h2>
+            <div style="font-size: 10px; font-weight: bold;">BARISTA / KITCHEN COPY</div>
+            <div class="receipt-divider"></div>
+            <h3 class="receipt-order-id">ORDER #1</h3>
+          </div>
+
+          <div class="receipt-meta">
+            <span class="print-date"></span>
+            <span class="receipt-payment-type">K-NET</span>
+          </div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-table-header">
+            <div class="col-qty">QTY</div>
+            <div class="col-item">ITEM</div>
+            <div class="col-price">PRICE</div>
+          </div>
+
+          <div class="receipt-divider"></div>
+          <div class="receipt-body"></div>
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-total-section">
+            <div class="receipt-total-row">
+              <span>Sub Total</span>
+              <span class="receipt-subtotal">0.000</span>
+            </div>
+            <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
+              <span>TOTAL</span>
+              <span class="receipt-total">KWD 0.000</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" onclick="triggerPrint()">Print Ticket</button>
+        <button class="checkout-btn" onclick="triggerPrint()">Print Both Tickets</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
@@ -947,14 +997,13 @@
       const fullDateStr = `${dateStr}  ${timeStr}`;
 
       let total = 0;
-      const receiptBody = document.getElementById('receipt-body');
-      receiptBody.innerHTML = '';
+      let bodyHtml = '';
 
       cart.forEach(item => {
         const itemTotal = item.price * item.qty;
         total += itemTotal;
 
-        receiptBody.innerHTML += `
+        bodyHtml += `
           <div>
             <div class="receipt-row">
               <div class="col-qty">${item.qty}</div>
@@ -977,14 +1026,22 @@
 
       orderHistory.push(orderRecord);
 
+      // Populate both copies in the DOM
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
-      document.getElementById('receipt-order-id').innerText = 'ORDER #' + orderCounter;
-      document.getElementById('receipt-payment-type').innerText = selectedPayment;
-      document.getElementById('receipt-subtotal').innerText = total.toFixed(3);
-      document.getElementById('receipt-total').innerText = 'KWD ' + total.toFixed(3);
+      document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = 'ORDER #' + orderCounter);
+      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = selectedPayment);
+      document.querySelectorAll('.receipt-subtotal').forEach(el => el.innerText = total.toFixed(3));
+      document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
+      
+      document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
       
       document.getElementById('receiptModal').style.display = 'flex';
       
+      // Auto-trigger print for 2 copies
+      setTimeout(() => {
+        triggerPrint();
+      }, 100);
+
       // Clear order state
       orderCounter++;
       cart = [];
