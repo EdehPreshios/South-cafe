@@ -15,6 +15,8 @@
       --border-color: #2A2E39;
       --danger: #D32F2F;
       --success: #2E7D32;
+      --warning-yellow: #D4A017;
+      --warning-bg: #2C2612;
     }
 
     * {
@@ -50,13 +52,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       padding-bottom: 15px;
       border-bottom: 1px solid var(--border-color);
     }
 
     .header h1 {
-      font-size: 24px;
+      font-size: 22px;
       letter-spacing: 2px;
       color: var(--accent-light);
     }
@@ -64,6 +66,17 @@
     .nav-actions {
       display: flex;
       gap: 10px;
+      align-items: center;
+    }
+
+    .sales-badge {
+      background: #252830;
+      border: 1px solid var(--accent-light);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: var(--accent-light);
+      font-size: 13px;
     }
 
     .action-btn-sm {
@@ -81,11 +94,68 @@
       border-color: var(--accent-light);
     }
 
+    /* Order Mode Switcher */
+    .mode-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .mode-btn.active {
+      background: var(--accent);
+      color: #FFF;
+      border-color: var(--accent-light);
+    }
+
+    /* Dine-In Tables Bar */
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 5px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .table-card.active {
+      border-color: var(--accent-light);
+      box-shadow: 0 0 5px var(--accent-light);
+    }
+
+    .table-card.has-unpaid {
+      background: var(--warning-bg) !important;
+      border-color: var(--warning-yellow) !important;
+      color: var(--warning-yellow) !important;
+    }
+
     /* Categories Navigation */
     .categories {
       display: flex;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       overflow-x: auto;
       padding-bottom: 5px;
     }
@@ -94,7 +164,7 @@
       background: var(--card-bg);
       color: var(--text-main);
       border: 1px solid var(--border-color);
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
@@ -111,8 +181,8 @@
     /* Items Grid */
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
     }
 
     .item-card {
@@ -125,7 +195,7 @@
       justify-content: space-between;
       cursor: pointer;
       transition: transform 0.15s ease, border-color 0.15s ease;
-      min-height: 110px;
+      min-height: 100px;
     }
 
     .item-card:hover {
@@ -135,14 +205,14 @@
 
     .item-title {
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       margin-bottom: 8px;
     }
 
     .item-price {
       color: var(--accent-light);
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     /* Cart Sidebar */
@@ -212,28 +282,6 @@
       border-top: 1px solid var(--border-color);
     }
 
-    .payment-toggle {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .pay-btn {
-      flex: 1;
-      padding: 10px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .pay-btn.selected {
-      background: var(--accent);
-      border-color: var(--accent-light);
-    }
-
     .total-row {
       display: flex;
       justify-content: space-between;
@@ -247,12 +295,13 @@
       background: var(--accent);
       color: white;
       border: none;
-      padding: 15px;
+      padding: 14px;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.2s;
+      margin-bottom: 8px;
     }
 
     .checkout-btn:hover {
@@ -278,7 +327,7 @@
       padding: 25px;
       border-radius: 12px;
       width: 90%;
-      max-width: 540px;
+      max-width: 520px;
       border: 1px solid var(--border-color);
       max-height: 90vh;
       overflow-y: auto;
@@ -315,6 +364,17 @@
     .opt-btn.selected {
       background: var(--accent);
       border-color: var(--accent-light);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      font-size: 15px;
+      margin-top: 5px;
     }
 
     /* History & Report Item Tables */
@@ -437,10 +497,6 @@
       color: #000000;
     }
 
-    .page-break {
-      display: none;
-    }
-
     /* Print Formatting Rules */
     @media print {
       @page {
@@ -481,7 +537,7 @@
       }
 
       .receipt-container {
-        padding: 4px 6px 25px 6px !important; /* Extra bottom padding so blade doesn't cut text */
+        padding: 4px 6px 25px 6px !important;
         margin: 0 !important;
         width: 100% !important;
       }
@@ -510,13 +566,23 @@
       <div class="header">
         <div>
           <h1>SOUTH SPECIALTY COFFEE</h1>
-          <span style="color: var(--text-muted);" id="order-number-display">Order #1</span>
+          <span style="color: var(--text-muted);" id="order-target-display">Walk-In Order</span>
         </div>
         <div class="nav-actions">
+          <div class="sales-badge" id="live-total-sales-display">Total Sales: 0.000 KD</div>
           <button class="action-btn-sm" onclick="openOrderHistory()">Order History</button>
           <button class="action-btn-sm" style="background: var(--accent); color: white;" onclick="openClosingReport()">Closing Report</button>
         </div>
       </div>
+
+      <!-- Mode Selector (Walk-In vs Dine-In) -->
+      <div class="mode-tabs">
+        <button class="mode-btn active" id="btn-mode-walkin" onclick="switchOrderMode('walkin')">Walk-In (Takeaway)</button>
+        <button class="mode-btn" id="btn-mode-dinein" onclick="switchOrderMode('dinein')">Dine-In (20 Tables)</button>
+      </div>
+
+      <!-- Dine-In Tables Grid (Hidden by default) -->
+      <div class="tables-grid" id="tables-container" style="display: none;"></div>
 
       <!-- Categories Navigation -->
       <div class="categories">
@@ -533,21 +599,25 @@
     <!-- Sidebar Cart -->
     <div class="cart-section">
       <div class="cart-header">
-        <h2>Current Order</h2>
+        <h2 id="cart-title">Walk-In Cart</h2>
         <button class="qty-btn" onclick="clearCart()">✕</button>
       </div>
       <div class="cart-items" id="cart-items"></div>
       <div class="cart-footer">
-        <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 6px;">Payment Method</label>
-        <div class="payment-toggle">
-          <button class="pay-btn selected" id="pay-knet" onclick="selectPayment('K-NET', this)">K-NET</button>
-          <button class="pay-btn" id="pay-cash" onclick="selectPayment('Cash', this)">Cash</button>
-        </div>
         <div class="total-row">
           <span>Total</span>
           <span id="cart-total">0.000 KD</span>
         </div>
-        <button class="checkout-btn" onclick="processCheckout()">Checkout & Print (2 Copies)</button>
+        
+        <!-- Dine-in open tab action -->
+        <button class="checkout-btn" id="save-tab-btn" style="background: var(--card-bg); border: 1px solid var(--warning-yellow); color: var(--warning-yellow); display: none;" onclick="sendOrderToKitchen()">
+          Send to Kitchen (Keep Tab Open)
+        </button>
+
+        <!-- Final Payment Action -->
+        <button class="checkout-btn" onclick="openPaymentModal()">
+          Pay & Close Order
+        </button>
       </div>
     </div>
   </div>
@@ -620,6 +690,43 @@
     </div>
   </div>
 
+  <!-- Payment Option & Split Payment Modal -->
+  <div class="modal" id="paymentModal">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
+      
+      <div class="options-group">
+        <label>Choose Method</label>
+        <div class="options-grid">
+          <button class="opt-btn selected" id="pay-opt-knet" onclick="setPaymentType('K-NET')">K-NET</button>
+          <button class="opt-btn" id="pay-opt-cash" onclick="setPaymentType('Cash')">Cash</button>
+          <button class="opt-btn" id="pay-opt-split" onclick="setPaymentType('Split')">Split (Cash + K-NET)</button>
+        </div>
+      </div>
+
+      <!-- Split Payment Calculation Area -->
+      <div id="split-calc-section" style="display: none; background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+          <span>Order Total:</span>
+          <strong id="split-total-display">0.000 KD</strong>
+        </div>
+        
+        <label style="font-size: 12px; color: var(--text-muted);">Cash Amount Paid (KD):</label>
+        <input type="number" step="0.050" min="0" class="input-field" id="cash-input" value="0.000" oninput="calculateSplitBalance()">
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 12px; color: var(--accent-light);">
+          <span>K-NET Balance Due:</span>
+          <strong id="knet-balance-display">0.000 KD</strong>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal('paymentModal')">Cancel</button>
+        <button class="checkout-btn" onclick="executeFinalCheckout()">Process Payment & Print</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Order History Modal -->
   <div class="modal" id="historyModal">
     <div class="modal-content">
@@ -658,7 +765,7 @@
     </div>
   </div>
 
-  <!-- Double Receipt Print Modal -->
+  <!-- Thermal Receipt Modal -->
   <div class="modal" id="receiptModal">
     <div class="modal-content" style="background: white; padding: 0;">
       <div id="receipt-print-wrapper">
@@ -697,6 +804,7 @@
               <span>TOTAL</span>
               <span class="receipt-total">KWD 0.000</span>
             </div>
+            <div class="receipt-payment-breakdown" style="font-size: 9px; font-weight: 600; margin-top: 3px;"></div>
           </div>
         </div>
 
@@ -740,7 +848,7 @@
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" onclick="triggerPrint()">Print Both Tickets</button>
+        <button class="checkout-btn" onclick="triggerPrint()">Print Tickets</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeReceipt()">Close</button>
       </div>
     </div>
@@ -800,7 +908,14 @@
       { id: 409, name: "Brownie", category: "sweets", price: 1.000, customizable: false }
     ];
 
-    let cart = JSON.parse(localStorage.getItem('south_current_cart') || '[]');
+    // System States
+    let currentMode = 'walkin'; // 'walkin' or 'dinein'
+    let selectedTable = 1;
+    
+    // Carts: walkin cart, and dinein open tabs object { tableNum: [cartItems] }
+    let walkinCart = JSON.parse(localStorage.getItem('south_walkin_cart') || '[]');
+    let dineinTabs = JSON.parse(localStorage.getItem('south_dinein_tabs') || '{}');
+    
     let currentItemToAdd = null;
     let selectedOptions = { 
       size: '8 oz',
@@ -809,42 +924,99 @@
       sugar: 'Normal Sweetness',
       temp: 'Standard Temp/Ice'
     };
-    let selectedPayment = localStorage.getItem('south_payment_method') || 'K-NET';
+
+    let paymentMethod = 'K-NET';
+    let splitCashAmount = 0;
+    let splitKnetAmount = 0;
+
     let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
     let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
 
     function saveState() {
       localStorage.setItem('south_order_counter', orderCounter);
       localStorage.setItem('south_order_history', JSON.stringify(orderHistory));
-      localStorage.setItem('south_current_cart', JSON.stringify(cart));
-      localStorage.setItem('south_payment_method', selectedPayment);
-      document.getElementById('order-number-display').innerText = 'Order #' + orderCounter;
+      localStorage.setItem('south_walkin_cart', JSON.stringify(walkinCart));
+      localStorage.setItem('south_dinein_tabs', JSON.stringify(dineinTabs));
+      
+      updateLiveTotalSales();
+      renderTablesGrid();
     }
 
-    function resetModalOptions() {
-      selectedOptions = { 
-        size: '8 oz',
-        shots: 'Double Shot',
-        milk: 'Full Fat', 
-        sugar: 'Normal Sweetness',
-        temp: 'Standard Temp/Ice'
-      };
+    function getCurrentActiveCart() {
+      if (currentMode === 'walkin') {
+        return walkinCart;
+      } else {
+        return dineinTabs[selectedTable] || [];
+      }
+    }
 
-      document.querySelectorAll('#size-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText.startsWith('8 oz'));
+    function setCurrentActiveCart(newCart) {
+      if (currentMode === 'walkin') {
+        walkinCart = newCart;
+      } else {
+        dineinTabs[selectedTable] = newCart;
+      }
+      saveState();
+      renderCart();
+    }
+
+    function updateLiveTotalSales() {
+      let totalSales = 0;
+      orderHistory.forEach(o => {
+        if (o.status === 'COMPLETED') totalSales += o.total;
       });
-      document.querySelectorAll('#shots-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText.startsWith('Double Shot'));
-      });
-      document.querySelectorAll('#milk-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText.startsWith('Full Fat'));
-      });
-      document.querySelectorAll('#sugar-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText.startsWith('Normal'));
-      });
-      document.querySelectorAll('#temp-group .opt-btn').forEach(b => {
-        b.classList.toggle('selected', b.innerText.startsWith('Standard'));
-      });
+      document.getElementById('live-total-sales-display').innerText = `Total Sales: ${totalSales.toFixed(3)} KD`;
+    }
+
+    function switchOrderMode(mode) {
+      currentMode = mode;
+      document.getElementById('btn-mode-walkin').classList.toggle('active', mode === 'walkin');
+      document.getElementById('btn-mode-dinein').classList.toggle('active', mode === 'dinein');
+
+      const tablesContainer = document.getElementById('tables-container');
+      const saveTabBtn = document.getElementById('save-tab-btn');
+
+      if (mode === 'dinein') {
+        tablesContainer.style.display = 'grid';
+        saveTabBtn.style.display = 'block';
+        document.getElementById('order-target-display').innerText = `Dine-In (Table #${selectedTable})`;
+        document.getElementById('cart-title').innerText = `Table #${selectedTable} Cart`;
+      } else {
+        tablesContainer.style.display = 'none';
+        saveTabBtn.style.display = 'none';
+        document.getElementById('order-target-display').innerText = `Walk-In Order`;
+        document.getElementById('cart-title').innerText = `Walk-In Cart`;
+      }
+
+      renderCart();
+    }
+
+    function renderTablesGrid() {
+      const container = document.getElementById('tables-container');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= 20; i++) {
+        const hasUnpaidCart = (dineinTabs[i] && dineinTabs[i].length > 0);
+        const isActive = (currentMode === 'dinein' && selectedTable === i);
+        
+        let classes = 'table-card';
+        if (isActive) classes += ' active';
+        if (hasUnpaidCart) classes += ' has-unpaid';
+
+        container.innerHTML += `
+          <div class="${classes}" onclick="selectTable(${i})">
+            T-${i}
+          </div>
+        `;
+      }
+    }
+
+    function selectTable(tableNum) {
+      selectedTable = tableNum;
+      document.getElementById('order-target-display').innerText = `Dine-In (Table #${selectedTable})`;
+      document.getElementById('cart-title').innerText = `Table #${selectedTable} Cart`;
+      renderTablesGrid();
+      renderCart();
     }
 
     function filterCategory(cat, btnElement) {
@@ -877,17 +1049,36 @@
       }
     }
 
+    function resetModalOptions() {
+      selectedOptions = { 
+        size: '8 oz',
+        shots: 'Double Shot',
+        milk: 'Full Fat', 
+        sugar: 'Normal Sweetness',
+        temp: 'Standard Temp/Ice'
+      };
+
+      document.querySelectorAll('#size-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('8 oz'));
+      });
+      document.querySelectorAll('#shots-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Double Shot'));
+      });
+      document.querySelectorAll('#milk-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Full Fat'));
+      });
+      document.querySelectorAll('#sugar-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Normal'));
+      });
+      document.querySelectorAll('#temp-group .opt-btn').forEach(b => {
+        b.classList.toggle('selected', b.innerText.startsWith('Standard'));
+      });
+    }
+
     function selectOpt(btn, group, val) {
       btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       selectedOptions[group] = val;
-    }
-
-    function selectPayment(method, btn) {
-      selectedPayment = method;
-      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      saveState();
     }
 
     function closeModal(id) {
@@ -898,25 +1089,19 @@
       let extra = 0;
       let notes = [];
 
-      // Size charges
       if (selectedOptions.size.includes('12 oz')) extra += 0.250;
       if (selectedOptions.size.includes('16 oz')) extra += 0.500;
       if (selectedOptions.size !== '8 oz') notes.push(selectedOptions.size.split(' ')[0] + ' ' + selectedOptions.size.split(' ')[1]);
 
-      // Shot charges
       if (selectedOptions.shots.includes('Extra Shot')) extra += 0.250;
       if (selectedOptions.shots !== 'Double Shot') notes.push(selectedOptions.shots.replace(' (+0.250 KD)', ''));
 
-      // Milk charges
       if (selectedOptions.milk.includes('Almond') || selectedOptions.milk.includes('Oat') || selectedOptions.milk.includes('Coconut')) {
         extra += 0.250;
       }
       if (selectedOptions.milk !== 'Full Fat') notes.push(selectedOptions.milk.replace(' (+0.250 KD)', ''));
 
-      // Sweetness level
       if (selectedOptions.sugar !== 'Normal Sweetness') notes.push(selectedOptions.sugar);
-
-      // Temperature / Ice profile
       if (selectedOptions.temp !== 'Standard Temp/Ice') notes.push(selectedOptions.temp);
 
       addToCart(currentItemToAdd, notes.join(', '), extra);
@@ -924,11 +1109,13 @@
     }
 
     function addToCart(item, notes, extraCost) {
-      const existing = cart.find(c => c.id === item.id && c.notes === notes);
+      let activeCart = getCurrentActiveCart();
+      const existing = activeCart.find(c => c.id === item.id && c.notes === notes);
+      
       if (existing) {
         existing.qty++;
       } else {
-        cart.push({
+        activeCart.push({
           id: item.id,
           name: item.name,
           price: item.price + extraCost,
@@ -936,29 +1123,27 @@
           qty: 1
         });
       }
-      saveState();
-      renderCart();
+      setCurrentActiveCart(activeCart);
     }
 
     function updateQty(index, change) {
-      cart[index].qty += change;
-      if (cart[index].qty <= 0) cart.splice(index, 1);
-      saveState();
-      renderCart();
+      let activeCart = getCurrentActiveCart();
+      activeCart[index].qty += change;
+      if (activeCart[index].qty <= 0) activeCart.splice(index, 1);
+      setCurrentActiveCart(activeCart);
     }
 
     function clearCart() {
-      cart = [];
-      saveState();
-      renderCart();
+      setCurrentActiveCart([]);
     }
 
     function renderCart() {
       const container = document.getElementById('cart-items');
       container.innerHTML = '';
       let total = 0;
+      const activeCart = getCurrentActiveCart();
 
-      cart.forEach((item, index) => {
+      activeCart.forEach((item, index) => {
         const itemTotal = item.price * item.qty;
         total += itemTotal;
         container.innerHTML += `
@@ -983,21 +1168,22 @@
       document.getElementById('cart-total').innerText = total.toFixed(3) + ' KD';
     }
 
-    function processCheckout() {
-      if (cart.length === 0) return alert('Please add items to cart first!');
-      
+    // Dine-In Open Tab: Send Order directly to Barista Kitchen printer without requesting payment yet
+    function sendOrderToKitchen() {
+      const activeCart = getCurrentActiveCart();
+      if (activeCart.length === 0) return alert('No items in tab to send!');
+
       const now = new Date();
       const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const fullDateStr = `${dateStr}  ${timeStr}`;
 
-      let total = 0;
       let bodyHtml = '';
+      let total = 0;
 
-      cart.forEach(item => {
+      activeCart.forEach(item => {
         const itemTotal = item.price * item.qty;
         total += itemTotal;
-
         bodyHtml += `
           <div>
             <div class="receipt-row">
@@ -1010,227 +1196,148 @@
         `;
       });
 
-      const orderRecord = {
-        id: orderCounter,
-        timestamp: fullDateStr,
-        items: JSON.parse(JSON.stringify(cart)),
-        total: total,
-        payment: selectedPayment,
-        status: 'COMPLETED'
-      };
-
-      orderHistory.push(orderRecord);
-
-      // Populate both copies in the DOM
+      // Show Kitchen Ticket Print Modal ONLY
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
-      document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = 'ORDER #' + orderCounter);
-      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = selectedPayment);
+      document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = `TABLE #${selectedTable} (OPEN TAB)`);
+      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = 'UNPAID');
       document.querySelectorAll('.receipt-subtotal').forEach(el => el.innerText = total.toFixed(3));
       document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
-      
       document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
-      
+
+      // Print Barista Ticket
+      document.getElementById('customer-receipt').style.display = 'none';
+      document.getElementById('barista-receipt').style.display = 'block';
       document.getElementById('receiptModal').style.display = 'flex';
-      
-      // Auto-trigger sequential print for physical ticket cut
-      setTimeout(() => {
-        triggerPrint();
-      }, 100);
 
-      // Clear order state
-      orderCounter++;
-      cart = [];
-      saveState();
-      renderCart();
+      setTimeout(() => { window.print(); }, 100);
     }
 
-    function triggerPrint() {
-      const customerCopy = document.getElementById('customer-receipt');
-      const baristaCopy = document.getElementById('barista-receipt');
+    // Modal Trigger for Checkout
+    function openPaymentModal() {
+      const activeCart = getCurrentActiveCart();
+      if (activeCart.length === 0) return alert('Cart is empty!');
 
-      // Step 1: Print Customer Copy only
-      baristaCopy.style.display = 'none';
-      customerCopy.style.display = 'block';
+      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      document.getElementById('split-total-display').innerText = total.toFixed(3) + ' KD';
+      document.getElementById('cash-input').value = '0.000';
+      setPaymentType('K-NET');
 
-      window.print();
-
-      // Step 2: Print Barista Copy after a short delay so thermal printer cuts ticket #1
-      setTimeout(() => {
-        customerCopy.style.display = 'none';
-        baristaCopy.style.display = 'block';
-
-        window.print();
-
-        // Reset visibility for screen display
-        setTimeout(() => {
-          customerCopy.style.display = 'block';
-          baristaCopy.style.display = 'block';
-        }, 500);
-      }, 1000);
+      document.getElementById('paymentModal').style.display = 'flex';
     }
 
-    function triggerPrintReport() {
-      window.print();
-    }
+    function setPaymentType(type) {
+      paymentMethod = type;
+      document.getElementById('pay-opt-knet').classList.toggle('selected', type === 'K-NET');
+      document.getElementById('pay-opt-cash').classList.toggle('selected', type === 'Cash');
+      document.getElementById('pay-opt-split').classList.toggle('selected', type === 'Split');
 
-    function closeReceipt() {
-      document.getElementById('receiptModal').style.display = 'none';
-    }
-
-    function openOrderHistory() {
-      const container = document.getElementById('history-container');
-      container.innerHTML = '';
-
-      if (orderHistory.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No orders recorded yet.</p>';
+      const splitSection = document.getElementById('split-calc-section');
+      if (type === 'Split') {
+        splitSection.style.display = 'block';
+        calculateSplitBalance();
       } else {
-        [...orderHistory].reverse().forEach(order => {
-          container.innerHTML += `
-            <div class="history-card">
-              <div>
-                <strong>Order #${order.id}</strong> - ${order.total.toFixed(3)} KD (${order.payment})
-                <br><span style="font-size: 11px; color: var(--text-muted);">${order.timestamp}</span>
-              </div>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
-                ${order.status === 'COMPLETED' ? `
-                  <button class="action-btn-sm" onclick="editOrder(${order.id})">Edit</button>
-                  <button class="action-btn-sm" style="background: var(--danger); border: none;" onclick="cancelOrder(${order.id})">Cancel/Refund</button>
-                ` : ''}
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      document.getElementById('historyModal').style.display = 'flex';
-    }
-
-    function cancelOrder(orderId) {
-      const pin = prompt("Enter Manager PIN to cancel order #" + orderId + ":");
-      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
-
-      const target = orderHistory.find(o => o.id === orderId);
-      if (target) {
-        target.status = 'CANCELED';
-        saveState();
-        openOrderHistory();
-        alert("Order #" + orderId + " has been canceled and marked as refunded.");
+        splitSection.style.display = 'none';
       }
     }
 
-    function editOrder(orderId) {
-      const pin = prompt("Enter Manager PIN to reopen and edit order #" + orderId + ":");
-      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+    function calculateSplitBalance() {
+      const activeCart = getCurrentActiveCart();
+      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      
+      let cashVal = parseFloat(document.getElementById('cash-input').value) || 0;
+      if (cashVal > total) cashVal = total;
+      
+      splitCashAmount = cashVal;
+      splitKnetAmount = total - cashVal;
 
-      const targetIndex = orderHistory.findIndex(o => o.id === orderId);
-      if (targetIndex !== -1) {
-        cart = JSON.parse(JSON.stringify(orderHistory[targetIndex].items));
-        selectedPayment = orderHistory[targetIndex].payment;
-        orderHistory.splice(targetIndex, 1);
-        saveState();
-        renderCart();
-        closeModal('historyModal');
-        alert("Order #" + orderId + " loaded into cart for editing.");
-      }
+      document.getElementById('knet-balance-display').innerText = splitKnetAmount.toFixed(3) + ' KD';
     }
 
-    function openClosingReport() {
-      const pin = prompt("Enter Manager PIN for Daily Closing Report:");
-      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
-
-      let totalSales = 0;
-      let knetSales = 0;
-      let cashSales = 0;
-      let canceledTotal = 0;
-      let completedCount = 0;
-      let canceledCount = 0;
+    function executeFinalCheckout() {
+      const activeCart = getCurrentActiveCart();
+      if (activeCart.length === 0) return;
 
       const now = new Date();
       const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const fullDateStr = `${dateStr}  ${timeStr}`;
 
-      orderHistory.forEach(o => {
-        if (o.status === 'COMPLETED') {
-          totalSales += o.total;
-          completedCount++;
-          if (o.payment === 'K-NET') knetSales += o.total;
-          if (o.payment === 'Cash') cashSales += o.total;
-        } else if (o.status === 'CANCELED') {
-          canceledTotal += o.total;
-          canceledCount++;
-        }
+      let total = 0;
+      let bodyHtml = '';
+
+      activeCart.forEach(item => {
+        const itemTotal = item.price * item.qty;
+        total += itemTotal;
+        bodyHtml += `
+          <div>
+            <div class="receipt-row">
+              <div class="col-qty">${item.qty}</div>
+              <div class="col-item">${item.name}</div>
+              <div class="col-price">${itemTotal.toFixed(3)}</div>
+            </div>
+            ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ''}
+          </div>
+        `;
       });
 
-      document.querySelectorAll('#closingReportModal .print-date').forEach(el => el.innerText = fullDateStr);
-
-      document.getElementById('report-summary-body').innerHTML = `
-        <div class="receipt-row">
-          <span>Total Orders Processed:</span>
-          <strong>${orderHistory.length}</strong>
-        </div>
-        <div class="receipt-row">
-          <span>Completed Orders:</span>
-          <strong>${completedCount}</strong>
-        </div>
-        <div class="receipt-row">
-          <span>Canceled/Refunded Orders:</span>
-          <strong>${canceledCount}</strong>
-        </div>
-
-        <div class="receipt-divider"></div>
-
-        <div class="receipt-row">
-          <span>K-NET Total:</span>
-          <strong>${knetSales.toFixed(3)} KWD</strong>
-        </div>
-        <div class="receipt-row">
-          <span>Cash Total:</span>
-          <strong>${cashSales.toFixed(3)} KWD</strong>
-        </div>
-        <div class="receipt-row">
-          <span>Refunded Value:</span>
-          <strong>${canceledTotal.toFixed(3)} KWD</strong>
-        </div>
-
-        <div class="receipt-divider"></div>
-
-        <div class="receipt-total-section">
-          <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
-            <span>NET REVENUE</span>
-            <span>KWD ${totalSales.toFixed(3)}</span>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('closingReportModal').style.display = 'flex';
-    }
-
-    function resetShiftData() {
-      const pin = prompt("Enter Manager PIN to CLEAR shift data and reset order count:");
-      if (pin !== MANAGER_PIN) return alert("Incorrect PIN.");
-
-      if (confirm("Are you sure you want to clear all order history for today?")) {
-        orderCounter = 1;
-        orderHistory = [];
-        cart = [];
-        saveState();
-        renderCart();
-        closeModal('closingReportModal');
-        alert("Shift reset complete.");
+      let pLabel = paymentMethod;
+      let pBreakdown = '';
+      if (paymentMethod === 'Split') {
+        pLabel = 'SPLIT (CASH + K-NET)';
+        pBreakdown = `Cash: ${splitCashAmount.toFixed(3)} KD | K-NET: ${splitKnetAmount.toFixed(3)} KD`;
       }
+
+      const orderRecord = {
+        id: orderCounter,
+        mode: currentMode === 'walkin' ? 'Walk-In' : `Dine-In (T-#${selectedTable})`,
+        timestamp: fullDateStr,
+        items: JSON.parse(JSON.stringify(activeCart)),
+        total: total,
+        payment: pLabel,
+        paymentBreakdown: pBreakdown,
+        status: 'COMPLETED'
+      };
+
+      orderHistory.push(orderRecord);
+
+      // Populate Print Receipt
+      document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
+      document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = `ORDER #${orderCounter} (${orderRecord.mode})`);
+      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = pLabel);
+      document.querySelectorAll('.receipt-subtotal').forEach(el => el.innerText = total.toFixed(3));
+      document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
+      document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
+      document.querySelectorAll('.receipt-payment-breakdown').forEach(el => el.innerText = pBreakdown);
+
+      closeModal('paymentModal');
+
+      // Unhide both receipts for complete printing
+      document.getElementById('customer-receipt').style.display = 'block';
+      document.getElementById('barista-receipt').style.display = 'block';
+      document.getElementById('receiptModal').style.display = 'flex';
+
+      setTimeout(() => { triggerPrint(); }, 100);
+
+      // Reset state for current mode
+      orderCounter++;
+      setCurrentActiveCart([]);
+      saveState();
     }
 
-    // App Initializer
-    saveState();
-    renderCart();
-    if (selectedPayment === 'Cash') {
-      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
-      document.getElementById('pay-cash').classList.add('selected');
-    }
-    const firstCatBtn = document.querySelector('.cat-btn');
-    filterCategory('hot', firstCatBtn);
-  </script>
-</body>
-</html>
+    function triggerPrint() {
+      const customerCopy = document.getElementById('customer-receipt');
+      const baristaCopy = document.getElementById('barista-receipt');
+
+      // Check if displaying both copies sequentially
+      if (customerCopy.style.display !== 'none' && baristaCopy.style.display !== 'none') {
+        baristaCopy.style.display = 'none';
+        window.print();
+
+        setTimeout(() => {
+          customerCopy.style.display = 'none';
+          baristaCopy.style.display = 'block';
+          window.print();
+
+          setTimeout(() => {
+            customerCopy.style.display = 'block';
+            baristaCopy.style.display = 'block
