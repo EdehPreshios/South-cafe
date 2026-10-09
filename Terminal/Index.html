@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -690,6 +690,21 @@
     </div>
   </div>
 
+  <!-- Edit Order Items Modal -->
+  <div class="modal" id="editOrderModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 id="edit-order-title">Edit Order Items</h3>
+        <button class="qty-btn" onclick="closeModal('editOrderModal')">✕</button>
+      </div>
+      <div id="edit-order-items-container" style="margin-bottom: 20px;"></div>
+      <div style="display: flex; gap: 10px;">
+        <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal('editOrderModal')">Cancel</button>
+        <button class="checkout-btn" onclick="saveEditedOrder()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Payment Option & Split Payment Modal -->
   <div class="modal" id="paymentModal">
     <div class="modal-content">
@@ -935,6 +950,9 @@
 
     let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
     let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
+    
+    let editingOrderId = null;
+    let tempEditingItems = [];
 
     function saveState() {
       localStorage.setItem('south_order_counter', orderCounter);
@@ -1380,6 +1398,7 @@
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
                 ${order.status === 'COMPLETED' ? `
+                  <button class="action-btn-sm" style="background: var(--card-bg); border-color: var(--accent-light);" onclick="openEditOrderModal(${order.id})">Edit</button>
                   <button class="action-btn-sm" style="background: var(--danger); border: none;" onclick="cancelOrder(${order.id})">Cancel</button>
                 ` : ''}
               </div>
@@ -1389,6 +1408,81 @@
       }
 
       document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function openEditOrderModal(orderId) {
+      const pin = prompt("Enter Manager PIN to edit order #" + orderId + ":");
+      if (pin !== MANAGER_PIN) return alert("Incorrect Manager PIN.");
+
+      const target = orderHistory.find(o => o.id === orderId);
+      if (!target) return;
+
+      editingOrderId = orderId;
+      tempEditingItems = JSON.parse(JSON.stringify(target.items));
+      
+      document.getElementById('edit-order-title').innerText = `Edit Order #${orderId} (${target.mode})`;
+      renderEditOrderItems();
+      
+      closeModal('historyModal');
+      document.getElementById('editOrderModal').style.display = 'flex';
+    }
+
+    function renderEditOrderItems() {
+      const container = document.getElementById('edit-order-items-container');
+      container.innerHTML = '';
+
+      if (tempEditingItems.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 10px;">All items removed. Saving will cancel this order.</p>';
+        return;
+      }
+
+      tempEditingItems.forEach((item, index) => {
+        const itemTotal = item.price * item.qty;
+        container.innerHTML += `
+          <div class="cart-item">
+            <div class="cart-item-header">
+              <span>${item.name}</span>
+              <span>${itemTotal.toFixed(3)} KD</span>
+            </div>
+            ${item.notes ? `<div class="cart-item-details">${item.notes}</div>` : ''}
+            <div class="cart-item-actions">
+              <span>${item.price.toFixed(3)} KD each</span>
+              <div>
+                <button class="qty-btn" onclick="updateEditQty(${index}, -1)">-</button>
+                <span style="margin: 0 8px;">${item.qty}</span>
+                <button class="qty-btn" onclick="updateEditQty(${index}, 1)">+</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateEditQty(index, change) {
+      tempEditingItems[index].qty += change;
+      if (tempEditingItems[index].qty <= 0) {
+        tempEditingItems.splice(index, 1);
+      }
+      renderEditOrderItems();
+    }
+
+    function saveEditedOrder() {
+      const target = orderHistory.find(o => o.id === editingOrderId);
+      if (!target) return;
+
+      if (tempEditingItems.length === 0) {
+        target.status = 'CANCELED';
+        target.items = [];
+        target.total = 0;
+      } else {
+        target.items = tempEditingItems;
+        target.total = tempEditingItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      }
+
+      saveState();
+      closeModal('editOrderModal');
+      openOrderHistory();
+      alert(`Order #${editingOrderId} updated successfully.`);
     }
 
     function cancelOrder(orderId) {
