@@ -366,7 +366,6 @@
       border-color: var(--accent-light);
     }
 
-    /* History & Report Item Tables */
     .history-list {
       display: flex;
       flex-direction: column;
@@ -394,7 +393,7 @@
     .status-completed { background: #1B5E20; color: #E8F5E9; }
     .status-canceled { background: #B71C1C; color: #FFEBEE; }
 
-    /* Single Clean Receipt Layout */
+    /* Clean Receipt Layout */
     .receipt-container {
       background: #ffffff;
       color: #000000;
@@ -486,7 +485,7 @@
       color: #000000;
     }
 
-    /* Print Formatting Rules */
+    /* Print Rules */
     @media print {
       @page {
         margin: 0 !important;
@@ -564,13 +563,13 @@
         </div>
       </div>
 
-      <!-- Mode Selector (Walk-In vs Dine-In) -->
+      <!-- Mode Selector -->
       <div class="mode-tabs">
         <button class="mode-btn active" id="btn-mode-walkin" onclick="switchOrderMode('walkin')">Walk-In (Takeaway)</button>
         <button class="mode-btn" id="btn-mode-dinein" onclick="switchOrderMode('dinein')">Dine-In (20 Tables)</button>
       </div>
 
-      <!-- Dine-In Tables Grid (Hidden by default) -->
+      <!-- Dine-In Tables Grid -->
       <div class="tables-grid" id="tables-container" style="display: none;"></div>
 
       <!-- Categories Navigation -->
@@ -731,26 +730,28 @@
       <div class="receipt-container">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
+          <div style="font-size: 10px; font-weight: bold;">SOUTH SPECIALTY COFFEE - ساوث للقهوة المختصة</div>
           <div class="receipt-divider"></div>
           <h3>DAILY CLOSING REPORT</h3>
+          <div style="font-size: 10px; font-weight: bold;">التقرير الختامي اليومي</div>
         </div>
 
         <div class="receipt-meta">
           <span class="print-date"></span>
-          <span>Z-REPORT</span>
+          <span>Z-REPORT / تقرير Z</span>
         </div>
 
         <div class="receipt-divider"></div>
         <div id="report-summary-body"></div>
         <div class="receipt-divider"></div>
-        <div style="font-weight: 700; margin-bottom: 4px; font-size: 11px;">COFFEE BEAN USAGE TRACKER</div>
+        <div style="font-weight: 700; margin-bottom: 4px; font-size: 11px;">COFFEE BEAN USAGE TRACKER / تتبع استهلاك حبوب القهوة</div>
         <div id="report-coffee-tracker"></div>
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
-        <button class="checkout-btn" style="flex: 1;" onclick="triggerPrintReport()">Print Closing Report</button>
-        <button class="checkout-btn" style="flex: 1; background: #2E7D32;" onclick="exportSalesReportToCSV()">Export to Excel (CSV)</button>
-        <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
+        <button class="checkout-btn" style="flex: 1;" onclick="triggerPrintReport()">Print Report</button>
+        <button class="checkout-btn" style="flex: 1; background: #2E7D32;" onclick="exportSalesReportToCSV()">Export Excel</button>
+        <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
     </div>
@@ -1446,15 +1447,12 @@
           o.items.forEach(item => {
             const menuItemRef = menuItems.find(m => m.name === item.name);
             if (menuItemRef && (menuItemRef.category === 'hot' || menuItemRef.category === 'cold')) {
-              // Exclude teas and matcha lattes as requested
+              // Exclude teas and matcha lattes from coffee bean calculations
               if (!item.name.includes("Tea") && !item.name.toLowerCase().includes("matcha")) {
                 totalCoffeeCups += item.qty;
                 
-                // V60 uses 20g per yield, standard espresso uses 18g per shot base
-                let baseGramsPerCup = 18;
-                if (item.name.toLowerCase().includes("v60")) {
-                  baseGramsPerCup = 20;
-                }
+                // Determine gram dosage: V60 uses 20g, others use 18g baseline
+                let baseGram = item.name.toLowerCase().includes("v60") ? 20 : 18;
 
                 let shotsMultiplier = 1;
                 if (item.notes && item.notes.includes("Extra Shot")) {
@@ -1462,8 +1460,8 @@
                 } else if (item.notes && item.notes.includes("Single Shot")) {
                   shotsMultiplier = 0.5;
                 }
-
-                totalCoffeeGramsUsed += (item.qty * baseGramsPerCup * shotsMultiplier);
+                
+                totalCoffeeGramsUsed += (item.qty * baseGram * shotsMultiplier);
               }
             }
           });
@@ -1480,26 +1478,26 @@
 
       document.getElementById('report-summary-body').innerHTML = `
         <div class="receipt-row">
-          <span>Total Orders Processed:</span>
+          <span>Total Orders Processed / إجمالي الطلبات:</span>
           <strong>${orderHistory.length}</strong>
         </div>
         <div class="receipt-row">
-          <span>Completed Orders:</span>
+          <span>Completed Orders / الطلبات المكتملة:</span>
           <strong>${completedCount}</strong>
         </div>
         <div class="receipt-row">
-          <span>Canceled Orders:</span>
+          <span>Canceled Orders / الطلبات الملغاة:</span>
           <strong>${canceledCount}</strong>
         </div>
 
         <div class="receipt-divider"></div>
 
         <div class="receipt-row">
-          <span>Total K-NET Sales:</span>
+          <span>Total K-NET Sales / إجمالي كي نت:</span>
           <strong>${knetSales.toFixed(3)} KWD</strong>
         </div>
         <div class="receipt-row">
-          <span>Total Cash Sales:</span>
+          <span>Total Cash Sales / إجمالي الكاش:</span>
           <strong>${cashSales.toFixed(3)} KWD</strong>
         </div>
 
@@ -1507,7 +1505,7 @@
 
         <div class="receipt-total-section">
           <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
-            <span>NET REVENUE</span>
+            <span>NET REVENUE / صافي الإيرادات</span>
             <span>KWD ${totalSales.toFixed(3)}</span>
           </div>
         </div>
@@ -1515,15 +1513,15 @@
 
       document.getElementById('report-coffee-tracker').innerHTML = `
         <div class="receipt-row">
-          <span>Total Coffee Cups Sold:</span>
+          <span>Total Coffee Cups / أكواب القهوة المباعة:</span>
           <strong>${totalCoffeeCups} Cups</strong>
         </div>
         <div class="receipt-row">
-          <span>Total Beans Consumed:</span>
+          <span>Beans Consumed / البن المستهلك:</span>
           <strong>${totalCoffeeGramsUsed.toFixed(0)} g</strong>
         </div>
         <div class="receipt-row" style="margin-top: 3px; font-weight: bold; color: #111;">
-          <span>Estimated Bags (1kg):</span>
+          <span>Estimated Bags / الأكياس المقدرة (1كجم):</span>
           <span>${bagsUsed} Bag(s) + ${leftoverGrams.toFixed(0)}g</span>
         </div>
       `;
