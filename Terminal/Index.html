@@ -366,6 +366,17 @@
       border-color: var(--accent-light);
     }
 
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
     .history-list {
       display: flex;
       flex-direction: column;
@@ -483,6 +494,41 @@
       font-weight: 700;
       margin-top: 2px;
       color: #000000;
+    }
+
+    /* Spacious Closing Report Specific Layout */
+    .spacious-report {
+      padding: 12px 10px;
+    }
+
+    .spacious-report .receipt-header h2 {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .spacious-report .receipt-header h3 {
+      font-size: 16px;
+      margin-top: 6px;
+    }
+
+    .spacious-report .receipt-meta {
+      font-size: 11px;
+      margin: 8px 0;
+    }
+
+    .spacious-report .receipt-divider {
+      margin: 10px 0;
+      border-top: 1.5px dashed #333;
+    }
+
+    .spacious-report .receipt-row {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .spacious-report .receipt-total-row {
+      font-size: 14px;
+      margin-top: 6px;
     }
 
     /* Print Rules */
@@ -693,7 +739,7 @@
     </div>
   </div>
 
-  <!-- Direct Payment Modal (K-NET / Cash) -->
+  <!-- Payment Option Modal (K-NET, Cash, Split) -->
   <div class="modal" id="paymentModal">
     <div class="modal-content">
       <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
@@ -701,8 +747,25 @@
       <div class="options-group">
         <label>Choose Method</label>
         <div class="options-grid">
-          <button class="opt-btn selected" id="pay-opt-knet" style="flex: 1; padding: 15px; font-size: 16px; font-weight: bold;" onclick="setPaymentType('K-NET')">K-NET</button>
-          <button class="opt-btn" id="pay-opt-cash" style="flex: 1; padding: 15px; font-size: 16px; font-weight: bold;" onclick="setPaymentType('Cash')">Cash</button>
+          <button class="opt-btn selected" id="pay-opt-knet" style="flex: 1;" onclick="setPaymentType('K-NET')">K-NET</button>
+          <button class="opt-btn" id="pay-opt-cash" style="flex: 1;" onclick="setPaymentType('Cash')">Cash</button>
+          <button class="opt-btn" id="pay-opt-split" style="flex: 1;" onclick="setPaymentType('Split')">Split (Cash + K-NET)</button>
+        </div>
+      </div>
+
+      <!-- Split Payment Calculator UI -->
+      <div id="split-calc-section" style="display: none; background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+          <span>Order Total:</span>
+          <strong id="split-total-display">0.000 KD</strong>
+        </div>
+        
+        <label style="font-size: 12px; color: var(--text-muted);">Cash Amount Paid (KD):</label>
+        <input type="number" step="0.050" min="0" class="input-field" id="cash-input" value="0.000" oninput="calculateSplitBalance()">
+        
+        <div style="display: flex; justify-content: space-between; margin-top: 12px; color: var(--accent-light);">
+          <span>K-NET Balance Due:</span>
+          <strong id="knet-balance-display">0.000 KD</strong>
         </div>
       </div>
 
@@ -727,13 +790,13 @@
   <!-- Closing Z-Report Modal -->
   <div class="modal" id="closingReportModal">
     <div class="modal-content" style="background: white; padding: 0;">
-      <div class="receipt-container">
+      <div class="receipt-container spacious-report">
         <div class="receipt-header">
           <h2>SOUTH SPECIALTY COFFEE</h2>
-          <div style="font-size: 10px; font-weight: bold;">SOUTH SPECIALTY COFFEE - ساوث للقهوة المختصة</div>
+          <div style="font-size: 11px; font-weight: bold; margin-bottom: 4px;">ساوث للقهوة المختصة</div>
           <div class="receipt-divider"></div>
           <h3>DAILY CLOSING REPORT</h3>
-          <div style="font-size: 10px; font-weight: bold;">التقرير الختامي اليومي</div>
+          <div style="font-size: 11px; font-weight: bold; margin-top: 2px;">التقرير الختامي اليومي</div>
         </div>
 
         <div class="receipt-meta">
@@ -744,7 +807,7 @@
         <div class="receipt-divider"></div>
         <div id="report-summary-body"></div>
         <div class="receipt-divider"></div>
-        <div style="font-weight: 700; margin-bottom: 4px; font-size: 11px;">COFFEE BEAN USAGE TRACKER / تتبع استهلاك حبوب القهوة</div>
+        <div style="font-weight: 700; margin-bottom: 6px; font-size: 12px;">COFFEE BEAN USAGE TRACKER <br><span style="font-size: 10px; font-weight: normal;">تتبع استهلاك حبوب القهوة</span></div>
         <div id="report-coffee-tracker"></div>
       </div>
 
@@ -796,6 +859,7 @@
               <span>TOTAL</span>
               <span class="receipt-total">KWD 0.000</span>
             </div>
+            <div class="receipt-payment-breakdown" style="font-size: 9px; font-weight: 600; margin-top: 3px;"></div>
           </div>
         </div>
 
@@ -920,6 +984,9 @@
     };
 
     let paymentMethod = 'K-NET';
+    let splitCashAmount = 0;
+    let splitKnetAmount = 0;
+
     let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
     let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
     
@@ -1202,7 +1269,12 @@
     function openPaymentModal() {
       const activeCart = getCurrentActiveCart();
       if (activeCart.length === 0) return alert('Cart is empty!');
+
+      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      document.getElementById('split-total-display').innerText = total.toFixed(3) + ' KD';
+      document.getElementById('cash-input').value = '0.000';
       setPaymentType('K-NET');
+
       document.getElementById('paymentModal').style.display = 'flex';
     }
 
@@ -1210,6 +1282,28 @@
       paymentMethod = type;
       document.getElementById('pay-opt-knet').classList.toggle('selected', type === 'K-NET');
       document.getElementById('pay-opt-cash').classList.toggle('selected', type === 'Cash');
+      document.getElementById('pay-opt-split').classList.toggle('selected', type === 'Split');
+
+      const splitSection = document.getElementById('split-calc-section');
+      if (type === 'Split') {
+        splitSection.style.display = 'block';
+        calculateSplitBalance();
+      } else {
+        splitSection.style.display = 'none';
+      }
+    }
+
+    function calculateSplitBalance() {
+      const activeCart = getCurrentActiveCart();
+      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      
+      let cashVal = parseFloat(document.getElementById('cash-input').value) || 0;
+      if (cashVal > total) cashVal = total;
+      
+      splitCashAmount = cashVal;
+      splitKnetAmount = total - cashVal;
+
+      document.getElementById('knet-balance-display').innerText = splitKnetAmount.toFixed(3) + ' KD';
     }
 
     function executeFinalCheckout() {
@@ -1239,13 +1333,32 @@
         `;
       });
 
+      let pLabel = paymentMethod;
+      let pBreakdown = '';
+      let allocatedCash = 0;
+      let allocatedKnet = 0;
+
+      if (paymentMethod === 'Split') {
+        pLabel = 'SPLIT (CASH + K-NET)';
+        pBreakdown = `Cash: ${splitCashAmount.toFixed(3)} KD | K-NET: ${splitKnetAmount.toFixed(3)} KD`;
+        allocatedCash = splitCashAmount;
+        allocatedKnet = splitKnetAmount;
+      } else if (paymentMethod === 'Cash') {
+        allocatedCash = total;
+      } else if (paymentMethod === 'K-NET') {
+        allocatedKnet = total;
+      }
+
       const orderRecord = {
         id: orderCounter,
         mode: currentMode === 'walkin' ? 'Walk-In' : `Dine-In (T-#${selectedTable})`,
         timestamp: fullDateStr,
         items: JSON.parse(JSON.stringify(activeCart)),
         total: total,
-        payment: paymentMethod,
+        payment: pLabel,
+        paymentBreakdown: pBreakdown,
+        cashPortion: allocatedCash,
+        knetPortion: allocatedKnet,
         status: 'COMPLETED'
       };
 
@@ -1253,10 +1366,11 @@
 
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
       document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = `ORDER #${orderCounter} (${orderRecord.mode})`);
-      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = paymentMethod);
+      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = pLabel);
       document.querySelectorAll('.receipt-subtotal').forEach(el => el.innerText = total.toFixed(3));
       document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
       document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
+      document.querySelectorAll('.receipt-payment-breakdown').forEach(el => el.innerText = pBreakdown);
 
       closeModal('paymentModal');
 
@@ -1315,6 +1429,7 @@
               <div>
                 <strong>Order #${order.id} (${order.mode})</strong> - ${order.total.toFixed(3)} KD
                 <br><span style="font-size: 11px; color: var(--text-muted);">${order.timestamp} | ${order.payment}</span>
+                ${order.paymentBreakdown ? `<br><span style="font-size: 10px; color: var(--accent-light);">${order.paymentBreakdown}</span>` : ''}
               </div>
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
@@ -1395,9 +1510,19 @@
         target.status = 'CANCELED';
         target.items = [];
         target.total = 0;
+        target.cashPortion = 0;
+        target.knetPortion = 0;
       } else {
         target.items = tempEditingItems;
-        target.total = tempEditingItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const newTotal = tempEditingItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        target.total = newTotal;
+        if (target.payment === 'Cash') {
+          target.cashPortion = newTotal;
+          target.knetPortion = 0;
+        } else if (target.payment === 'K-NET') {
+          target.knetPortion = newTotal;
+          target.cashPortion = 0;
+        }
       }
 
       saveState();
@@ -1413,6 +1538,8 @@
       const target = orderHistory.find(o => o.id === orderId);
       if (target) {
         target.status = 'CANCELED';
+        target.cashPortion = 0;
+        target.knetPortion = 0;
         saveState();
         openOrderHistory();
         alert("Order #" + orderId + " canceled.");
@@ -1441,17 +1568,21 @@
         if (o.status === 'COMPLETED') {
           totalSales += o.total;
           completedCount++;
-          if (o.payment === 'K-NET') knetSales += o.total;
-          else if (o.payment === 'Cash') cashSales += o.total;
+
+          if (o.cashPortion !== undefined && o.knetPortion !== undefined) {
+            cashSales += o.cashPortion;
+            knetSales += o.knetPortion;
+          } else {
+            if (o.payment === 'K-NET') knetSales += o.total;
+            else if (o.payment === 'Cash') cashSales += o.total;
+          }
 
           o.items.forEach(item => {
             const menuItemRef = menuItems.find(m => m.name === item.name);
             if (menuItemRef && (menuItemRef.category === 'hot' || menuItemRef.category === 'cold')) {
-              // Exclude teas and matcha lattes from coffee bean calculations
               if (!item.name.includes("Tea") && !item.name.toLowerCase().includes("matcha")) {
                 totalCoffeeCups += item.qty;
                 
-                // Determine gram dosage: V60 uses 20g, others use 18g baseline
                 let baseGram = item.name.toLowerCase().includes("v60") ? 20 : 18;
 
                 let shotsMultiplier = 1;
@@ -1504,7 +1635,7 @@
         <div class="receipt-divider"></div>
 
         <div class="receipt-total-section">
-          <div class="receipt-total-row" style="font-size: 13px; font-weight: 700;">
+          <div class="receipt-total-row" style="font-size: 14px; font-weight: 700;">
             <span>NET REVENUE / صافي الإيرادات</span>
             <span>KWD ${totalSales.toFixed(3)}</span>
           </div>
@@ -1520,7 +1651,7 @@
           <span>Beans Consumed / البن المستهلك:</span>
           <strong>${totalCoffeeGramsUsed.toFixed(0)} g</strong>
         </div>
-        <div class="receipt-row" style="margin-top: 3px; font-weight: bold; color: #111;">
+        <div class="receipt-row" style="margin-top: 6px; font-weight: bold; color: #111;">
           <span>Estimated Bags / الأكياس المقدرة (1كجم):</span>
           <span>${bagsUsed} Bag(s) + ${leftoverGrams.toFixed(0)}g</span>
         </div>
