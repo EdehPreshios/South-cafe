@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -366,17 +366,6 @@
       border-color: var(--accent-light);
     }
 
-    .input-field {
-      width: 100%;
-      padding: 12px;
-      background: var(--bg-dark);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      border-radius: 6px;
-      font-size: 15px;
-      margin-top: 5px;
-    }
-
     /* History & Report Item Tables */
     .history-list {
       display: flex;
@@ -705,7 +694,7 @@
     </div>
   </div>
 
-  <!-- Payment Option & Split Payment Modal -->
+  <!-- Direct Payment Modal (K-NET / Cash) -->
   <div class="modal" id="paymentModal">
     <div class="modal-content">
       <h3 style="margin-bottom: 15px;">Select Payment Method</h3>
@@ -713,29 +702,12 @@
       <div class="options-group">
         <label>Choose Method</label>
         <div class="options-grid">
-          <button class="opt-btn selected" id="pay-opt-knet" onclick="setPaymentType('K-NET')">K-NET</button>
-          <button class="opt-btn" id="pay-opt-cash" onclick="setPaymentType('Cash')">Cash</button>
-          <button class="opt-btn" id="pay-opt-split" onclick="setPaymentType('Split')">Split (Cash + K-NET)</button>
+          <button class="opt-btn selected" id="pay-opt-knet" style="flex: 1; padding: 15px; font-size: 16px; font-weight: bold;" onclick="setPaymentType('K-NET')">K-NET</button>
+          <button class="opt-btn" id="pay-opt-cash" style="flex: 1; padding: 15px; font-size: 16px; font-weight: bold;" onclick="setPaymentType('Cash')">Cash</button>
         </div>
       </div>
 
-      <!-- Split Payment Calculation Area -->
-      <div id="split-calc-section" style="display: none; background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-          <span>Order Total:</span>
-          <strong id="split-total-display">0.000 KD</strong>
-        </div>
-        
-        <label style="font-size: 12px; color: var(--text-muted);">Cash Amount Paid (KD):</label>
-        <input type="number" step="0.050" min="0" class="input-field" id="cash-input" value="0.000" oninput="calculateSplitBalance()">
-        
-        <div style="display: flex; justify-content: space-between; margin-top: 12px; color: var(--accent-light);">
-          <span>K-NET Balance Due:</span>
-          <strong id="knet-balance-display">0.000 KD</strong>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
+      <div style="display: flex; gap: 10px; margin-top: 25px;">
         <button class="checkout-btn" style="background: var(--card-bg); border: 1px solid var(--border-color);" onclick="closeModal('paymentModal')">Cancel</button>
         <button class="checkout-btn" onclick="executeFinalCheckout()">Process Payment & Print</button>
       </div>
@@ -770,10 +742,14 @@
 
         <div class="receipt-divider"></div>
         <div id="report-summary-body"></div>
+        <div class="receipt-divider"></div>
+        <div style="font-weight: 700; margin-bottom: 4px; font-size: 11px;">COFFEE BEAN USAGE TRACKER</div>
+        <div id="report-coffee-tracker"></div>
       </div>
 
       <div class="modal-actions no-print" style="display: flex; gap: 10px; padding: 15px; background: #1A1D24;">
         <button class="checkout-btn" style="flex: 1;" onclick="triggerPrintReport()">Print Closing Report</button>
+        <button class="checkout-btn" style="flex: 1; background: #2E7D32;" onclick="exportSalesReportToCSV()">Export to Excel (CSV)</button>
         <button class="checkout-btn" style="flex: 1; background: var(--danger);" onclick="resetShiftData()">Reset Shift Data</button>
         <button class="checkout-btn" style="background: #333;" onclick="closeModal('closingReportModal')">Close</button>
       </div>
@@ -819,7 +795,6 @@
               <span>TOTAL</span>
               <span class="receipt-total">KWD 0.000</span>
             </div>
-            <div class="receipt-payment-breakdown" style="font-size: 9px; font-weight: 600; margin-top: 3px;"></div>
           </div>
         </div>
 
@@ -889,7 +864,7 @@
       { id: 114, name: "Hot Chocolate", category: "hot", price: 1.850, customizable: true },
       { id: 115, name: "Black Tea", category: "hot", price: 0.500, customizable: false },
       { id: 116, name: "Green Tea", category: "hot", price: 0.500, customizable: false },
-      { id: 117, name: "Aerocano", category: "hot", price: 1.850, customizable: true },
+      { id: 117, name: "Aerocano", category: "hot", price: 1.500, customizable: true },
 
       { id: 201, name: "Iced Americano", category: "cold", price: 1.350, customizable: true },
       { id: 204, name: "Iced Latte", category: "cold", price: 1.600, customizable: true },
@@ -928,10 +903,9 @@
     ];
 
     // System States
-    let currentMode = 'walkin'; // 'walkin' or 'dinein'
+    let currentMode = 'walkin';
     let selectedTable = 1;
     
-    // Carts: walkin cart, and dinein open tabs object { tableNum: [cartItems] }
     let walkinCart = JSON.parse(localStorage.getItem('south_walkin_cart') || '[]');
     let dineinTabs = JSON.parse(localStorage.getItem('south_dinein_tabs') || '{}');
     
@@ -945,9 +919,6 @@
     };
 
     let paymentMethod = 'K-NET';
-    let splitCashAmount = 0;
-    let splitKnetAmount = 0;
-
     let orderCounter = parseInt(localStorage.getItem('south_order_counter') || '1');
     let orderHistory = JSON.parse(localStorage.getItem('south_order_history') || '[]');
     
@@ -965,11 +936,7 @@
     }
 
     function getCurrentActiveCart() {
-      if (currentMode === 'walkin') {
-        return walkinCart;
-      } else {
-        return dineinTabs[selectedTable] || [];
-      }
+      return currentMode === 'walkin' ? walkinCart : (dineinTabs[selectedTable] || []);
     }
 
     function setCurrentActiveCart(newCart) {
@@ -1190,7 +1157,6 @@
       document.getElementById('cart-total').innerText = total.toFixed(3) + ' KD';
     }
 
-    // Send Order to Kitchen (Dine-In Open Tab): Prints TWO tickets (1 Customer Bill Copy + 1 Kitchen Copy)
     function sendOrderToKitchen() {
       const activeCart = getCurrentActiveCart();
       if (activeCart.length === 0) return alert('No items in tab to send!');
@@ -1218,7 +1184,6 @@
         `;
       });
 
-      // Prepare DOM for Double Printing (Customer Bill + Kitchen Ticket)
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
       document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = `TABLE #${selectedTable} (OPEN TAB)`);
       document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = 'UNPAID / OPEN TAB');
@@ -1226,7 +1191,6 @@
       document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
       document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
 
-      // Unhide both receipts for double printing
       document.getElementById('customer-receipt').style.display = 'block';
       document.getElementById('barista-receipt').style.display = 'block';
       document.getElementById('receiptModal').style.display = 'flex';
@@ -1234,16 +1198,10 @@
       setTimeout(() => { triggerPrint(); }, 100);
     }
 
-    // Modal Trigger for Final Payment
     function openPaymentModal() {
       const activeCart = getCurrentActiveCart();
       if (activeCart.length === 0) return alert('Cart is empty!');
-
-      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      document.getElementById('split-total-display').innerText = total.toFixed(3) + ' KD';
-      document.getElementById('cash-input').value = '0.000';
       setPaymentType('K-NET');
-
       document.getElementById('paymentModal').style.display = 'flex';
     }
 
@@ -1251,31 +1209,8 @@
       paymentMethod = type;
       document.getElementById('pay-opt-knet').classList.toggle('selected', type === 'K-NET');
       document.getElementById('pay-opt-cash').classList.toggle('selected', type === 'Cash');
-      document.getElementById('pay-opt-split').classList.toggle('selected', type === 'Split');
-
-      const splitSection = document.getElementById('split-calc-section');
-      if (type === 'Split') {
-        splitSection.style.display = 'block';
-        calculateSplitBalance();
-      } else {
-        splitSection.style.display = 'none';
-      }
     }
 
-    function calculateSplitBalance() {
-      const activeCart = getCurrentActiveCart();
-      let total = activeCart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-      
-      let cashVal = parseFloat(document.getElementById('cash-input').value) || 0;
-      if (cashVal > total) cashVal = total;
-      
-      splitCashAmount = cashVal;
-      splitKnetAmount = total - cashVal;
-
-      document.getElementById('knet-balance-display').innerText = splitKnetAmount.toFixed(3) + ' KD';
-    }
-
-    // Final Payment Checkout: Prints ONE single customer receipt
     function executeFinalCheckout() {
       const activeCart = getCurrentActiveCart();
       if (activeCart.length === 0) return;
@@ -1303,45 +1238,33 @@
         `;
       });
 
-      let pLabel = paymentMethod;
-      let pBreakdown = '';
-      if (paymentMethod === 'Split') {
-        pLabel = 'SPLIT (CASH + K-NET)';
-        pBreakdown = `Cash: ${splitCashAmount.toFixed(3)} KD | K-NET: ${splitKnetAmount.toFixed(3)} KD`;
-      }
-
       const orderRecord = {
         id: orderCounter,
         mode: currentMode === 'walkin' ? 'Walk-In' : `Dine-In (T-#${selectedTable})`,
         timestamp: fullDateStr,
         items: JSON.parse(JSON.stringify(activeCart)),
         total: total,
-        payment: pLabel,
-        paymentBreakdown: pBreakdown,
+        payment: paymentMethod,
         status: 'COMPLETED'
       };
 
       orderHistory.push(orderRecord);
 
-      // Populate Print Receipt
       document.querySelectorAll('.print-date').forEach(el => el.innerText = fullDateStr);
       document.querySelectorAll('.receipt-order-id').forEach(el => el.innerText = `ORDER #${orderCounter} (${orderRecord.mode})`);
-      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = pLabel);
+      document.querySelectorAll('.receipt-payment-type').forEach(el => el.innerText = paymentMethod);
       document.querySelectorAll('.receipt-subtotal').forEach(el => el.innerText = total.toFixed(3));
       document.querySelectorAll('.receipt-total').forEach(el => el.innerText = 'KWD ' + total.toFixed(3));
       document.querySelectorAll('.receipt-body').forEach(el => el.innerHTML = bodyHtml);
-      document.querySelectorAll('.receipt-payment-breakdown').forEach(el => el.innerText = pBreakdown);
 
       closeModal('paymentModal');
 
-      // Hide barista copy so only ONE customer receipt prints
       document.getElementById('customer-receipt').style.display = 'block';
       document.getElementById('barista-receipt').style.display = 'none';
       document.getElementById('receiptModal').style.display = 'flex';
 
       setTimeout(() => { triggerPrint(); }, 100);
 
-      // Reset state for current mode
       orderCounter++;
       setCurrentActiveCart([]);
       saveState();
@@ -1351,7 +1274,6 @@
       const customerCopy = document.getElementById('customer-receipt');
       const baristaCopy = document.getElementById('barista-receipt');
 
-      // Sequential double printing for "Send to Kitchen" open tab mode
       if (customerCopy.style.display !== 'none' && baristaCopy.style.display !== 'none') {
         baristaCopy.style.display = 'none';
         window.print();
@@ -1367,7 +1289,6 @@
           }, 500);
         }, 1000);
       } else {
-        // Single receipt print for final checkout payment
         window.print();
       }
     }
@@ -1393,7 +1314,6 @@
               <div>
                 <strong>Order #${order.id} (${order.mode})</strong> - ${order.total.toFixed(3)} KD
                 <br><span style="font-size: 11px; color: var(--text-muted);">${order.timestamp} | ${order.payment}</span>
-                ${order.paymentBreakdown ? `<br><span style="font-size: 10px; color: var(--accent-light);">${order.paymentBreakdown}</span>` : ''}
               </div>
               <div style="display: flex; gap: 8px; align-items: center;">
                 <span class="status-tag ${order.status === 'COMPLETED' ? 'status-completed' : 'status-canceled'}">${order.status}</span>
@@ -1505,10 +1425,11 @@
       let totalSales = 0;
       let knetSales = 0;
       let cashSales = 0;
-      let splitSales = 0;
-      let canceledTotal = 0;
       let completedCount = 0;
       let canceledCount = 0;
+
+      let totalCoffeeCups = 0;
+      let totalCoffeeGramsUsed = 0;
 
       const now = new Date();
       const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -1521,12 +1442,39 @@
           completedCount++;
           if (o.payment === 'K-NET') knetSales += o.total;
           else if (o.payment === 'Cash') cashSales += o.total;
-          else splitSales += o.total;
+
+          o.items.forEach(item => {
+            const menuItemRef = menuItems.find(m => m.name === item.name);
+            if (menuItemRef && (menuItemRef.category === 'hot' || menuItemRef.category === 'cold')) {
+              // Exclude teas and matcha lattes as requested
+              if (!item.name.includes("Tea") && !item.name.toLowerCase().includes("matcha")) {
+                totalCoffeeCups += item.qty;
+                
+                // V60 uses 20g per yield, standard espresso uses 18g per shot base
+                let baseGramsPerCup = 18;
+                if (item.name.toLowerCase().includes("v60")) {
+                  baseGramsPerCup = 20;
+                }
+
+                let shotsMultiplier = 1;
+                if (item.notes && item.notes.includes("Extra Shot")) {
+                  shotsMultiplier = 2;
+                } else if (item.notes && item.notes.includes("Single Shot")) {
+                  shotsMultiplier = 0.5;
+                }
+
+                totalCoffeeGramsUsed += (item.qty * baseGramsPerCup * shotsMultiplier);
+              }
+            }
+          });
+
         } else if (o.status === 'CANCELED') {
-          canceledTotal += o.total;
           canceledCount++;
         }
       });
+
+      let bagsUsed = Math.floor(totalCoffeeGramsUsed / 1000);
+      let leftoverGrams = totalCoffeeGramsUsed % 1000;
 
       document.querySelectorAll('#closingReportModal .print-date').forEach(el => el.innerText = fullDateStr);
 
@@ -1547,16 +1495,12 @@
         <div class="receipt-divider"></div>
 
         <div class="receipt-row">
-          <span>Direct K-NET Total:</span>
+          <span>Total K-NET Sales:</span>
           <strong>${knetSales.toFixed(3)} KWD</strong>
         </div>
         <div class="receipt-row">
-          <span>Direct Cash Total:</span>
+          <span>Total Cash Sales:</span>
           <strong>${cashSales.toFixed(3)} KWD</strong>
-        </div>
-        <div class="receipt-row">
-          <span>Split Payments Total:</span>
-          <strong>${splitSales.toFixed(3)} KWD</strong>
         </div>
 
         <div class="receipt-divider"></div>
@@ -1569,7 +1513,54 @@
         </div>
       `;
 
+      document.getElementById('report-coffee-tracker').innerHTML = `
+        <div class="receipt-row">
+          <span>Total Coffee Cups Sold:</span>
+          <strong>${totalCoffeeCups} Cups</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Total Beans Consumed:</span>
+          <strong>${totalCoffeeGramsUsed.toFixed(0)} g</strong>
+        </div>
+        <div class="receipt-row" style="margin-top: 3px; font-weight: bold; color: #111;">
+          <span>Estimated Bags (1kg):</span>
+          <span>${bagsUsed} Bag(s) + ${leftoverGrams.toFixed(0)}g</span>
+        </div>
+      `;
+
       document.getElementById('closingReportModal').style.display = 'flex';
+    }
+
+    function exportSalesReportToCSV() {
+      if (orderHistory.length === 0) {
+        alert("No sales data available to export.");
+        return;
+      }
+
+      let csvContent = "Order ID,Order Mode,Date & Time,Payment Method,Status,Items Summary,Total (KWD)\n";
+
+      orderHistory.forEach(order => {
+        let itemDetails = order.items.map(i => `${i.qty}x ${i.name} (${i.notes || 'Standard'})`).join(" | ");
+        let orderId = `"#${order.id}"`;
+        let mode = `"${order.mode}"`;
+        let timestamp = `"${order.timestamp}"`;
+        let payment = `"${order.payment}"`;
+        let status = `"${order.status}"`;
+        let items = `"${itemDetails.replace(/"/g, '""')}"`;
+        let total = order.total.toFixed(3);
+
+        csvContent += `${orderId},${mode},${timestamp},${payment},${status},${items},${total}\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const today = new Date().toISOString().slice(0, 10);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `SOUTH_Sales_Report_${today}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function resetShiftData() {
