@@ -1583,7 +1583,7 @@
               if (!item.name.includes("Tea") && !item.name.toLowerCase().includes("matcha")) {
                 totalCoffeeCups += item.qty;
                 
-                let baseGram = item.name.toLowerCase().includes("v60") ? 20 : 18;
+                let baseGram = 20;
 
                 let shotsMultiplier = 1;
                 if (item.notes && item.notes.includes("Extra Shot")) {
