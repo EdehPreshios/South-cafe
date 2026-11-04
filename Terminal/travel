@@ -1,0 +1,1093 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  Search, MapPin, Calendar, Users, Star, Heart, Filter, ChevronRight, 
+  CheckCircle, ShieldCheck, Compass, DollarSign, Clock, User, X, Briefcase, 
+  Sparkles, Camera, Phone, Mail, ArrowRight, Award, Layers, Plus, Check, Trash2, Tag, Bookmark
+} from 'lucide-react';
+
+// Sample Destinations Data
+const DESTINATIONS = [
+  {
+    id: 'dest-1',
+    title: 'Santorini Sunset & Blue Domes Excursion',
+    location: 'Santorini, Greece',
+    category: 'Beach',
+    rating: 4.9,
+    reviewsCount: 128,
+    price: 1850,
+    duration: '7 Days',
+    image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['5-Star Luxury Resort', 'Roundtrip Flights', 'Sunset Catamaran Cruise', 'Breakfast Included', 'Private Airport Transfers'],
+    overview: 'Experience the magic of the Aegean Sea with whitewashed cliffs, mesmerizing caldera views, and world-class Mediterranean dining.',
+    itinerary: [
+      { day: 1, title: 'Arrival & Oia Sunset Dinner', description: 'Private transfer from airport to boutique resort, followed by a welcome dinner overlooking Oia.' },
+      { day: 2, title: 'Catamaran Sailing & Red Beach', description: 'Full day sailing across the volcanic caldera with snorkeling, BBQ lunch, and drinks on board.' },
+      { day: 3, title: 'Akrotiri Ruins & Wine Tasting', description: 'Guided archaeological walk followed by wine pairing at iconic cliffside wineries.' },
+      { day: '4-7', title: 'Leisure & Private Island Exploring', description: 'Relax by infinity pools or rent a vehicle to discover hidden beaches and local villages.' }
+    ],
+    badge: 'Best Seller'
+  },
+  {
+    id: 'dest-2',
+    title: 'Kyoto Sacred Temples & Cherry Blossoms',
+    location: 'Kyoto, Japan',
+    category: 'Cultural',
+    rating: 4.95,
+    reviewsCount: 210,
+    price: 2450,
+    duration: '9 Days',
+    image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['Traditional Ryokan Stay', 'Bullet Train Passes', 'Tea Ceremony Experience', 'Private English Guide', 'Daily Breakfast'],
+    overview: 'Immerse yourself in Japan’s cultural heart with ancient shrines, peaceful bamboo groves, and authentic culinary experiences.',
+    itinerary: [
+      { day: 1, title: 'Kyoto Welcome & Gion Evening Stroll', description: 'Check into traditional Ryokan, followed by a guided evening walking tour through historic Gion.' },
+      { day: 2, title: 'Fushimi Inari & Arashiyama Bamboo Grove', description: 'Early morning visit to thousand torii gates followed by bamboo forest explorations.' },
+      { day: 3, title: 'Private Tea Ceremony & Zen Gardens', description: 'Learn the art of Matcha with a certified master and meditate in Kinkaku-ji (Golden Pavilion).' },
+      { day: '4-9', title: 'Nara Day Trip & Bullet Train to Tokyo', description: 'Interact with friendly Nara deer before riding the Shinkansen to explore high-tech Tokyo.' }
+    ],
+    badge: 'Top Rated'
+  },
+  {
+    id: 'dest-3',
+    title: 'Swiss Alps Luxury Heli-Skiing & Spa Trek',
+    location: 'Zermatt, Switzerland',
+    category: 'Mountain',
+    rating: 4.88,
+    reviewsCount: 94,
+    price: 3200,
+    duration: '6 Days',
+    image: 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['Alpine Chalet Suite', 'Ski Pass & Equipment', 'Thermal Spa Access', 'Helicopter Glacier Tour', 'Gourmet Dinners'],
+    overview: 'Conquer snow-capped peaks beneath the iconic Matterhorn, combined with cozy fondue evenings and alpine wellness retreats.',
+    itinerary: [
+      { day: 1, title: 'Scenic Glacier Express Arrival', description: 'Panoramic train arrival into car-free Zermatt with fireside champagne welcome.' },
+      { day: 2, title: 'Matterhorn Skiing & Alpine Lunch', description: 'Guided ski passes on world-class slopes with traditional mountain hut dining.' },
+      { day: 3, title: 'Glacier Helicopter Tour', description: 'Thrilling flight over alpine crevasses followed by thermal hydrotherapy spas.' }
+    ],
+    badge: 'Luxury Select'
+  },
+  {
+    id: 'dest-4',
+    title: 'Serengeti Big Five Luxury Safari',
+    location: 'Serengeti, Tanzania',
+    category: 'Adventure',
+    rating: 4.98,
+    reviewsCount: 156,
+    price: 4100,
+    duration: '8 Days',
+    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['Luxury Tented Camps', '4x4 Game Drives', 'Hot Air Balloon Ride', 'Bush Dinners', 'All Meals & Drinks'],
+    overview: 'Witness the majestic wildlife migration and endless savannah views with expert trackers and five-star bush accommodations.',
+    itinerary: [
+      { day: 1, title: 'Bush Plane Arrival & Sunset Drive', description: 'Fly directly into Serengeti airstrip for an initial afternoon wildlife game drive.' },
+      { day: 2, title: 'Sunrise Hot Air Balloon Safari', description: 'Float over wildlife herds at dawn followed by champagne bush breakfast.' },
+      { day: 3, title: 'Ngorongoro Crater Exploration', description: 'Full day inside the world’s largest intact volcanic caldera spotting rhinos and lions.' }
+    ],
+    badge: 'Bucket List'
+  },
+  {
+    id: 'dest-5',
+    title: 'Amalfi Coast Villa & Yacht Escape',
+    location: 'Positano, Italy',
+    category: 'Luxury',
+    rating: 4.92,
+    reviewsCount: 88,
+    price: 2900,
+    duration: '7 Days',
+    image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['Private Cliffside Villa', 'Private Yacht Day Charter', 'Limoncello Tasting', 'Cooking Masterclass'],
+    overview: 'Sail past pastel villages perched on dramatic cliffs while enjoying authentic Italian gastronomy and crystal coastal waters.',
+    itinerary: [
+      { day: 1, title: 'Naples Pick-up to Positano', description: 'Private chauffeur along scenic coastal drives with arrival at private villa.' },
+      { day: 2, title: 'Capri Yacht Cruise', description: 'Private boat excursion to Capri, Blue Grotto, and hidden swimming coves.' }
+    ],
+    badge: 'Exclusive'
+  },
+  {
+    id: 'dest-6',
+    title: 'Machu Picchu & Sacred Valley Trek',
+    location: 'Cusco, Peru',
+    category: 'Adventure',
+    rating: 4.87,
+    reviewsCount: 142,
+    price: 1650,
+    duration: '6 Days',
+    image: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=800&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=800&q=80'
+    ],
+    inclusions: ['Vistadome Train Tickets', 'Boutique Hotel Accommodation', 'Inca Trail Trek', 'Licensed Guides'],
+    overview: 'Uncover ancient Incan mysteries nestled high in the Andes mountains, combining scenic train journeys with guided citadel treks.',
+    itinerary: [
+      { day: 1, title: 'Cusco Acclimatization & Markets', description: 'Explore colorful artisan markets and ancient stone alleyways of Cusco.' },
+      { day: 2, title: 'Sacred Valley & Pisac Ruins', description: 'Guided tour through agricultural terraces and traditional Quechua villages.' }
+    ],
+    badge: 'Popular'
+  }
+];
+
+export default function App() {
+  // Navigation & View States
+  const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'bookings' | 'custom'
+  
+  // Search & Filter States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [maxPrice, setMaxPrice] = useState(5000);
+  
+  // Interactive Modals & Saved Items
+  const [selectedDest, setSelectedDest] = useState(null);
+  const [wishlist, setWishlist] = useState(['dest-1', 'dest-4']);
+  const [bookedTrips, setBookedTrips] = useState([
+    {
+      id: 'BK-8942',
+      destination: DESTINATIONS[0],
+      dates: '2026-10-12 to 2026-10-19',
+      travelers: 2,
+      totalPrice: 3850,
+      status: 'Confirmed',
+      addons: ['Airport Transfer', 'Travel Insurance']
+    }
+  ]);
+  
+  // Booking Flow State inside Modal
+  const [bookingStep, setBookingStep] = useState(1); // 1: Details, 2: Checkout Form, 3: Confirmation
+  const [bookingForm, setBookingForm] = useState({
+    startDate: '',
+    travelers: 2,
+    addons: {
+      transfer: false,
+      insurance: true,
+      guide: false
+    },
+    fullName: '',
+    email: '',
+    phone: ''
+  });
+
+  // Custom Trip Builder Form State
+  const [customRequest, setCustomRequest] = useState({
+    destination: '',
+    budget: 3000,
+    travelers: 2,
+    dates: '',
+    style: 'Luxury',
+    notes: ''
+  });
+  const [customSubmitted, setCustomSubmitted] = useState(false);
+
+  // Filter Logic
+  const filteredDestinations = useMemo(() => {
+    return DESTINATIONS.filter(item => {
+      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            item.location.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
+      const matchesPrice = item.price <= maxPrice;
+      return matchesSearch && matchesCategory && matchesPrice;
+    });
+  }, [searchQuery, selectedCategory, maxPrice]);
+
+  // Wishlist Handler
+  const toggleWishlist = (id, e) => {
+    if (e) e.stopPropagation();
+    setWishlist(prev => 
+      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
+    );
+  };
+
+  // Open Destination Details Modal
+  const openDetails = (dest) => {
+    setSelectedDest(dest);
+    setBookingStep(1);
+    setBookingForm(prev => ({
+      ...prev,
+      startDate: new Date(Date.now() + 86400000 * 14).toISOString().split('T')[0]
+    }));
+  };
+
+  // Calculate dynamic booking price
+  const calculateTotal = () => {
+    if (!selectedDest) return 0;
+    let base = selectedDest.price * bookingForm.travelers;
+    if (bookingForm.addons.transfer) base += 120;
+    if (bookingForm.addons.insurance) base += 85 * bookingForm.travelers;
+    if (bookingForm.addons.guide) base += 250;
+    return base;
+  };
+
+  // Confirm Booking Submission
+  const handleConfirmBooking = (e) => {
+    e.preventDefault();
+    const newBooking = {
+      id: `BK-${Math.floor(1000 + Math.random() * 9000)}`,
+      destination: selectedDest,
+      dates: bookingForm.startDate,
+      travelers: bookingForm.travelers,
+      totalPrice: calculateTotal(),
+      status: 'Confirmed',
+      addons: Object.keys(bookingForm.addons).filter(key => bookingForm.addons[key])
+    };
+    setBookedTrips([newBooking, ...bookedTrips]);
+    setBookingStep(3);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+      
+      {/* Dynamic Header / Navigation */}
+      <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          
+          {/* Logo */}
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('explore')}>
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center shadow-lg shadow-amber-500/20 text-slate-950">
+              <Compass className="h-6 w-6 stroke-[2.5]" />
+            </div>
+            <div>
+              <span className="text-xl font-black tracking-wider text-white uppercase">Wander<span className="text-amber-400">Luxe</span></span>
+              <span className="block text-[10px] text-slate-400 font-medium tracking-widest uppercase">Bespoke Travel Co.</span>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 bg-slate-800/60 p-1.5 rounded-full border border-slate-700/50">
+            <button
+              onClick={() => setActiveTab('explore')}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'explore' 
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20' 
+                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+              }`}
+            >
+              Explore Packages
+            </button>
+            <button
+              onClick={() => setActiveTab('bookings')}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
+                activeTab === 'bookings' 
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20' 
+                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+              }`}
+            >
+              My Bookings
+              {bookedTrips.length > 0 && (
+                <span className={`px-2 py-0.5 text-xs rounded-full font-bold ${activeTab === 'bookings' ? 'bg-slate-950 text-amber-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                  {bookedTrips.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('custom')}
+              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'custom' 
+                  ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20' 
+                  : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
+              }`}
+            >
+              Custom Tailor Trip
+            </button>
+          </nav>
+
+          {/* User Actions */}
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setActiveTab('explore')}
+              className="relative p-2.5 rounded-full bg-slate-800 text-slate-300 hover:text-rose-400 hover:bg-slate-700 transition-colors border border-slate-700"
+              title="Saved Favorites"
+            >
+              <Heart className="h-5 w-5" />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-rose-500 text-white text-[11px] font-bold flex items-center justify-center border-2 border-slate-900">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+            <div className="hidden sm:flex items-center gap-3 pl-2 border-l border-slate-800">
+              <div className="h-9 w-9 rounded-full bg-slate-700 flex items-center justify-center border border-amber-500/40 text-amber-400 font-bold text-sm">
+                JD
+              </div>
+              <div className="text-left text-xs">
+                <span className="block font-semibold text-white">Julian Vance</span>
+                <span className="text-amber-400/90 font-medium text-[11px]">VIP Explorer</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* TAB 1: EXPLORE & SEARCH DESTINATIONS */}
+        {activeTab === 'explore' && (
+          <div className="space-y-10">
+            
+            {/* Hero Banner Section */}
+            <div className="relative rounded-3xl overflow-hidden bg-slate-800 border border-slate-700/60 p-8 sm:p-12 lg:p-16 shadow-2xl">
+              <div className="absolute inset-0 z-0 opacity-40">
+                <img 
+                  src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80" 
+                  alt="Hero Background" 
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+              </div>
+
+              <div className="relative z-10 max-w-2xl space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-widest">
+                  <Sparkles className="h-3.5 w-3.5" /> Handpicked Luxury Journeys
+                </div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+                  Discover Extraordinary <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500">Escapes.</span>
+                </h1>
+                <p className="text-slate-300 text-base sm:text-lg font-normal leading-relaxed">
+                  Tailored itineraries, five-star accommodations, and unforgettable global experiences curated by luxury travel specialists.
+                </p>
+              </div>
+
+              {/* Dynamic Interactive Filter Box */}
+              <div className="relative z-10 mt-8 bg-slate-900/90 backdrop-blur-xl p-4 sm:p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                  
+                  {/* Search Query */}
+                  <div className="md:col-span-5 relative">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Destination or Keyword</label>
+                    <div className="relative">
+                      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input 
+                        type="text"
+                        placeholder="Search Greece, Alps, Safari..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Category Pills Selector */}
+                  <div className="md:col-span-4">
+                    <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Category</label>
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className="w-full py-2.5 px-3 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
+                    >
+                      <option value="All">All Travel Styles</option>
+                      <option value="Beach">Beach & Island</option>
+                      <option value="Mountain">Mountain & Ski</option>
+                      <option value="Cultural">Cultural Heritage</option>
+                      <option value="Luxury">Luxury Hideaways</option>
+                      <option value="Adventure">Wildlife & Adventure</option>
+                    </select>
+                  </div>
+
+                  {/* Price Range Slider */}
+                  <div className="md:col-span-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Max Price</label>
+                      <span className="text-xs font-bold text-amber-400">${maxPrice.toLocaleString()}</span>
+                    </div>
+                    <input 
+                      type="range"
+                      min="1000"
+                      max="5000"
+                      step="250"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(Number(e.target.value))}
+                      className="w-full accent-amber-500 bg-slate-800 rounded-lg cursor-pointer h-2"
+                    />
+                  </div>
+
+                </div>
+
+                {/* Quick Category Badges */}
+                <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800">
+                  <span className="text-xs text-slate-400 font-medium">Quick Filter:</span>
+                  {['All', 'Beach', 'Mountain', 'Cultural', 'Luxury', 'Adventure'].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-colors ${
+                        selectedCategory === cat 
+                          ? 'bg-amber-500/20 border border-amber-500/40 text-amber-400' 
+                          : 'bg-slate-800 text-slate-400 border border-slate-700/50 hover:text-white'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Results Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-white tracking-tight">Curated Packages</h2>
+                <p className="text-slate-400 text-sm">Showing {filteredDestinations.length} available experiences</p>
+              </div>
+            </div>
+
+            {/* Grid of Destination Cards */}
+            {filteredDestinations.length === 0 ? (
+              <div className="text-center py-16 bg-slate-800/40 rounded-3xl border border-slate-800">
+                <Search className="h-12 w-12 text-slate-600 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-white">No experiences found</h3>
+                <p className="text-slate-400 text-sm max-w-md mx-auto mt-1">Try adjusting your filters, budget, or search terms to uncover available luxury packages.</p>
+                <button 
+                  onClick={() => { setSearchQuery(''); setSelectedCategory('All'); setMaxPrice(5000); }}
+                  className="mt-4 px-4 py-2 bg-amber-500 text-slate-950 font-bold rounded-xl text-xs"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredDestinations.map((dest) => {
+                  const isWishlisted = wishlist.includes(dest.id);
+                  return (
+                    <div 
+                      key={dest.id}
+                      onClick={() => openDetails(dest)}
+                      className="group bg-slate-800/80 rounded-2xl border border-slate-700/60 overflow-hidden hover:border-amber-500/40 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-amber-500/5 cursor-pointer flex flex-col justify-between"
+                    >
+                      <div>
+                        {/* Image Header & Badges */}
+                        <div className="relative h-56 overflow-hidden">
+                          <img 
+                            src={dest.image} 
+                            alt={dest.title} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                          
+                          {/* Top Tag Badges */}
+                          <div className="absolute top-3 left-3 flex items-center gap-2">
+                            <span className="px-3 py-1 bg-slate-900/80 backdrop-blur-md text-amber-400 font-bold text-xs rounded-full border border-amber-500/30">
+                              {dest.badge}
+                            </span>
+                            <span className="px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-slate-300 text-xs rounded-full border border-slate-700">
+                              {dest.duration}
+                            </span>
+                          </div>
+
+                          {/* Wishlist Toggle Button */}
+                          <button
+                            onClick={(e) => toggleWishlist(dest.id, e)}
+                            className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/60 backdrop-blur-md text-white hover:text-rose-500 transition-colors border border-slate-700/60"
+                          >
+                            <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                          </button>
+
+                          {/* Location Footer Overlay */}
+                          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs text-slate-300">
+                            <span className="flex items-center gap-1 font-medium bg-slate-900/70 backdrop-blur-md px-2.5 py-1 rounded-lg">
+                              <MapPin className="h-3.5 w-3.5 text-amber-400" /> {dest.location}
+                            </span>
+                            <span className="flex items-center gap-1 font-bold text-white bg-slate-900/70 backdrop-blur-md px-2.5 py-1 rounded-lg">
+                              <Star className="h-3.5 w-3.5 text-amber-400 fill-amber-400" /> {dest.rating}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Card Body */}
+                        <div className="p-5 space-y-4">
+                          <h3 className="font-bold text-lg text-white group-hover:text-amber-400 transition-colors line-clamp-1">
+                            {dest.title}
+                          </h3>
+                          <p className="text-slate-400 text-xs line-clamp-2 leading-relaxed">
+                            {dest.overview}
+                          </p>
+
+                          {/* Key Inclusions Highlights */}
+                          <div className="pt-2 border-t border-slate-700/50 flex flex-wrap gap-1.5">
+                            {dest.inclusions.slice(0, 3).map((inc, i) => (
+                              <span key={i} className="text-[11px] bg-slate-900/60 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700/40 flex items-center gap-1">
+                                <Check className="h-3 w-3 text-amber-400" /> {inc}
+                              </span>
+                            ))}
+                            {dest.inclusions.length > 3 && (
+                              <span className="text-[11px] text-amber-400 font-semibold px-2 py-1">
+                                +{dest.inclusions.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Action Footer */}
+                      <div className="px-5 py-4 bg-slate-900/50 border-t border-slate-700/50 flex items-center justify-between">
+                        <div>
+                          <span className="text-xs text-slate-400 block">Starting from</span>
+                          <span className="text-xl font-black text-white">${dest.price.toLocaleString()} <span className="text-xs font-normal text-slate-400">/ person</span></span>
+                        </div>
+                        <button className="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-400 font-bold text-xs border border-amber-500/30 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all duration-200 flex items-center gap-1">
+                          View Trip <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 2: MY BOOKINGS & SAVED WISHLIST */}
+        {activeTab === 'bookings' && (
+          <div className="space-y-8">
+            <div className="border-b border-slate-800 pb-5">
+              <h1 className="text-3xl font-black text-white tracking-tight">My Travel Dashboard</h1>
+              <p className="text-slate-400 text-sm mt-1">Manage your active reservations, view vouchers, and review saved dream trips.</p>
+            </div>
+
+            {/* Active Bookings Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Briefcase className="h-5 w-5 text-amber-400" /> Confirmed Itineraries ({bookedTrips.length})
+              </h2>
+
+              {bookedTrips.length === 0 ? (
+                <div className="bg-slate-800/40 border border-slate-800 rounded-2xl p-8 text-center space-y-3">
+                  <p className="text-slate-400 text-sm">You have no active bookings reserved at the moment.</p>
+                  <button onClick={() => setActiveTab('explore')} className="px-4 py-2 bg-amber-500 text-slate-950 text-xs font-bold rounded-xl">
+                    Explore Destinations
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4">
+                  {bookedTrips.map((b) => (
+                    <div key={b.id} className="bg-slate-800/90 border border-slate-700/70 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                      <div className="flex items-start sm:items-center gap-4">
+                        <img 
+                          src={b.destination.image} 
+                          alt={b.destination.title} 
+                          className="w-20 h-20 rounded-xl object-cover border border-slate-700 flex-shrink-0"
+                        />
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                              {b.id}
+                            </span>
+                            <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1">
+                              <CheckCircle className="h-3 w-3" /> {b.status}
+                            </span>
+                          </div>
+                          <h3 className="font-bold text-lg text-white">{b.destination.title}</h3>
+                          <p className="text-xs text-slate-400 flex items-center gap-3">
+                            <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5 text-slate-500" /> {b.destination.location}</span>
+                            <span className="flex items-center gap-1"><Calendar className="h-3.5 w-3.5 text-slate-500" /> {b.dates}</span>
+                            <span className="flex items-center gap-1"><Users className="h-3.5 w-3.5 text-slate-500" /> {b.travelers} Guests</span>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 border-slate-700/50 pt-4 md:pt-0">
+                        <div className="text-left md:text-right">
+                          <span className="text-xs text-slate-400 block">Total Amount</span>
+                          <span className="text-xl font-black text-white">${b.totalPrice.toLocaleString()}</span>
+                        </div>
+                        <button 
+                          onClick={() => openDetails(b.destination)} 
+                          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition-colors"
+                        >
+                          View Voucher Details
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Saved Wishlist Items */}
+            <div className="space-y-4 pt-6 border-t border-slate-800">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Heart className="h-5 w-5 text-rose-500" /> Wishlist & Saved Packages ({wishlist.length})
+              </h2>
+
+              {wishlist.length === 0 ? (
+                <p className="text-slate-400 text-sm italic">No packages saved to your wishlist yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {DESTINATIONS.filter(d => wishlist.includes(d.id)).map(dest => (
+                    <div key={dest.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 flex gap-4 items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img src={dest.image} alt={dest.title} className="w-14 h-14 rounded-lg object-cover" />
+                        <div>
+                          <h4 className="font-bold text-sm text-white line-clamp-1">{dest.title}</h4>
+                          <span className="text-xs text-slate-400">${dest.price.toLocaleString()} / person</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => openDetails(dest)} className="p-2 text-amber-400 hover:bg-slate-700 rounded-lg">
+                          <ChevronRight className="h-5 w-5" />
+                        </button>
+                        <button onClick={(e) => toggleWishlist(dest.id, e)} className="p-2 text-slate-400 hover:text-rose-500 rounded-lg">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        )}
+
+        {/* TAB 3: CUSTOM TRIP BUILDER FORM */}
+        {activeTab === 'custom' && (
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-bold uppercase tracking-widest border border-amber-500/20">
+                <Sparkles className="h-3.5 w-3.5" /> Bespoke Concierge
+              </div>
+              <h1 className="text-3xl font-black text-white">Custom Itinerary Designer</h1>
+              <p className="text-slate-400 text-sm">Tell us your vision and our personal travel curators will craft your customized itinerary within 24 hours.</p>
+            </div>
+
+            {customSubmitted ? (
+              <div className="bg-slate-800/90 border border-amber-500/40 rounded-3xl p-8 text-center space-y-4">
+                <div className="h-16 w-16 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto border border-amber-500/40">
+                  <CheckCircle className="h-8 w-8" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Request Received!</h3>
+                <p className="text-slate-300 text-sm max-w-md mx-auto">
+                  Our private travel designer has been notified. We will review your preferences and send a custom proposed itinerary to your email.
+                </p>
+                <button 
+                  onClick={() => { setCustomSubmitted(false); setActiveTab('explore'); }}
+                  className="mt-4 px-6 py-2.5 bg-amber-500 text-slate-950 font-bold text-sm rounded-xl"
+                >
+                  Return to Explore
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={(e) => { e.preventDefault(); setCustomSubmitted(true); }} className="bg-slate-800/90 border border-slate-700/70 p-8 rounded-3xl shadow-xl space-y-6">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Preferred Destination(s)</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. Amalfi Coast & Rome, Italy" 
+                      value={customRequest.destination}
+                      onChange={(e) => setCustomRequest({...customRequest, destination: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Target Travel Dates</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="e.g. Late October 2026 (10 Days)" 
+                      value={customRequest.dates}
+                      onChange={(e) => setCustomRequest({...customRequest, dates: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:border-amber-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Estimated Budget per Person: ${customRequest.budget.toLocaleString()}</label>
+                    <input 
+                      type="range"
+                      min="1500"
+                      max="15000"
+                      step="500"
+                      value={customRequest.budget}
+                      onChange={(e) => setCustomRequest({...customRequest, budget: Number(e.target.value)})}
+                      className="w-full accent-amber-500 bg-slate-900 rounded-lg cursor-pointer h-2"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Number of Guests</label>
+                    <select 
+                      value={customRequest.travelers}
+                      onChange={(e) => setCustomRequest({...customRequest, travelers: Number(e.target.value)})}
+                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:border-amber-500 outline-none"
+                    >
+                      <option value={1}>Solo Explorer (1)</option>
+                      <option value={2}>Couple / Duo (2)</option>
+                      <option value={4}>Small Group (3-5)</option>
+                      <option value={8}>Large Group (6+)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Preferred Travel Style</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {['Luxury & Spa', 'Adventure & Trek', 'Cultural Immersion', 'Food & Wine'].map((style) => (
+                      <button
+                        type="button"
+                        key={style}
+                        onClick={() => setCustomRequest({...customRequest, style})}
+                        className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all ${
+                          customRequest.style === style 
+                            ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
+                            : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {style}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Special Requests & Preferences</label>
+                  <textarea 
+                    rows={4}
+                    placeholder="Mention preferred airline, dietary needs, specific landmarks, or celebration events (e.g., Honeymoon, Anniversary)..."
+                    value={customRequest.notes}
+                    onChange={(e) => setCustomRequest({...customRequest, notes: e.target.value})}
+                    className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:border-amber-500 outline-none"
+                  ></textarea>
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-500/20 hover:brightness-110 transition-all"
+                >
+                  Submit Custom Itinerary Request
+                </button>
+              </form>
+            )}
+          </div>
+        )}
+
+      </main>
+
+      {/* DESTINATION DETAIL & BOOKING MODAL */}
+      {selectedDest && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6">
+          <div className="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl overflow-hidden my-8">
+            
+            {/* Modal Close Button */}
+            <button 
+              onClick={() => setSelectedDest(null)}
+              className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-slate-950/60 text-slate-300 hover:text-white hover:bg-slate-950 border border-slate-700 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Step 1: Destination Details View */}
+            {bookingStep === 1 && (
+              <div>
+                {/* Modal Header Banner */}
+                <div className="relative h-72 sm:h-80 w-full">
+                  <img src={selectedDest.image} alt={selectedDest.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                  
+                  <div className="absolute bottom-6 left-6 right-6 space-y-2">
+                    <span className="px-3 py-1 bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-xs rounded-full">
+                      {selectedDest.category} Travel
+                    </span>
+                    <h2 className="text-2xl sm:text-3xl font-black text-white">{selectedDest.title}</h2>
+                    <div className="flex items-center gap-4 text-xs text-slate-300">
+                      <span className="flex items-center gap-1"><MapPin className="h-4 w-4 text-amber-400" /> {selectedDest.location}</span>
+                      <span className="flex items-center gap-1"><Clock className="h-4 w-4 text-amber-400" /> {selectedDest.duration}</span>
+                      <span className="flex items-center gap-1"><Star className="h-4 w-4 text-amber-400 fill-amber-400" /> {selectedDest.rating} ({selectedDest.reviewsCount} reviews)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Content Grid */}
+                <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  <div className="lg:col-span-7 space-y-6">
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Overview</h3>
+                      <p className="text-slate-300 text-sm leading-relaxed">{selectedDest.overview}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Package Inclusions</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {selectedDest.inclusions.map((inc, i) => (
+                          <div key={i} className="flex items-center gap-2 text-xs text-slate-200 bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/50">
+                            <CheckCircle className="h-4 w-4 text-amber-400 shrink-0" />
+                            <span>{inc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Sample Itinerary</h3>
+                      <div className="space-y-3">
+                        {selectedDest.itinerary.map((item, i) => (
+                          <div key={i} className="bg-slate-800/40 p-3.5 rounded-xl border border-slate-800 space-y-1">
+                            <span className="text-xs font-bold text-amber-400">Day {item.day}: {item.title}</span>
+                            <p className="text-xs text-slate-400">{item.description}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Booking Action Box */}
+                  <div className="lg:col-span-5 bg-slate-800/80 p-6 rounded-2xl border border-slate-700/80 flex flex-col justify-between space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <span className="text-xs text-slate-400 block">Package Price</span>
+                        <div className="text-3xl font-black text-white">
+                          ${selectedDest.price.toLocaleString()} <span className="text-xs text-slate-400 font-normal">/ guest</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 pt-4 border-t border-slate-700">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-400 mb-1">Departure Date</label>
+                          <input 
+                            type="date"
+                            value={bookingForm.startDate}
+                            onChange={(e) => setBookingForm({...bookingForm, startDate: e.target.value})}
+                            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-400 mb-1">Number of Travelers</label>
+                          <div className="flex items-center bg-slate-900 rounded-xl border border-slate-700 p-1">
+                            <button 
+                              onClick={() => setBookingForm({...bookingForm, travelers: Math.max(1, bookingForm.travelers - 1)})}
+                              className="px-3 py-1 text-slate-400 hover:text-white"
+                            >-</button>
+                            <span className="flex-1 text-center font-bold text-sm text-white">{bookingForm.travelers} Guests</span>
+                            <button 
+                              onClick={() => setBookingForm({...bookingForm, travelers: bookingForm.travelers + 1})}
+                              className="px-3 py-1 text-slate-400 hover:text-white"
+                            >+</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3 pt-4 border-t border-slate-700">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-slate-400">Estimated Total:</span>
+                        <span className="font-bold text-amber-400 text-lg">${(selectedDest.price * bookingForm.travelers).toLocaleString()}</span>
+                      </div>
+                      <button 
+                        onClick={() => setBookingStep(2)}
+                        className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm rounded-xl transition-colors shadow-lg shadow-amber-500/10"
+                      >
+                        Proceed to Reservation
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Checkout / Guest Form */}
+            {bookingStep === 2 && (
+              <form onSubmit={handleConfirmBooking} className="p-6 sm:p-8 space-y-6">
+                <div className="border-b border-slate-800 pb-4 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-white">Complete Reservation</h3>
+                    <p className="text-xs text-slate-400">{selectedDest.title}</p>
+                  </div>
+                  <button type="button" onClick={() => setBookingStep(1)} className="text-xs text-amber-400 underline">Back to details</button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Guest Info */}
+                  <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Primary Traveler Info</h4>
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Full Name</label>
+                      <input 
+                        type="text" 
+                        required
+                        placeholder="Julian Vance"
+                        value={bookingForm.fullName}
+                        onChange={(e) => setBookingForm({...bookingForm, fullName: e.target.value})}
+                        className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Email Address</label>
+                      <input 
+                        type="email" 
+                        required
+                        placeholder="julian@example.com"
+                        value={bookingForm.email}
+                        onChange={(e) => setBookingForm({...bookingForm, email: e.target.value})}
+                        className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Add-on Upgrades */}
+                  <div className="space-y-4">
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Optional Upgrades</h4>
+                    <div className="space-y-2">
+                      <label className="flex items-center justify-between p-3 bg-slate-800 rounded-xl border border-slate-700 cursor-pointer">
+                        <span className="text-xs text-slate-300">Private Airport Transfers (+$120)</span>
+                        <input 
+                          type="checkbox" 
+                          checked={bookingForm.addons.transfer}
+                          onChange={(e) => setBookingForm({
+                            ...bookingForm, 
+                            addons: {...bookingForm.addons, transfer: e.target.checked}
+                          })}
+                          className="accent-amber-500"
+                        />
+                      </label>
+                      <label className="flex items-center justify-between p-3 bg-slate-800 rounded-xl border border-slate-700 cursor-pointer">
+                        <span className="text-xs text-slate-300">Comprehensive Travel Insurance (+$85/guest)</span>
+                        <input 
+                          type="checkbox" 
+                          checked={bookingForm.addons.insurance}
+                          onChange={(e) => setBookingForm({
+                            ...bookingForm, 
+                            addons: {...bookingForm.addons, insurance: e.target.checked}
+                          })}
+                          className="accent-amber-500"
+                        />
+                      </label>
+                      <label className="flex items-center justify-between p-3 bg-slate-800 rounded-xl border border-slate-700 cursor-pointer">
+                        <span className="text-xs text-slate-300">24/7 Dedicated Private Tour Guide (+$250)</span>
+                        <input 
+                          type="checkbox" 
+                          checked={bookingForm.addons.guide}
+                          onChange={(e) => setBookingForm({
+                            ...bookingForm, 
+                            addons: {...bookingForm.addons, guide: e.target.checked}
+                          })}
+                          className="accent-amber-500"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price Breakdown */}
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                  <div className="flex justify-between text-slate-400">
+                    <span>Base Fare (${selectedDest.price} x {bookingForm.travelers} guests):</span>
+                    <span className="text-white font-mono">${(selectedDest.price * bookingForm.travelers).toLocaleString()}</span>
+                  </div>
+                  {bookingForm.addons.transfer && (
+                    <div className="flex justify-between text-slate-400">
+                      <span>Airport Transfers:</span>
+                      <span className="text-white font-mono">+$120</span>
+                    </div>
+                  )}
+                  {bookingForm.addons.insurance && (
+                    <div className="flex justify-between text-slate-400">
+                      <span>Travel Insurance:</span>
+                      <span className="text-white font-mono">+${85 * bookingForm.travelers}</span>
+                    </div>
+                  )}
+                  {bookingForm.addons.guide && (
+                    <div className="flex justify-between text-slate-400">
+                      <span>Private Tour Guide:</span>
+                      <span className="text-white font-mono">+$250</span>
+                    </div>
+                  )}
+                  <div className="pt-2 border-t border-slate-800 flex justify-between font-bold text-sm text-amber-400">
+                    <span>Total Due:</span>
+                    <span>${calculateTotal().toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="submit"
+                  className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20"
+                >
+                  Confirm & Pay (Simulated)
+                </button>
+              </form>
+            )}
+
+            {/* Step 3: Confirmation Receipt */}
+            {bookingStep === 3 && (
+              <div className="p-8 text-center space-y-6">
+                <div className="h-16 w-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+                  <CheckCircle className="h-8 w-8" />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black text-white">Trip Confirmed!</h3>
+                  <p className="text-slate-400 text-sm">Your voucher receipt and itinerary details have been dispatched to your account.</p>
+                </div>
+
+                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-left max-w-md mx-auto space-y-3 text-xs">
+                  <div className="flex justify-between border-b border-slate-800 pb-2">
+                    <span className="text-slate-400">Booking Reference:</span>
+                    <span className="font-mono font-bold text-amber-400">{bookedTrips[0]?.id}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-800 pb-2">
+                    <span className="text-slate-400">Destination:</span>
+                    <span className="font-bold text-white">{selectedDest.title}</span>
+                  </div>
+                  <div className="flex justify-between border-b border-slate-800 pb-2">
+                    <span className="text-slate-400">Travelers:</span>
+                    <span className="text-white">{bookingForm.travelers} Guests</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Total Paid:</span>
+                    <span className="font-bold text-emerald-400 font-mono">${calculateTotal().toLocaleString()}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center gap-4">
+                  <button 
+                    onClick={() => { setSelectedDest(null); setActiveTab('bookings'); }}
+                    className="px-6 py-2.5 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl"
+                  >
+                    View My Bookings Dashboard
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="mt-20 border-t border-slate-800 bg-slate-950 py-12 text-slate-500 text-xs text-center space-y-3">
+        <div className="flex items-center justify-center gap-2">
+          <Compass className="h-4 w-4 text-amber-400" />
+          <span className="font-bold text-white tracking-wider">WANDERLUXE TRAVEL CO.</span>
+        </div>
+        <p>© 2026 WanderLuxe Travel Agency Platform. All rights reserved. Premium Handcrafted Escapes.</p>
+      </footer>
+
+    </div>
+  );
+}
